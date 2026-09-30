@@ -1,0 +1,12 @@
+{
+  "name": "railway-static-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A simple static website served with Express on Railway.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

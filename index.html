@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EA600 — 14 Day Road Trip</title>
+<meta name="description" content="EA600 — 600 miles of discovery through East Anglia. A 14-day circular road trip through Cambridgeshire, Norfolk, Suffolk and Essex.">
+<style>
+:root {
+  --ink:#123b32; --ink2:#244d43; --paper:#f7f7f4; --white:#fff;
+  --soft:#eef1ed; --line:#dce2dc; --accent:#c9a66b;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: Arial, Helvetica, sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+.page{max-width:1440px;margin:auto;overflow:hidden}
+.hero{min-height:720px;display:grid;grid-template-columns:48% 52%;position:relative;background:var(--paper)}
+.hero-copy{padding:105px 50px 70px 78px;position:relative;z-index:2}
+.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin-bottom:26px;color:#6a746f}
+h1{font-family:var(--serif);font-size:68px;line-height:.98;margin:0 0 26px;letter-spacing:-2px;color:var(--ink)}
+.lead{font-size:18px;line-height:1.55;max-width:590px;color:#49615a;margin:0 0 38px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:640px}
+.stat{background:#eef0ed;border:1px solid #e5e8e4;border-radius:12px;padding:17px 16px}
+.stat strong{display:block;font-family:var(--serif);font-size:34px;line-height:1;color:var(--ink)}
+.stat span{display:block;margin-top:8px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#7c8580}
+.hero-visual{position:relative;min-height:720px;background:#eceeea}
+.hero-visual:before{content:"";position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,var(--paper),rgba(247,247,244,0))}
+.photo{position:absolute;background:#fff;padding:8px;border-radius:8px;box-shadow:0 12px 30px rgba(20,45,35,.12)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover;border-radius:4px}
+.p1{width:350px;height:198px;top:62px;right:160px;transform:rotate(-5deg)}
+.p2{width:395px;height:220px;top:270px;right:45px;transform:rotate(2deg)}
+.p3{width:380px;height:230px;top:495px;right:155px;transform:rotate(-4deg)}
+.ghost-map{position:absolute;left:50px;bottom:50px;width:360px;height:180px;opacity:.16;border:1px dashed var(--ink);border-radius:50% 40% 55% 35%;transform:rotate(-8deg)}
+.intro{padding:85px 78px 55px;display:flex;justify-content:space-between;gap:50px;border-top:1px solid var(--line)}
+.intro h2{font-family:var(--serif);font-size:42px;margin:0;max-width:560px}
+.intro p{max-width:580px;font-size:17px;line-height:1.7;color:#53655e;margin:0}
+.days{padding:20px 78px 95px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.day-card{display:grid;grid-template-columns:82px 1fr;background:var(--white);border:1px solid var(--line);border-radius:14px;min-height:190px;overflow:hidden;transition:.2s}
+.day-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,45,35,.08)}
+.day-num{background:var(--ink);color:#fff;font-family:var(--serif);font-size:34px;display:flex;align-items:center;justify-content:center}
+.day-main{padding:22px 24px}
+.eyebrow{font-size:10px;letter-spacing:.18em;color:#7d8982;font-weight:700}
+.day-main h3{font-family:var(--serif);font-size:26px;margin:8px 0 9px;color:var(--ink)}
+.day-main p{margin:0;color:#5b6b65;line-height:1.45;font-size:14px}
+.day-meta{display:flex;gap:16px;margin-top:18px;font-size:11px;color:#7b817e}
+.day-meta span:first-child{font-weight:700;color:var(--ink)}
+.cta{margin:0 78px 90px;background:var(--ink);color:white;border-radius:18px;padding:52px 58px;display:flex;justify-content:space-between;align-items:center;gap:30px}
+.cta h2{font-family:var(--serif);font-size:40px;margin:0 0 10px}
+.cta p{margin:0;color:#d7e0dc;max-width:700px;line-height:1.5}
+.button{display:inline-block;background:#f1eee5;color:var(--ink);text-decoration:none;padding:15px 24px;border-radius:999px;font-weight:700;white-space:nowrap}
+footer{padding:30px 78px 55px;color:#77817d;font-size:12px;border-top:1px solid var(--line)}
+@media(max-width:950px){
+ .hero{grid-template-columns:1fr;min-height:auto} .hero-copy{padding:70px 30px 45px}
+ h1{font-size:54px} .hero-visual{height:520px;min-height:0} .hero-visual:before{display:none}
+ .p1{right:18%;width:300px} .p2{right:4%;width:340px} .p3{right:15%;width:330px}
+ .intro{padding:60px 30px 35px;display:block} .intro p{margin-top:20px}
+ .days{padding:20px 30px 65px;grid-template-columns:1fr}
+ .cta{margin:0 30px 65px;padding:38px 30px;display:block} .button{margin-top:25px}
+ footer{padding:25px 30px 40px}
+}
+@media(max-width:600px){
+ h1{font-size:45px} .stats{grid-template-columns:repeat(2,1fr)}
+ .hero-visual{height:440px} .p1{top:35px;right:10%;width:250px;height:145px}
+ .p2{top:170px;right:0;width:290px;height:165px}
+ .p3{top:330px;right:10%;width:275px;height:160px}
+ .day-card{grid-template-columns:62px 1fr} .day-num{font-size:26px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<section class="hero">
+  <div class="hero-copy">
+    <div class="kicker">EA600 • County Road Trips</div>
+    <h1>One loop.<br>Four counties.<br>14 days of discovery.</h1>
+    <p class="lead">The EA600 is a 600-mile circular journey from Cambridge through the Fens, along the whole of the Norfolk and Suffolk coast, and home through Essex — linking historic towns, wild landscapes, seaside roads and the stories that make East Anglia distinctive.</p>
+    <div class="stats">
+      <div class="stat"><strong>600</strong><span>Miles</span></div>
+      <div class="stat"><strong>14</strong><span>Days</span></div>
+      <div class="stat"><strong>4</strong><span>Counties</span></div>
+      <div class="stat"><strong>50+</strong><span>Highlights</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="photo p1"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Classic car on an East Anglian road"></div>
+    <div class="photo p2"><img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Seaside beach huts"></div>
+    <div class="photo p3"><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Classic car beside the coast"></div>
+    <div class="ghost-map"></div>
+  </div>
+</section>
+
+<section class="intro">
+  <h2>A road trip designed to be explored slowly.</h2>
+  <p>Fourteen days gives the EA600 enough space for the major landmarks — but also for the detours, village stops, coastal walks, independent food, gardens, museums and hidden places that turn a route into a journey.</p>
+</section>
+
+<section class="days" id="days">
+  <article class="day-card"><div class="day-num">01</div><div class="day-main"><div class="eyebrow">DAY 01</div><h3>Cambridge → Ely</h3><p>Cambridge, Ely Cathedral &amp; the Fens</p><div class="day-meta"><span>35 miles</span><span>Heritage &amp; History • Waterways</span></div></div></article>
+  <article class="day-card"><div class="day-num">02</div><div class="day-main"><div class="eyebrow">DAY 02</div><h3>Ely → North Norfolk</h3><p>Fenland landscapes, market towns &amp; the coast</p><div class="day-meta"><span>70 miles</span><span>Coast • Wildlife • Scenic Drives</span></div></div></article>
+  <article class="day-card"><div class="day-num">03</div><div class="day-main"><div class="eyebrow">DAY 03</div><h3>North Norfolk Coast</h3><p>Holkham, Blakeney Point &amp; Cromer</p><div class="day-meta"><span>45 miles</span><span>Coast • Wildlife • Photography</span></div></div></article>
+  <article class="day-card"><div class="day-num">04</div><div class="day-main"><div class="eyebrow">DAY 04</div><h3>Cromer → King’s Lynn</h3><p>Blickling, Felbrigg &amp; historic West Norfolk</p><div class="day-meta"><span>65 miles</span><span>Heritage • Gardens • Estates</span></div></div></article>
+  <article class="day-card"><div class="day-num">05</div><div class="day-main"><div class="eyebrow">DAY 05</div><h3>King’s Lynn → Bury St Edmunds</h3><p>Castle Rising, Thetford Forest &amp; Bury</p><div class="day-meta"><span>65 miles</span><span>Heritage • Nature • Towns</span></div></div></article>
+  <article class="day-card"><div class="day-num">06</div><div class="day-main"><div class="eyebrow">DAY 06</div><h3>Bury → Southwold</h3><p>Suffolk heritage, villages &amp; the coast</p><div class="day-meta"><span>60 miles</span><span>Heritage • Coast • Food</span></div></div></article>
+  <article class="day-card"><div class="day-num">07</div><div class="day-main"><div class="eyebrow">DAY 07</div><h3>Southwold → Aldeburgh → Orford</h3><p>Pier, Snape, Aldeburgh &amp; Orford Ness</p><div class="day-meta"><span>45 miles</span><span>Coast • Culture • Nature</span></div></div></article>
+  <article class="day-card"><div class="day-num">08</div><div class="day-main"><div class="eyebrow">DAY 08</div><h3>Orford → Woodbridge → Ipswich</h3><p>Estuaries, Sutton Hoo &amp; Woodbridge</p><div class="day-meta"><span>45 miles</span><span>Heritage • Waterways • Towns</span></div></div></article>
+  <article class="day-card"><div class="day-num">09</div><div class="day-main"><div class="eyebrow">DAY 09</div><h3>Ipswich → Felixstowe → Harwich</h3><p>Deben estuary, Felixstowe &amp; maritime Essex</p><div class="day-meta"><span>45 miles</span><span>Coast • Scenic Drives</span></div></div></article>
+  <article class="day-card"><div class="day-num">10</div><div class="day-main"><div class="eyebrow">DAY 10</div><h3>Harwich → Colchester</h3><p>Harwich, Stour estuary, Flatford &amp; Roman Colchester</p><div class="day-meta"><span>40 miles</span><span>Heritage • Culture • Coast</span></div></div></article>
+  <article class="day-card"><div class="day-num">11</div><div class="day-main"><div class="eyebrow">DAY 11</div><h3>Colchester → Mersea → Maldon</h3><p>Mersea Island, seafood &amp; Maldon waterfront</p><div class="day-meta"><span>55 miles</span><span>Coast • Food • Estuaries</span></div></div></article>
+  <article class="day-card"><div class="day-num">12</div><div class="day-main"><div class="eyebrow">DAY 12</div><h3>Maldon → Chelmsford → Saffron Walden</h3><p>Hylands, Essex countryside &amp; Audley End</p><div class="day-meta"><span>60 miles</span><span>Gardens • Heritage • Countryside</span></div></div></article>
+  <article class="day-card"><div class="day-num">13</div><div class="day-main"><div class="eyebrow">DAY 13</div><h3>Saffron Walden → Cambridge</h3><p>Audley End, villages &amp; the Cambridge approach</p><div class="day-meta"><span>35 miles</span><span>Heritage • Villages • Scenic Drives</span></div></div></article>
+  <article class="day-card"><div class="day-num">14</div><div class="day-main"><div class="eyebrow">DAY 14</div><h3>Cambridge Finale</h3><p>Cambridge discovery day — museums, colleges &amp; river</p><div class="day-meta"><span>0 miles</span><span>Culture • Heritage • Food</span></div></div></article>
+</section>
+
+<section class="cta">
+  <div>
+    <h2>Plan your EA600.</h2>
+    <p>Build your own version of the 14-day journey, choose a shorter itinerary, discover themed routes or explore the interactive map.</p>
+  </div>
+  <a class="button" href="#days">Explore the route</a>
+</section>
+
+<footer>EA600 — 600 Miles of Discovery Through East Anglia • County Road Trips • Design concept for web and Figma</footer>
+</div>
+</body>
+</html>
