@@ -1,126 +1,1955 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EA600 — 14 Day Road Trip</title>
-<meta name="description" content="EA600 — 600 miles of discovery through East Anglia. A 14-day circular road trip through Cambridgeshire, Norfolk, Suffolk and Essex.">
-<style>
-:root {
-  --ink:#123b32; --ink2:#244d43; --paper:#f7f7f4; --white:#fff;
-  --soft:#eef1ed; --line:#dce2dc; --accent:#c9a66b;
-  --serif: Georgia, "Times New Roman", serif;
-  --sans: Arial, Helvetica, sans-serif;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}
-.page{max-width:1440px;margin:auto;overflow:hidden}
-.hero{min-height:720px;display:grid;grid-template-columns:48% 52%;position:relative;background:var(--paper)}
-.hero-copy{padding:105px 50px 70px 78px;position:relative;z-index:2}
-.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin-bottom:26px;color:#6a746f}
-h1{font-family:var(--serif);font-size:68px;line-height:.98;margin:0 0 26px;letter-spacing:-2px;color:var(--ink)}
-.lead{font-size:18px;line-height:1.55;max-width:590px;color:#49615a;margin:0 0 38px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:640px}
-.stat{background:#eef0ed;border:1px solid #e5e8e4;border-radius:12px;padding:17px 16px}
-.stat strong{display:block;font-family:var(--serif);font-size:34px;line-height:1;color:var(--ink)}
-.stat span{display:block;margin-top:8px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#7c8580}
-.hero-visual{position:relative;min-height:720px;background:#eceeea}
-.hero-visual:before{content:"";position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,var(--paper),rgba(247,247,244,0))}
-.photo{position:absolute;background:#fff;padding:8px;border-radius:8px;box-shadow:0 12px 30px rgba(20,45,35,.12)}
-.photo img{display:block;width:100%;height:100%;object-fit:cover;border-radius:4px}
-.p1{width:350px;height:198px;top:62px;right:160px;transform:rotate(-5deg)}
-.p2{width:395px;height:220px;top:270px;right:45px;transform:rotate(2deg)}
-.p3{width:380px;height:230px;top:495px;right:155px;transform:rotate(-4deg)}
-.ghost-map{position:absolute;left:50px;bottom:50px;width:360px;height:180px;opacity:.16;border:1px dashed var(--ink);border-radius:50% 40% 55% 35%;transform:rotate(-8deg)}
-.intro{padding:85px 78px 55px;display:flex;justify-content:space-between;gap:50px;border-top:1px solid var(--line)}
-.intro h2{font-family:var(--serif);font-size:42px;margin:0;max-width:560px}
-.intro p{max-width:580px;font-size:17px;line-height:1.7;color:#53655e;margin:0}
-.days{padding:20px 78px 95px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.day-card{display:grid;grid-template-columns:82px 1fr;background:var(--white);border:1px solid var(--line);border-radius:14px;min-height:190px;overflow:hidden;transition:.2s}
-.day-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,45,35,.08)}
-.day-num{background:var(--ink);color:#fff;font-family:var(--serif);font-size:34px;display:flex;align-items:center;justify-content:center}
-.day-main{padding:22px 24px}
-.eyebrow{font-size:10px;letter-spacing:.18em;color:#7d8982;font-weight:700}
-.day-main h3{font-family:var(--serif);font-size:26px;margin:8px 0 9px;color:var(--ink)}
-.day-main p{margin:0;color:#5b6b65;line-height:1.45;font-size:14px}
-.day-meta{display:flex;gap:16px;margin-top:18px;font-size:11px;color:#7b817e}
-.day-meta span:first-child{font-weight:700;color:var(--ink)}
-.cta{margin:0 78px 90px;background:var(--ink);color:white;border-radius:18px;padding:52px 58px;display:flex;justify-content:space-between;align-items:center;gap:30px}
-.cta h2{font-family:var(--serif);font-size:40px;margin:0 0 10px}
-.cta p{margin:0;color:#d7e0dc;max-width:700px;line-height:1.5}
-.button{display:inline-block;background:#f1eee5;color:var(--ink);text-decoration:none;padding:15px 24px;border-radius:999px;font-weight:700;white-space:nowrap}
-footer{padding:30px 78px 55px;color:#77817d;font-size:12px;border-top:1px solid var(--line)}
-@media(max-width:950px){
- .hero{grid-template-columns:1fr;min-height:auto} .hero-copy{padding:70px 30px 45px}
- h1{font-size:54px} .hero-visual{height:520px;min-height:0} .hero-visual:before{display:none}
- .p1{right:18%;width:300px} .p2{right:4%;width:340px} .p3{right:15%;width:330px}
- .intro{padding:60px 30px 35px;display:block} .intro p{margin-top:20px}
- .days{padding:20px 30px 65px;grid-template-columns:1fr}
- .cta{margin:0 30px 65px;padding:38px 30px;display:block} .button{margin-top:25px}
- footer{padding:25px 30px 40px}
-}
-@media(max-width:600px){
- h1{font-size:45px} .stats{grid-template-columns:repeat(2,1fr)}
- .hero-visual{height:440px} .p1{top:35px;right:10%;width:250px;height:145px}
- .p2{top:170px;right:0;width:290px;height:165px}
- .p3{top:330px;right:10%;width:275px;height:160px}
- .day-card{grid-template-columns:62px 1fr} .day-num{font-size:26px}
-}
-</style>
-</head>
-<body>
-<div class="page">
-<section class="hero">
-  <div class="hero-copy">
-    <div class="kicker">EA600 • County Road Trips</div>
-    <h1>One loop.<br>Four counties.<br>14 days of discovery.</h1>
-    <p class="lead">The EA600 is a 600-mile circular journey from Cambridge through the Fens, along the whole of the Norfolk and Suffolk coast, and home through Essex — linking historic towns, wild landscapes, seaside roads and the stories that make East Anglia distinctive.</p>
-    <div class="stats">
-      <div class="stat"><strong>600</strong><span>Miles</span></div>
-      <div class="stat"><strong>14</strong><span>Days</span></div>
-      <div class="stat"><strong>4</strong><span>Counties</span></div>
-      <div class="stat"><strong>50+</strong><span>Highlights</span></div>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <div class="photo p1"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Classic car on an East Anglian road"></div>
-    <div class="photo p2"><img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Seaside beach huts"></div>
-    <div class="photo p3"><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&amp;fit=crop&amp;w=900&amp;q=85" alt="Classic car beside the coast"></div>
-    <div class="ghost-map"></div>
-  </div>
-</section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EA600 — 600 Miles of Discovery Through East Anglia</title>
+        <link rel="icon" href="assets/images/favicon.ico" sizes="any">
+        <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Great+Vibes&family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/design-tokens.css">
+        <link rel="stylesheet" href="css/components.css">
+        <link rel="stylesheet" href="css/responsive.css">
+    </head>
+    <body id="top">
+        <header class="site-header site-header--dock" data-site-header>
+            <div class="site-header__bar container">
+                <a href="#top" class="logo" aria-label="EA600 — 600 miles of discovery through East Anglia">
+                    <span class="logo__primary" aria-hidden="true">
+                        <span class="logo__layer logo__layer--vector">
+                            <img decoding="async" fetchpriority="high" loading="eager"
+                                src="assets/images/logo-vector.webp"
+                                alt=""
+                                width="90"
+                                height="90"
+                            >
+                        </span>
+                    </span>
+                    <span class="logo__badge" aria-hidden="true">
+                        <img
+                            decoding="async"
+                            loading="eager"
+                            src="assets/images/logo-footer.webp"
+                            alt=""
+                            width="52"
+                            height="52"
+                        >
+                    </span>
+                </a>
+                <button
+                    type="button"
+                    class="site-header__toggle"
+                    aria-expanded="false"
+                    aria-controls="primary-nav"
+                    aria-label="Open menu"
+                    data-nav-toggle
+                >
+                    <span class="site-header__burger" aria-hidden="true"></span>
+                </button>
+                <nav id="primary-nav" class="nav" aria-label="Primary">
+                    <a class="nav__link is-active" href="#top" data-nav-link>Home</a>
+                    <a class="nav__link" href="#routes" data-nav-link>Route</a>
+                    <a class="nav__link" href="#destinations" data-nav-link>Destination</a>
+                    <a class="nav__link" href="#itinerary" data-nav-link>Itinerary</a>
+                    <a class="nav__link" href="#planning" data-nav-link>Planning</a>
+                    <a class="nav__link" href="#blog" data-nav-link>Partner</a>
+                    <a class="btn btn--primary site-header__nav-cta" href="#planning">Plan your trip</a>
+                </nav>
+                <div class="site-header__actions">
+                    <a class="btn btn--primary" href="#planning">Plan your trip</a>
+                </div>
+            </div>
+        </header>
+        <section class="hero" aria-label="Hero">
+            <div class="hero__backdrop" aria-hidden="true">
+                <div class="media media--hero-bg">
+                    <img decoding="async" fetchpriority="high" loading="eager"
+                        class="media__img"
+                        src="assets/images/hero-bg.webp"
+                        alt=""
+                        width="1440"
+                        height="731"
+                    >
+                </div>
+                <div class="hero__scrim"></div>
+                <div class="hero__legibility"></div>
+            </div>
+            <div class="hero__stage">
+                <div class="hero__content">
+                    <div class="hero__copy">
+                        <p class="hero__eyebrow">600 MILES OF DISCOVERY THROUGH EAST ANGLIA</p>
+                        <h1 class="hero__title">EA600</h1>
+                        <p class="hero__description">Escape the motorways and discover a slower, more beautiful side of England on the EA600 — a spectacular circular road trip through the timeless landscapes, coastlines and hidden treasures of East Anglia.</p>
+                    </div>
+                    <div class="hero__actions btn-group">
+                        <a class="btn btn--primary" href="#routes">Explore the Route</a>
+                        <a class="btn btn--secondary" href="#itinerary">View Itinerary</a>
+                    </div>
+                </div>
+                <aside class="hero__panel feature-panel" aria-label="Highlights">
+                    <div class="feature-panel__grid">
+                        <article class="feature-item">
+                            <img decoding="async" loading="lazy"
+                                class="icon"
+                                src="assets/icons/icon-scenic.webp"
+                                alt=""
+                                width="49"
+                                height="50"
+                            >
+                            <div>
+                                <h2 class="feature-item__title">Scenic Drives</h2>
+                                <p class="feature-item__text">Winding country roads, vast skies and unforgettable views at every turn.</p>
+                            </div>
+                        </article>
+                        <article class="feature-item">
+                            <img decoding="async" loading="lazy"
+                                class="icon icon--history"
+                                src="assets/icons/icon-history.webp"
+                                alt=""
+                                width="49"
+                                height="48"
+                            >
+                            <div>
+                                <h2 class="feature-item__title">Rich History</h2>
+                                <p class="feature-item__text">Castles, cathedral cities, medieval towns and England's fascinating heritage.</p>
+                            </div>
+                        </article>
+                        <article class="feature-item">
+                            <img decoding="async" loading="lazy"
+                                class="icon icon--coastal"
+                                src="assets/icons/icon-coastal.webp"
+                                alt=""
+                                width="48"
+                                height="50"
+                            >
+                            <div>
+                                <h2 class="feature-item__title">Coastal Beauty</h2>
+                                <p class="feature-item__text">Sandy beaches, estuaries, hidden harbours and charming seaside towns.</p>
+                            </div>
+                        </article>
+                        <article class="feature-item">
+                            <img decoding="async" loading="lazy"
+                                class="icon"
+                                src="assets/icons/icon-gems.webp"
+                                alt=""
+                                width="49"
+                                height="50"
+                            >
+                            <div>
+                                <h2 class="feature-item__title">Hidden Gems</h2>
+                                <p class="feature-item__text">Villages, marshes and secret places waiting to be explored.</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="feature-panel__quote">
+                        <span class="feature-panel__quote-line">
+                            <img decoding="async" loading="lazy"
+                                src="assets/icons/line-decor.svg"
+                                alt=""
+                                width="99"
+                                height="3"
+                            >
+                        </span>
+                        <span class="hero__quote">More than a road trip. It's a journey you'll never forget.</span>
+                        <span class="feature-panel__quote-line">
+                            <img decoding="async" loading="lazy"
+                                src="assets/icons/line-decor.svg"
+                                alt=""
+                                width="99"
+                                height="3"
+                            >
+                        </span>
+                    </div>
+                </aside>
+            </div>
+        </section>
+        <section class="page-section page-section--muted intro-section" id="about" aria-labelledby="about-title">
+            <div class="container intro-section__inner">
+                <div class="intro-section__map-wrap" aria-hidden="true">
+                    <img loading="lazy"
+                        class="intro-section__map"
+                        src="assets/images/intro-map.webp"
+                        alt=""
+                        width="552"
+                        height="349"
+                        decoding="async"
+                    >
+                </div>
+                <div class="intro-section__layout">
+                    <div class="intro-section__copy">
+                        <h2 class="intro-section__title" id="about-title">One loop. Three counties. Endless horizon.</h2>
+                        <p class="intro-section__lead">The EA600 traces a circle from Cambridge through the fens, along the whole of the Norfolk and Suffolk coast, and home through medieval wool towns — on quiet A and B roads built for slow driving.</p>
+                        <div class="stat-row">
+                            <div class="stat-tile">
+                                <p class="stat-tile__value">600</p>
+                                <p class="stat-tile__label">Miles</p>
+                            </div>
+                            <div class="stat-tile">
+                                <p class="stat-tile__value">7</p>
+                                <p class="stat-tile__label">Days</p>
+                            </div>
+                            <div class="stat-tile">
+                                <p class="stat-tile__value">12</p>
+                                <p class="stat-tile__label">Stops</p>
+                            </div>
+                            <div class="stat-tile">
+                                <p class="stat-tile__value">3</p>
+                                <p class="stat-tile__label">Counties</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="intro-section__media">
+                        <div class="intro-section__rail" aria-hidden="true"></div>
+                        <div class="intro-collage">
+                            <figure class="intro-collage__card intro-collage__card--1">
+                                <img loading="lazy"
+                                    src="assets/images/intro-stack-1.webp"
+                                    alt=""
+                                    width="415"
+                                    height="233"
+                                    decoding="async"
+                                >
+                            </figure>
+                            <figure class="intro-collage__card intro-collage__card--2">
+                                <img loading="lazy"
+                                    src="assets/images/intro-stack-2.webp"
+                                    alt=""
+                                    width="415"
+                                    height="233"
+                                    decoding="async"
+                                >
+                            </figure>
+                            <figure class="intro-collage__card intro-collage__card--3 intro-collage__card--crop">
+                                <div class="intro-collage__crop">
+                                    <img loading="lazy"
+                                        src="assets/images/intro-stack-3.webp"
+                                        alt=""
+                                        width="415"
+                                        height="233"
+                                        decoding="async"
+                                    >
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section
+            class="page-section page-section--cream route-section"
+            id="routes"
+            data-route-section
+            aria-labelledby="routes-title"
+        >
+            <div class="container">
+                <header class="section-heading section-heading--center">
+                    <h2 class="heading-section heading-section--center" id="routes-title">Castles, Coastlines & Charming Towns</h2>
+                    <p class="text-script-accent">EAST ANGLIA ROAD TRIP</p>
+                    <p class="text-lead text-lead--center">A scenic journey through England's most beautiful towns and coastal gems.</p>
+                </header>
+                <div class="route-layout">
+                    <div class="route-map-stage">
+                        <div class="map-block map-block--route route-map-frame">
+                            <img decoding="async" loading="lazy"
+                                class="map-block__img route-map-frame__img"
+                                src="assets/images/route-map.webp"
+                                alt="EA600 route map illustration"
+                                width="796"
+                                height="531"
+                            >
+                            <div class="route-map-overlay" aria-hidden="true">
+                                <!-- Guide arrows: set --mx / --my like pins; data-segment = leg after stop 01…12 (0–11). Rotation set in JS along route. -->
+                                <div class="route-map-guides">
+                                    <!-- 01 → 02 -->
+                                    <span class="route-map-guide" data-segment="0" style="--mx:15.04%; --my:61.44%"></span>
+                                    <span class="route-map-guide" data-segment="0" style="--mx:18.00%; --my:56.19%"></span>
+                                    <!-- 02 → 03 -->
+                                    <span class="route-map-guide" data-segment="1" style="--mx:20.32%; --my:41.70%"></span>
+                                    <span class="route-map-guide" data-segment="1" style="--mx:25.69%; --my:38.63%"></span>
+                                    <!-- 03 → 04 -->
+                                    <span class="route-map-guide" data-segment="2" style="--mx:34.00%; --my:26.23%"></span>
+                                    <span class="route-map-guide" data-segment="2" style="--mx:32.95%; --my:20.15%"></span>
+                                    <!-- 04 → 05 -->
+                                    <span class="route-map-guide" data-segment="3" style="--mx:40.75%; --my:19.27%"></span>
+                                    <span class="route-map-guide" data-segment="3" style="--mx:46.52%; --my:20.63%"></span>
+                                    <!-- 05 → 06 -->
+                                    <span class="route-map-guide" data-segment="4" style="--mx:53.71%; --my:23.42%"></span>
+                                    <span class="route-map-guide" data-segment="4" style="--mx:58.96%; --my:26.66%"></span>
+                                    <span class="route-map-guide" data-segment="4" style="--mx:63.96%; --my:24.66%"></span>
 
-<section class="intro">
-  <h2>A road trip designed to be explored slowly.</h2>
-  <p>Fourteen days gives the EA600 enough space for the major landmarks — but also for the detours, village stops, coastal walks, independent food, gardens, museums and hidden places that turn a route into a journey.</p>
-</section>
-
-<section class="days" id="days">
-  <article class="day-card"><div class="day-num">01</div><div class="day-main"><div class="eyebrow">DAY 01</div><h3>Cambridge → Ely</h3><p>Cambridge, Ely Cathedral &amp; the Fens</p><div class="day-meta"><span>35 miles</span><span>Heritage &amp; History • Waterways</span></div></div></article>
-  <article class="day-card"><div class="day-num">02</div><div class="day-main"><div class="eyebrow">DAY 02</div><h3>Ely → North Norfolk</h3><p>Fenland landscapes, market towns &amp; the coast</p><div class="day-meta"><span>70 miles</span><span>Coast • Wildlife • Scenic Drives</span></div></div></article>
-  <article class="day-card"><div class="day-num">03</div><div class="day-main"><div class="eyebrow">DAY 03</div><h3>North Norfolk Coast</h3><p>Holkham, Blakeney Point &amp; Cromer</p><div class="day-meta"><span>45 miles</span><span>Coast • Wildlife • Photography</span></div></div></article>
-  <article class="day-card"><div class="day-num">04</div><div class="day-main"><div class="eyebrow">DAY 04</div><h3>Cromer → King’s Lynn</h3><p>Blickling, Felbrigg &amp; historic West Norfolk</p><div class="day-meta"><span>65 miles</span><span>Heritage • Gardens • Estates</span></div></div></article>
-  <article class="day-card"><div class="day-num">05</div><div class="day-main"><div class="eyebrow">DAY 05</div><h3>King’s Lynn → Bury St Edmunds</h3><p>Castle Rising, Thetford Forest &amp; Bury</p><div class="day-meta"><span>65 miles</span><span>Heritage • Nature • Towns</span></div></div></article>
-  <article class="day-card"><div class="day-num">06</div><div class="day-main"><div class="eyebrow">DAY 06</div><h3>Bury → Southwold</h3><p>Suffolk heritage, villages &amp; the coast</p><div class="day-meta"><span>60 miles</span><span>Heritage • Coast • Food</span></div></div></article>
-  <article class="day-card"><div class="day-num">07</div><div class="day-main"><div class="eyebrow">DAY 07</div><h3>Southwold → Aldeburgh → Orford</h3><p>Pier, Snape, Aldeburgh &amp; Orford Ness</p><div class="day-meta"><span>45 miles</span><span>Coast • Culture • Nature</span></div></div></article>
-  <article class="day-card"><div class="day-num">08</div><div class="day-main"><div class="eyebrow">DAY 08</div><h3>Orford → Woodbridge → Ipswich</h3><p>Estuaries, Sutton Hoo &amp; Woodbridge</p><div class="day-meta"><span>45 miles</span><span>Heritage • Waterways • Towns</span></div></div></article>
-  <article class="day-card"><div class="day-num">09</div><div class="day-main"><div class="eyebrow">DAY 09</div><h3>Ipswich → Felixstowe → Harwich</h3><p>Deben estuary, Felixstowe &amp; maritime Essex</p><div class="day-meta"><span>45 miles</span><span>Coast • Scenic Drives</span></div></div></article>
-  <article class="day-card"><div class="day-num">10</div><div class="day-main"><div class="eyebrow">DAY 10</div><h3>Harwich → Colchester</h3><p>Harwich, Stour estuary, Flatford &amp; Roman Colchester</p><div class="day-meta"><span>40 miles</span><span>Heritage • Culture • Coast</span></div></div></article>
-  <article class="day-card"><div class="day-num">11</div><div class="day-main"><div class="eyebrow">DAY 11</div><h3>Colchester → Mersea → Maldon</h3><p>Mersea Island, seafood &amp; Maldon waterfront</p><div class="day-meta"><span>55 miles</span><span>Coast • Food • Estuaries</span></div></div></article>
-  <article class="day-card"><div class="day-num">12</div><div class="day-main"><div class="eyebrow">DAY 12</div><h3>Maldon → Chelmsford → Saffron Walden</h3><p>Hylands, Essex countryside &amp; Audley End</p><div class="day-meta"><span>60 miles</span><span>Gardens • Heritage • Countryside</span></div></div></article>
-  <article class="day-card"><div class="day-num">13</div><div class="day-main"><div class="eyebrow">DAY 13</div><h3>Saffron Walden → Cambridge</h3><p>Audley End, villages &amp; the Cambridge approach</p><div class="day-meta"><span>35 miles</span><span>Heritage • Villages • Scenic Drives</span></div></div></article>
-  <article class="day-card"><div class="day-num">14</div><div class="day-main"><div class="eyebrow">DAY 14</div><h3>Cambridge Finale</h3><p>Cambridge discovery day — museums, colleges &amp; river</p><div class="day-meta"><span>0 miles</span><span>Culture • Heritage • Food</span></div></div></article>
-</section>
-
-<section class="cta">
-  <div>
-    <h2>Plan your EA600.</h2>
-    <p>Build your own version of the 14-day journey, choose a shorter itinerary, discover themed routes or explore the interactive map.</p>
-  </div>
-  <a class="button" href="#days">Explore the route</a>
-</section>
-
-<footer>EA600 — 600 Miles of Discovery Through East Anglia • County Road Trips • Design concept for web and Figma</footer>
-</div>
-</body>
+                                    <!-- 06 → 07 -->
+                                    <span class="route-map-guide" data-segment="5" style="--mx:68.28%; --my:25.81%"></span>
+                                    <span class="route-map-guide" data-segment="5" style="--mx:63.33%; --my:30.44%"></span>
+                                    <!-- 07 → 08 -->
+                                    <span class="route-map-guide" data-segment="6" style="--mx:65.03%; --my:36.47%"></span>
+                                    <span class="route-map-guide" data-segment="6" style="--mx:70.15%; --my:38.71%"></span>
+                                    <!-- 08 → 09 -->
+                                    <!-- <span class="route-map-guide" data-segment="7" style="--mx:75.71%; --my:42.09%"></span> -->
+                                    <span class="route-map-guide" data-segment="7" style="--mx:70.37%; --my:44.52%"></span>
+                                    <!-- 09 → 10 -->
+                                    <span class="route-map-guide" data-segment="8" style="--mx:71.91%; --my:50.58%"></span>
+                                    <span class="route-map-guide" data-segment="8" style="--mx:71.89%; --my:59.99%"></span>
+                                    <!-- 10 → 11 -->
+                                    <span class="route-map-guide" data-segment="9" style="--mx:67.32%; --my:69.06%"></span>
+                                    <!-- <span class="route-map-guide" data-segment="9" style="--mx:69.58%; --my:75.89%"></span> -->
+                                    <!-- 11 → 12 -->
+                                    <span class="route-map-guide" data-segment="10" style="--mx:54.98%; --my:78.51%"></span>
+                                    <span class="route-map-guide" data-segment="10" style="--mx:48.92%; --my:82.24%"></span>
+                                    <!-- 12 → 01 -->
+                                    <span class="route-map-guide" data-segment="11" style="--mx:33.01%; --my:76.22%"></span>
+                                    <span class="route-map-guide" data-segment="11" style="--mx:21.70%; --my:72.30%"></span>
+                                </div>
+                                <svg class="route-map-svg route-map-svg--track" viewBox="0 0 796 531" preserveAspectRatio="xMidYMid meet">
+                                    <path class="route-map-path route-map-path--track" d="" />
+                                </svg>
+                                <svg class="route-map-svg route-map-svg--draw" viewBox="0 0 796 531" preserveAspectRatio="xMidYMid meet">
+                                    <path class="route-map-path route-map-path--draw" d="" />
+                                </svg>
+                                <div class="route-map-pins">
+                                    <span class="route-map-pin" data-stop-index="1" style="--mx:19.08%; --my:65.7%"><span class="route-map-pin__num">01</span></span>
+                                    <span class="route-map-pin" data-stop-index="2" style="--mx:18.96%; --my:49.77%"><span class="route-map-pin__num">02</span></span>
+                                    <span class="route-map-pin" data-stop-index="3" style="--mx:27.06%; --my:32.31%"><span class="route-map-pin__num">03</span></span>
+                                    <span class="route-map-pin" data-stop-index="4" style="--mx:33.98%; --my:15.91%"><span class="route-map-pin__num">04</span></span>
+                                    <span class="route-map-pin" data-stop-index="5" style="--mx:49.49%; --my:14.97%"><span class="route-map-pin__num">05</span></span>
+                                    <span class="route-map-pin" data-stop-index="6" style="--mx:67.81%; --my:20.5%"><span class="route-map-pin__num">06</span></span>
+                                    <span class="route-map-pin" data-stop-index="7" style="--mx:57.92%; --my:36.52%"><span class="route-map-pin__num">07</span></span>
+                                    <span class="route-map-pin" data-stop-index="8" style="--mx:72.56%; --my:40.47%"><span class="route-map-pin__num">08</span></span>
+                                    <span class="route-map-pin" data-stop-index="9" style="--mx:65.47%; --my:46.22%"><span class="route-map-pin__num">09</span></span>
+                                    <span class="route-map-pin" data-stop-index="10" style="--mx:70.57%; --my:65.43%"><span class="route-map-pin__num">10</span></span>
+                                    <span class="route-map-pin" data-stop-index="11" style="--mx:58.93%; --my:76.88%"><span class="route-map-pin__num">11</span></span>
+                                    <span class="route-map-pin" data-stop-index="12" style="--mx:41.64%; --my:77.23%"><span class="route-map-pin__num">12</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <aside class="route-map-legend" aria-label="Route summary">
+                            <div class="route-map-legend__inner" aria-live="polite">
+                                <span class="route-map-legend__place" data-route-legend-place>Cambridge</span>
+                                <p class="route-map-legend__next">
+                                    Next:
+                                    <strong data-route-legend-distance>30 mi</strong>
+                                    <span class="route-map-legend__sep" aria-hidden="true">·</span>
+                                    <span data-route-legend-drive>40m</span>
+                                    <span class="route-map-legend__to-label"> to </span>
+                                    <span data-route-legend-to>Ely</span>
+                                </p>
+                            </div>
+                        </aside>
+                    </div>
+                    <div class="stop-list stop-list--scroll-sync" data-card-slider>
+                        <article
+                            class="stop-card stop-card--active"
+                            data-stop-index="1"
+                            data-place="Cambridge"
+                            data-map-x="19.08"
+                            data-map-y="65.7"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 01</span>
+                                <span class="stop-card__day">Day 01</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Cambridge</h3>
+                                <p class="stop-card__region">Cambridgeshire</p>
+                                <p class="stop-card__text">College spires, the Backs and the start line.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>30 miles · 40m to Ely</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="2"
+                            data-place="Ely"
+                            data-map-x="18.96"
+                            data-map-y="49.77"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 02</span>
+                                <span class="stop-card__day">Day 01</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Ely</h3>
+                                <p class="stop-card__region">Cambridgeshire</p>
+                                <p class="stop-card__text">The 'Ship of the Fens' rising over flat black earth.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>48 miles · 1h 05m to King's Lynn</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="3"
+                            data-place="King's Lynn"
+                            data-map-x="27.06"
+                            data-map-y="32.31"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 03</span>
+                                <span class="stop-card__day">Day 01</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">King's Lynn</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Medieval merchant quays on the Great Ouse.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>30 miles · 40m to Hunstanton</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="4"
+                            data-place="Hunstanton"
+                            data-map-x="33.98"
+                            data-map-y="15.91"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 04</span>
+                                <span class="stop-card__day">Day 02</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Hunstanton</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Striped cliffs and sunsets over the Wash.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>42 miles · 1h 05m to Wells</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="5"
+                            data-place="Wells-next-the-Sea"
+                            data-map-x="49.49"
+                            data-map-y="14.97"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 05</span>
+                                <span class="stop-card__day">Day 02</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Wells-next-the-Sea</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Harbour town, Holkham sands and pinewoods.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>30 miles · 50m to Cromer</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="6"
+                            data-place="Cromer"
+                            data-map-x="67.81"
+                            data-map-y="20.5"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 06</span>
+                                <span class="stop-card__day">Day 03</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Cromer</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Victorian pier, crab shacks and clifftop air.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>88 miles · 2h 30m to Norwich</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="7"
+                            data-place="Norwich"
+                            data-map-x="58.92"
+                            data-map-y="31.52"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 07</span>
+                                <span class="stop-card__day">Day 04</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Norwich</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Cathedral city on the edge of the Broads.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>46 miles · 1h 10m to Great Yarmouth</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="8"
+                            data-place="Great Yarmouth"
+                            data-map-x="72.56"
+                            data-map-y="40.47"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 08</span>
+                                <span class="stop-card__day">Day 05</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Great Yarmouth</h3>
+                                <p class="stop-card__region">Norfolk</p>
+                                <p class="stop-card__text">Golden mile, seals and wide eastern skies.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>50 miles · 1h 20m to Southwold</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="9"
+                            data-place="Southwold"
+                            data-map-x="65.47"
+                            data-map-y="46.22"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 09</span>
+                                <span class="stop-card__day">Day 05</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Southwold</h3>
+                                <p class="stop-card__region">Suffolk</p>
+                                <p class="stop-card__text">Lighthouse, beach huts and Adnams ale.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance-alt.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>46 miles · 1h 10m to Aldeburgh</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="10"
+                            data-place="Aldeburgh"
+                            data-map-x="70.57"
+                            data-map-y="65.43"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 10</span>
+                                <span class="stop-card__day">Day 06</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Aldeburgh</h3>
+                                <p class="stop-card__region">Suffolk</p>
+                                <p class="stop-card__text">Shingle, fishing boats and Britten's scallop.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance-alt.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>48 miles · 1h 20m to Woodbridge</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="11"
+                            data-place="Woodbridge"
+                            data-map-x="63.93"
+                            data-map-y="72.88"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 11</span>
+                                <span class="stop-card__day">Day 06</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Woodbridge</h3>
+                                <p class="stop-card__region">Suffolk</p>
+                                <p class="stop-card__text">Tide mill, river Deben and Sutton Hoo.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance-alt.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>48 miles · 1h 20m to Lavenham</span>
+                                </p>
+                            </div>
+                        </article>
+                        <article
+                            class="stop-card"
+                            data-stop-index="12"
+                            data-place="Lavenham"
+                            data-map-x="48.64"
+                            data-map-y="65.23"
+                        >
+                            <header class="stop-card__head">
+                                <span class="stop-card__stop">Stop 12</span>
+                                <span class="stop-card__day">Day 07</span>
+                            </header>
+                            <div class="stop-card__body">
+                                <h3 class="stop-card__place">Lavenham</h3>
+                                <p class="stop-card__region">Suffolk</p>
+                                <p class="stop-card__text">England's finest medieval wool town.</p>
+                                <p class="stop-card__distance">
+                                    <img decoding="async" loading="lazy"
+                                        class="stop-card__distance-icon"
+                                        src="assets/icons/route-distance-alt.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                    <span>52 miles · 1h 15m to Cambridge</span>
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="page-section" id="destinations" aria-labelledby="destinations-title">
+            <div class="container">
+                <div class="destinations-section__row destinations-section__row--top">
+                    <div class="destinations-section__intro">
+                        <h2 class="heading-section" id="destinations-title">Places that stay with you.</h2>
+                        <p class="text-lead">Lighthouses and lost ports, pinewood beaches and timber-framed towns. These are the stops our drivers talk about long after they're home.</p>
+                    </div>
+                    <div class="destinations-section__cards">
+                        <div class="destination-card destination-card--md" >
+                            <img decoding="async"
+                                class="destination-card__img"
+                                src="assets/images/norwich.webp"
+                                alt=""
+                                loading="lazy"
+                            >
+                            <div class="destination-card__overlay"></div>
+                            <div class="destination-card__body">
+                                <p class="destination-card__region">
+                                    <img decoding="async" loading="lazy"
+                                        class="destination-card__pin"
+                                        src="assets/icons/pin-location.svg"
+                                        alt=""
+                                        width="14"
+                                        height="14"
+                                    >
+                                    Norfolk
+                                </p>
+                                <h3 class="destination-card__title">Norwich</h3>
+                                <div class="destination-card__desc-wrap">
+                                    <p class="destination-card__desc">A Norman cathedral, cobbled lanes and the gateway to the Broads.</p>
+                                </div>
+                                <p class="destination-card__link">
+                                    Explore destination
+                                    <img decoding="async" loading="lazy"
+                                        src="assets/icons/arrow-link.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                        <div class="destination-card destination-card--md" >
+                            <img decoding="async"
+                                class="destination-card__img"
+                                src="assets/images/cromer.webp"
+                                alt=""
+                                loading="lazy"
+                            >
+                            <div class="destination-card__overlay"></div>
+                            <div class="destination-card__body">
+                                <p class="destination-card__region">
+                                    <img decoding="async" loading="lazy"
+                                        class="destination-card__pin"
+                                        src="assets/icons/pin-location.svg"
+                                        alt=""
+                                        width="14"
+                                        height="14"
+                                    >
+                                    Norfolk Coast
+                                </p>
+                                <h3 class="destination-card__title">Cromer</h3>
+                                <div class="destination-card__desc-wrap">
+                                    <p class="destination-card__desc">Pier-end sunsets and the famous sweet Cromer crab.</p>
+                                </div>
+                                <p class="destination-card__link">
+                                    Explore destination
+                                    <img decoding="async" loading="lazy"
+                                        src="assets/icons/arrow-link.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="destinations-section__row destinations-section__row--bottom">
+                    <div class="destination-card destination-card--sm" >
+                        <img decoding="async"
+                            class="destination-card__img"
+                            src="assets/images/holkham.webp"
+                            alt=""
+                            loading="lazy"
+                        >
+                        <div class="destination-card__overlay"></div>
+                        <div class="destination-card__body">
+                            <p class="destination-card__region">
+                                <img decoding="async" loading="lazy"
+                                    class="destination-card__pin"
+                                    src="assets/icons/pin-location.svg"
+                                    alt=""
+                                    width="14"
+                                    height="14"
+                                >
+                                North Norfolk Coast
+                            </p>
+                            <h3 class="destination-card__title">Holkham</h3>
+                            <div class="destination-card__desc-wrap">
+                                <p class="destination-card__desc">Four miles of empty sand backed by Corsican pines — the finest beach in England.</p>
+                            </div>
+                            <p class="destination-card__link">
+                                Explore destination
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-link.svg"
+                                    alt=""
+                                    width="16"
+                                    height="16"
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="destination-card destination-card--sm" >
+                        <img decoding="async"
+                            class="destination-card__img"
+                            src="assets/images/lavenham.webp"
+                            alt=""
+                            loading="lazy"
+                        >
+                        <div class="destination-card__overlay"></div>
+                        <div class="destination-card__body">
+                            <p class="destination-card__region">
+                                <img decoding="async" loading="lazy"
+                                    class="destination-card__pin"
+                                    src="assets/icons/pin-location.svg"
+                                    alt=""
+                                    width="14"
+                                    height="14"
+                                >
+                                Babergh, Suffolk
+                            </p>
+                            <h3 class="destination-card__title">Lavenham</h3>
+                            <div class="destination-card__desc-wrap">
+                                <p class="destination-card__desc">Crooked timber-framed houses built on medieval wool fortunes.</p>
+                            </div>
+                            <p class="destination-card__link">
+                                Explore destination
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-link.svg"
+                                    alt=""
+                                    width="16"
+                                    height="16"
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="destination-card destination-card--lg" >
+                        <img decoding="async"
+                            class="destination-card__img"
+                            src="assets/images/southwold.webp"
+                            alt=""
+                            loading="lazy"
+                        >
+                        <div class="destination-card__overlay"></div>
+                        <div class="destination-card__body">
+                            <p class="destination-card__region">
+                                <img decoding="async" loading="lazy"
+                                    class="destination-card__pin"
+                                    src="assets/icons/pin-location.svg"
+                                    alt=""
+                                    width="14"
+                                    height="14"
+                                >
+                                Suffolk Heritage Coast
+                            </p>
+                            <h3 class="destination-card__title">Southwold</h3>
+                            <div class="destination-card__desc-wrap">
+                                <p class="destination-card__desc">A white lighthouse standing guard over pastel cottages, beach huts and a pier that still feels like 1938.</p>
+                            </div>
+                            <p class="destination-card__link">
+                                Explore destination
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-link.svg"
+                                    alt=""
+                                    width="16"
+                                    height="16"
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="page-section page-section--cream itinerary-section" id="itinerary" aria-labelledby="itinerary-title">
+            <div class="container">
+                <header class="itinerary-header">
+                    <div class="itinerary-header__copy">
+                        <h2 class="heading-section" id="itinerary-title">Seven days, day by day.</h2>
+                        <p class="text-script-accent">the navigator's logbook</p>
+                        <p class="text-lead itinerary-header__lead">A balanced week of around 85 miles a day — enough time behind the wheel to feel the road, and enough out of the car to find the places in between.</p>
+                    </div>
+                    <a class="btn btn--primary itinerary-header__cta" href="#">View all Days</a>
+                </header>
+                <div class="itinerary-card">
+                    <aside class="day-sidebar" aria-label="Day 01 overview">
+                        <p class="day-sidebar__day">Day 01</p>
+                        <dl class="day-sidebar__meta">
+                            <div class="day-sidebar__row">
+                                <dt>Distance</dt>
+                                <dd>78 miles</dd>
+                            </div>
+                            <div class="day-sidebar__row">
+                                <dt>Driving</dt>
+                                <dd>2h 10m</dd>
+                            </div>
+                            <div class="day-sidebar__row">
+                                <dt>Overnight</dt>
+                                <dd>King's Lynn</dd>
+                            </div>
+                        </dl>
+                    </aside>
+                    <article class="day-panel">
+                        <div class="day-panel__media">
+                            <img
+                                class="day-panel__image"
+                                src="assets/images/day-01.webp"
+                                alt=""
+                                width="680"
+                                height="340"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </div>
+                        <div class="day-panel__detail">
+                            <p class="day-panel__number" aria-hidden="true">01</p>
+                            <h3 class="day-panel__title">Fens &amp; Cathedrals</h3>
+                            <p class="day-panel__route">Cambridge → Ely → King's Lynn</p>
+                            <p class="day-panel__tip">“Stop at Wicken Fen for the reed beds at dusk.”</p>
+                            <ul class="day-panel__list">
+                                <li>Breakfast on King's Parade</li>
+                                <li>Ely Cathedral's octagon tower</li>
+                                <li>Merchant houses of King's Lynn</li>
+                            </ul>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section class="page-section page-section--muted" id="planning" aria-labelledby="planning-title">
+            <div class="container">
+                <header class="section-heading section-heading--center">
+                    <h2 class="heading-section heading-section--center" id="planning-title">Everything you need before you go.</h2>
+                    <p class="text-lead text-lead--center">Practical notes from our route team — the essentials for planning a relaxed, well-paced week on the EA600.</p>
+                </header>
+                <div class="planning-grid">
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-01.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about When to Go">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-when.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">When to Go</h3>
+                                    <p class="planning-card__text">May through September is ideal for long evenings and open attractions. Spring and autumn are quieter on the roads.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-02.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Where to Stay">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-stay.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Where to Stay</h3>
+                                    <p class="planning-card__text">Coaching inns, harbour cottages and country-house hotels in each overnight town.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-03.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Driving Information">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-driving.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Driving Information</h3>
+                                    <p class="planning-card__text">Mostly A and B roads with single-track coastal lanes. Drive on the left.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-04.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Parking">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-parking.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Parking</h3>
+                                    <p class="planning-card__text">Pay-and-display in most towns. National Trust members park free at many sites.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card planning-card--panel-left">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-05.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Food & Dining">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-food.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Food & Dining</h3>
+                                    <p class="planning-card__text">Cromer crab, Brancaster mussels, Adnams ale and proper Sunday roasts.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card planning-card--panel-left">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-06.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about What to Pack">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-pack.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">What to Pack</h3>
+                                    <p class="planning-card__text">Layers for coastal wind, walking boots and something for the beach.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-07.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Useful Information">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-info.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Useful Information</h3>
+                                    <p class="planning-card__text">Emergency 999. Many village shops close early and on Sundays.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="planning-card">
+                        <div class="planning-card__frame">
+                            <img
+                                class="planning-card__visual"
+                                src="assets/images/card-08.webp"
+                                alt=""
+                                width="409"
+                                height="465"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <a class="planning-card__action" href="#" aria-label="Read more about Trip Duration">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/arrow-up-right.svg"
+                                    alt=""
+                                    width="28"
+                                    height="28"
+                                >
+                            </a>
+                            <div class="planning-card__panel">
+                                <img decoding="async" loading="lazy"
+                                    class="planning-card__panel-shape"
+                                    src="assets/images/panel-shape.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                                <div class="planning-card__panel-inner">
+                                    <div class="planning-card__icon" aria-hidden="true">
+                                        <img decoding="async" loading="lazy"
+                                            src="assets/icons/icon-duration.svg"
+                                            alt=""
+                                            width="20"
+                                            height="20"
+                                        >
+                                    </div>
+                                    <h3 class="planning-card__title">Trip Duration</h3>
+                                    <p class="planning-card__text">Seven days is ideal. Five is possible; ten lets you slow right down.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="fact-bar">
+                    <div class="fact-bar__item">
+                        <p class="fact-bar__label">Start & finish</p>
+                        <p class="fact-bar__value">Cambridge</p>
+                    </div>
+                    <div class="fact-bar__item">
+                        <p class="fact-bar__label">Recommended</p>
+                        <p class="fact-bar__value">7 days</p>
+                    </div>
+                    <div class="fact-bar__item">
+                        <p class="fact-bar__label">Best season</p>
+                        <p class="fact-bar__value">May – Sept</p>
+                    </div>
+                    <div class="fact-bar__item">
+                        <p class="fact-bar__label">Roads</p>
+                        <p class="fact-bar__value">A & B roads</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- <section class="testimonial-section page-section" id="stories" aria-labelledby="stories-title">
+            <div class="container testimonial-section__inner">
+                <div class="testimonial-section__media">
+                    <div class="testimonial-section__photo-wrap">
+                        <img
+                            class="testimonial-section__photo"
+                            src="assets/images/photo.webp"
+                            alt=""
+                            loading="lazy"
+                            width="608"
+                            height="410"
+                            decoding="async"
+                        >
+                    </div>
+                </div>
+                <div class="testimonial-section__content">
+                    <div class="testimonial-section__intro">
+                        <span class="testimonial-badge">
+                            <img decoding="async" loading="lazy"
+                                class="testimonial-badge__dot"
+                                src="assets/icons/badge-dot.svg"
+                                alt=""
+                                width="8"
+                                height="8"
+                            >
+                            Client Feedback
+                        </span>
+                        <h2 class="testimonial-section__title" id="stories-title">Real stories from travelers</h2>
+                    </div>
+                    <blockquote class="testimonial-card">
+                        <img decoding="async" loading="lazy"
+                            class="testimonial-card__shape"
+                            src="assets/images/card-shape.svg"
+                            alt=""
+                            aria-hidden="true"
+                        >
+                        <div class="testimonial-card__body">
+                            <div class="testimonial-card__head">
+                                <p class="testimonial-card__category">Private villas </p>
+                                <img decoding="async" loading="lazy"
+                                    class="testimonial-card__rating"
+                                    src="assets/icons/rating-stars.svg"
+                                    alt="5 out of 5 stars"
+                                    width="136"
+                                    height="24"
+                                >
+                            </div>
+                            <p class="testimonial-card__quote">Xplore's commitment to customer satisfaction is truly commendable. If you want a travel experience that goes beyond the ordinary. highly recommend Xplore.</p>
+                            <footer class="testimonial-card__author">
+                                <img decoding="async" loading="lazy"
+                                    class="testimonial-card__avatar"
+                                    src="assets/images/avatar.webp"
+                                    alt=""
+                                    width="48"
+                                    height="48"
+                                >
+                                <div class="testimonial-card__meta">
+                                    <cite class="testimonial-card__name">Priya Marcella</cite>
+                                    <span class="testimonial-card__location">India</span>
+                                </div>
+                            </footer>
+                        </div>
+                        <span class="testimonial-card__quote-mark" aria-hidden="true">
+                            <img decoding="async" loading="lazy"
+                                src="assets/icons/quote.svg"
+                                alt=""
+                                width="27"
+                                height="27"
+                            >
+                        </span>
+                    </blockquote>
+                </div>
+            </div>
+        </section> -->
+        <section class="blog-section page-section" id="blog" aria-labelledby="blog-title">
+            <div class="container blog-section__inner">
+                <header class="blog-header">
+                    <div class="blog-header__copy">
+                        <h2 class="blog-header__title" id="blog-title">Stories from the road.</h2>
+                        <p class="blog-header__script">notes, detours & good lunches</p>
+                    </div>
+                    <a class="blog-header__cta" href="#">Read the story</a>
+                </header>
+                <div class="blog-grid" data-card-slider role="region" aria-label="Latest stories" aria-roledescription="carousel">
+                    <article class="blog-card">
+                        <a class="blog-card__media blog-card__media--overlay" href="#">
+                            <img
+                                src="assets/images/post-1.webp"
+                                alt=""
+                                width="433"
+                                height="280"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </a>
+                        <div class="blog-card__body">
+                            <div class="blog-card__meta">
+                                <span class="blog-card__category">Local Flavour</span>
+                                <time class="blog-card__date" datetime="2026-08-09">9 August 2026</time>
+                            </div>
+                            <h3 class="blog-card__title">
+                                <a href="#">In Search of the Perfect Cromer Crab</a>
+                            </h3>
+                            <p class="blog-card__excerpt">Smaller, sweeter and caught just offshore — a morning with Cromer's crab fishermen.</p>
+                            <footer class="blog-card__author">
+                                <img decoding="async" loading="lazy"
+                                    class="blog-card__avatar"
+                                    src="assets/images/author-emily.webp"
+                                    alt=""
+                                    width="40"
+                                    height="40"
+                                >
+                                <span class="blog-card__by">By
+                                    <strong>David</strong>
+                                </span>
+                                <span class="blog-card__sep" aria-hidden="true">|</span>
+                                <span class="blog-card__read">6 min read</span>
+                            </footer>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <a class="blog-card__media" href="#">
+                            <img
+                                src="assets/images/post-2.webp"
+                                alt=""
+                                width="433"
+                                height="280"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </a>
+                        <div class="blog-card__body">
+                            <div class="blog-card__meta">
+                                <span class="blog-card__category">Local Flavour</span>
+                                <time class="blog-card__date" datetime="2026-08-09">9 August 2026</time>
+                            </div>
+                            <h3 class="blog-card__title">
+                                <a href="#">In Search of the Perfect Cromer Crab</a>
+                            </h3>
+                            <p class="blog-card__excerpt">Smaller, sweeter and caught just offshore — a morning with Cromer's crab fishermen.</p>
+                            <footer class="blog-card__author">
+                                <img decoding="async" loading="lazy"
+                                    class="blog-card__avatar"
+                                    src="assets/images/author-emily.webp"
+                                    alt=""
+                                    width="40"
+                                    height="40"
+                                >
+                                <span class="blog-card__by">By
+                                    <strong>David</strong>
+                                </span>
+                                <span class="blog-card__sep" aria-hidden="true">|</span>
+                                <span class="blog-card__read">6 min read</span>
+                            </footer>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <a class="blog-card__media blog-card__media--tall" href="#">
+                            <img
+                                src="assets/images/post-3.webp"
+                                alt=""
+                                width="433"
+                                height="280"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </a>
+                        <div class="blog-card__body">
+                            <div class="blog-card__meta">
+                                <span class="blog-card__category">Eat & Drink</span>
+                                <time class="blog-card__date" datetime="2026-08-28">28 August 2026</time>
+                            </div>
+                            <h3 class="blog-card__title">
+                                <a href="#">Seven Country Pubs Worth the Detour</a>
+                            </h3>
+                            <p class="blog-card__excerpt">Flint walls, open fires and local ale — our favourite inns along the EA600.</p>
+                            <footer class="blog-card__author">
+                                <img decoding="async" loading="lazy"
+                                    class="blog-card__avatar"
+                                    src="assets/images/author-emily.webp"
+                                    alt=""
+                                    width="40"
+                                    height="40"
+                                >
+                                <span class="blog-card__by">By
+                                    <strong>David</strong>
+                                </span>
+                                <span class="blog-card__sep" aria-hidden="true">|</span>
+                                <span class="blog-card__read">6 min read</span>
+                            </footer>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section page-section" id="faq" aria-labelledby="faq-title">
+            <div class="container faq-layout">
+                <div class="faq-layout__intro">
+                    <h2 class="faq-layout__title" id="faq-title">Frequently asked questions</h2>
+                    <div class="faq-layout__media">
+                        <img
+                            class="faq-layout__image"
+                            src="assets/images/faq-photo.webp"
+                            alt=""
+                            loading="lazy"
+                            width="492"
+                            height="314"
+                            decoding="async"
+                        >
+                    </div>
+                </div>
+                <div class="faq-list" data-faq-accordion>
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-1"
+                            aria-expanded="true"
+                            aria-controls="faq-panel-1"
+                        >
+                            <span class="faq-item__question">How long does the full route take?</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-1"
+                            class="faq-item__collapse is-open"
+                            role="region"
+                            aria-labelledby="faq-trigger-1"
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">Most travelers take 5 to 7 days, but the route can flex from a long weekend to two relaxed weeks.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-2"
+                            aria-expanded="false"
+                            aria-controls="faq-panel-2"
+                        >
+                            <span class="faq-item__question">What's the best season to drive it?</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-2"
+                            class="faq-item__collapse"
+                            role="region"
+                            aria-labelledby="faq-trigger-2"
+                            hidden
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">May through September offers the longest days; spring and autumn are quieter.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-3"
+                            aria-expanded="false"
+                            aria-controls="faq-panel-3"
+                        >
+                            <span class="faq-item__question">Are there EV charging stops along the way?</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-3"
+                            class="faq-item__collapse"
+                            role="region"
+                            aria-labelledby="faq-trigger-3"
+                            hidden
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">Major towns on the loop have public chargers — plan overnight stops in advance.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-4"
+                            aria-expanded="false"
+                            aria-controls="faq-panel-4"
+                        >
+                            <span class="faq-item__question">What type of car can I bring?</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-4"
+                            class="faq-item__collapse"
+                            role="region"
+                            aria-labelledby="faq-trigger-4"
+                            hidden
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">Any comfortable car works; narrow coastal lanes reward a smaller footprint.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-5"
+                            aria-expanded="false"
+                            aria-controls="faq-panel-5"
+                        >
+                            <span class="faq-item__question">Can I drive the route in sections?</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-5"
+                            class="faq-item__collapse"
+                            role="region"
+                            aria-labelledby="faq-trigger-5"
+                            hidden
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">Yes — the EA600 works as day trips or multi-day stages from Cambridge or Norwich.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="site-footer site-footer--full" id="contact">
+            <div class="site-footer__bg" aria-hidden="true">
+                <img decoding="async" loading="lazy"
+                    src="assets/images/footer-bg.webp"
+                    alt=""
+                    width="1440"
+                    height="840"
+                >
+                <div class="site-footer__bg-scrim"></div>
+            </div>
+            <div class="site-footer__wrap">
+                <div class="container">
+                    <div class="site-footer__cta-panel">
+                        <div class="site-footer__cta-bg" aria-hidden="true">
+                            <img decoding="async" loading="lazy" src="assets/images/cta-panel.webp" alt="">
+                        </div>
+                        <div class="site-footer__cta-inner">
+                            <div class="site-footer__cta-copy">
+                                <p class="site-footer__cta-script">the road is waiting</p>
+                                <h2 class="site-footer__cta-title">Ready for the road?</h2>
+                                <p class="site-footer__cta-text">Plan your journey through 600 miles of East Anglia.</p>
+                            </div>
+                            <a class="site-footer__cta-btn" href="#planning">Plan your trip</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container site-footer__main">
+                    <div class="site-footer__brand-col">
+                        <div class="site-footer__logo">
+                            <a href="#top" class="logo logo--footer" aria-label="EA600 home">
+                                <img loading="lazy"
+                                    src="assets/images/logo-footer.webp"
+                                    alt=""
+                                    width="96"
+                                    height="96"
+                                    decoding="async"
+                                >
+                            </a>
+                        </div>
+                        <p class="site-footer__tagline">A slower, more beautiful way to see England.</p>
+                        <form class="newsletter-form" action="" method="post">
+                            <label class="newsletter-form__label">Road notes, monthly</label>
+                            <div class="newsletter-form__row">
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Your email address"
+                                    autocomplete="email" required
+                                >
+                                <button type="submit" aria-label="Subscribe">
+                                    <img decoding="async" loading="lazy"
+                                        src="assets/icons/subscribe.svg"
+                                        alt=""
+                                        width="20"
+                                        height="20"
+                                    >
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="site-footer__aside">
+                        <div class="site-footer__links-col">
+                            <div class="site-footer__link-block">
+                                <p class="site-footer__col-title">Explore</p>
+                                <ul class="site-footer__link-list">
+                                    <li>
+                                        <a href="#routes">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">The Route</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#destinations">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Destinations</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#itinerary">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Itinerary</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#planning">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Planning</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#blog">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Blog</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="site-footer__link-block">
+                                <p class="site-footer__col-title">Contact</p>
+                                <ul class="site-footer__contact">
+                                    <li>
+                                        <a href="mailto:hello@ea600.co.uk">
+                                            <img decoding="async" loading="lazy"
+                                                src="assets/icons/icon-email.svg"
+                                                alt=""
+                                                width="16"
+                                                height="16"
+                                            >
+                                            hello@ea600.co.uk
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="tel:01603000000">
+                                            <img decoding="async" loading="lazy"
+                                                src="assets/icons/icon-phone.svg"
+                                                alt=""
+                                                width="16"
+                                                height="16"
+                                            >
+                                            01603 000000
+                                        </a>
+                                    </li>
+                                    <li class="site-footer__contact-place">Cambs, Norfolk, Suffolk and Essex</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="site-footer__instagram">
+                            <div class="site-footer__instagram-head">
+                                <h3 class="site-footer__instagram-title">instagram</h3>
+                                <span class="site-footer__instagram-rule" aria-hidden="true">
+                                    <span class="site-footer__instagram-rule-accent"></span>
+                                </span>
+                            </div>
+                            <div class="site-footer__insta-grid">
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-1.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-2.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-3.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-4.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-5.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                                <a class="site-footer__insta-cell" href="#" aria-label="Instagram photo">
+                                    <img decoding="async"
+                                        src="assets/images/instagram-6.webp"
+                                        alt=""
+                                        loading="lazy"
+                                        width="98"
+                                        height="91"
+                                    >
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-footer__bar">
+                    <div class="container site-footer__bar-inner">
+                        <div class="site-footer__bar-copy">
+                            <p class="site-footer__legal">© 2026 EA600. 600 Miles of Discovery Through East Anglia.</p>
+                            <p class="site-footer__motto">drive slowly, look closely</p>
+                        </div>
+                        <div class="site-footer__social">
+                            <a class="site-footer__social-link" href="#" aria-label="Instagram">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/social-instagram.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                            <a class="site-footer__social-link" href="#" aria-label="Facebook">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/social-facebook.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                            <a class="site-footer__social-link" href="#" aria-label="YouTube">
+                                <img decoding="async" loading="lazy"
+                                    src="assets/icons/social-youtube.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script type="module" src="js/main.js"></script>
+    </body>
 </html>
