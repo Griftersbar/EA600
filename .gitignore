@@ -1,0 +1,18 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Local Django data
+*.sqlite3
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Static build outputs
+/static/
