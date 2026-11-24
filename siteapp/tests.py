@@ -7,10 +7,32 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import HomeContent, Photo, Tour
+from .models import Destination, HomeContent, Photo, Tour
 
 
 class ContentTests(TestCase):
+    def test_wagtail_destination_editor_updates_the_homepage_card(self):
+        editor = get_user_model().objects.create_superuser(username="destination-editor")
+        self.client.force_login(editor)
+        destination = Destination.objects.get(title="Norwich")
+        listing = reverse("ea600_destinations:list")
+        edit = reverse("ea600_destinations:edit", args=[destination.pk])
+
+        self.assertContains(self.client.get("/cms/"), listing)
+        self.assertContains(self.client.get(listing, {"q": "Norwich"}), destination.title)
+        self.assertContains(self.client.get(edit), "Choose another photo")
+        text = "A new introduction to Norwich."
+        response = self.client.post(edit, {
+            "title": destination.title,
+            "region": destination.region,
+            "description": text,
+            "photo": destination.photo_id,
+            "link": destination.link,
+            "position": destination.position,
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(self.client.get(reverse("home")), text)
+
     def test_existing_route_and_homepage_are_loaded_from_editable_content(self):
         tour = Tour.objects.get(slug="ea600")
         self.assertTrue(tour.is_published)
