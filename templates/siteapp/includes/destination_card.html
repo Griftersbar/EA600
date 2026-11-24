@@ -1,0 +1,34 @@
+<div class="destination-card destination-card--{{ size }}">
+                            <img decoding="async"
+                                class="destination-card__img"
+                                src="{{ destination.photo.url }}"
+                                alt="{{ destination.photo.alt_text }}"
+                                loading="lazy"
+                            >
+                            <div class="destination-card__overlay"></div>
+                            <div class="destination-card__body">
+                                <p class="destination-card__region">
+                                    <img decoding="async" loading="lazy"
+                                        class="destination-card__pin"
+                                        src="/static/assets/icons/pin-location.svg"
+                                        alt=""
+                                        width="14"
+                                        height="14"
+                                    >
+                                    {{ destination.region }}
+                                </p>
+                                <h3 class="destination-card__title">{{ destination.title }}</h3>
+                                <div class="destination-card__desc-wrap">
+                                    <p class="destination-card__desc">{{ destination.description|linebreaksbr }}</p>
+                                </div>
+                                {% if destination.link %}<a class="destination-card__link" href="{{ destination.link }}">
+                                    Explore destination
+                                    <img decoding="async" loading="lazy"
+                                        src="/static/assets/icons/arrow-link.svg"
+                                        alt=""
+                                        width="16"
+                                        height="16"
+                                    >
+                                </a>{% endif %}
+                            </div>
+                        </div>

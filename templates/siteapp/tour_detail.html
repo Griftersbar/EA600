@@ -1,0 +1,54 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    <section class="page-section">
+        <div class="container">
+            <a class="content-page__back" href="{% url 'tour_list' %}">All tours</a>
+            <h1 class="heading-section content-page__title">{{ tour.title }}</h1>
+            <p class="text-lead">{{ tour.summary|linebreaksbr }}</p>
+            {% if tour.cover %}
+                <img class="content-page__cover" src="{{ tour.cover.url }}" alt="{{ tour.cover.alt_text }}" decoding="async">
+            {% endif %}
+            {% if tour.description %}
+                <div class="content-page__text">{{ tour.description|linebreaks }}</div>
+            {% endif %}
+            {% include "siteapp/includes/tour_stats.html" %}
+        </div>
+    </section>
+    {% if stops %}
+        <section class="page-section page-section--cream route-section" id="routes" data-route-section aria-labelledby="routes-title">
+            <div class="container">
+                <h2 class="heading-section content-page__title" id="routes-title">Route and stops</h2>
+                {% include "siteapp/includes/route.html" %}
+            </div>
+        </section>
+    {% endif %}
+    {% if days %}
+        <section class="page-section page-section--cream itinerary-section" id="itinerary" aria-labelledby="itinerary-title">
+            <div class="container">
+                <h2 class="heading-section content-page__title" id="itinerary-title">Itinerary</h2>
+                {% if days|length > 1 %}
+                    <nav class="itinerary-links" aria-label="Itinerary days">
+                        {% for day in days %}<a href="#day-{{ day.number }}">Day {{ day.number }}</a>{% endfor %}
+                    </nav>
+                {% endif %}
+                <div class="itinerary-days">
+                    {% for day in days %}{% include "siteapp/includes/itinerary_day.html" %}{% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    {% with photos=tour.gallery.all %}
+        {% if photos %}
+            <section class="page-section" aria-labelledby="tour-photos-title">
+                <div class="container">
+                    <h2 class="heading-section content-page__title" id="tour-photos-title">Tour photos</h2>
+                    <div class="tour-grid tour-gallery">
+                        {% for photo in photos %}
+                            <img src="{{ photo.url }}" alt="{{ photo.alt_text }}" width="420" height="280" loading="lazy" decoding="async">
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

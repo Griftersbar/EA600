@@ -1,0 +1,725 @@
+{
+  "photos": {
+    "assets/images/hero-bg.webp": {
+      "title": "East Anglia landscape",
+      "alt_text": ""
+    },
+    "assets/images/route-map.webp": {
+      "title": "EA600 route map",
+      "alt_text": "EA600 route map illustration"
+    },
+    "assets/images/day-01.webp": {
+      "title": "Fens and cathedrals",
+      "alt_text": ""
+    },
+    "assets/images/logo-vector.webp": {
+      "title": "EA600 header logo",
+      "alt_text": ""
+    },
+    "assets/images/logo-footer.webp": {
+      "title": "EA600 badge",
+      "alt_text": ""
+    },
+    "assets/images/intro-map.webp": {
+      "title": "Overview map",
+      "alt_text": ""
+    },
+    "assets/images/intro-stack-1.webp": {
+      "title": "Introduction photo 1",
+      "alt_text": ""
+    },
+    "assets/images/intro-stack-2.webp": {
+      "title": "Introduction photo 2",
+      "alt_text": ""
+    },
+    "assets/images/intro-stack-3.webp": {
+      "title": "Introduction photo 3",
+      "alt_text": ""
+    },
+    "assets/images/faq-photo.webp": {
+      "title": "FAQ photo",
+      "alt_text": ""
+    },
+    "assets/images/footer-bg.webp": {
+      "title": "Footer background",
+      "alt_text": ""
+    },
+    "assets/images/cta-panel.webp": {
+      "title": "Trip planning banner",
+      "alt_text": ""
+    },
+    "assets/icons/icon-scenic.webp": {
+      "title": "Scenic Drives icon",
+      "alt_text": ""
+    },
+    "assets/icons/icon-history.webp": {
+      "title": "Rich History icon",
+      "alt_text": ""
+    },
+    "assets/icons/icon-coastal.webp": {
+      "title": "Coastal Beauty icon",
+      "alt_text": ""
+    },
+    "assets/icons/icon-gems.webp": {
+      "title": "Hidden Gems icon",
+      "alt_text": ""
+    },
+    "assets/images/norwich.webp": {
+      "title": "Norwich",
+      "alt_text": ""
+    },
+    "assets/images/cromer.webp": {
+      "title": "Cromer",
+      "alt_text": ""
+    },
+    "assets/images/holkham.webp": {
+      "title": "Holkham",
+      "alt_text": ""
+    },
+    "assets/images/lavenham.webp": {
+      "title": "Lavenham",
+      "alt_text": ""
+    },
+    "assets/images/southwold.webp": {
+      "title": "Southwold",
+      "alt_text": ""
+    },
+    "assets/images/card-01.webp": {
+      "title": "When to Go photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-when.svg": {
+      "title": "When to Go icon",
+      "alt_text": ""
+    },
+    "assets/images/card-02.webp": {
+      "title": "Where to Stay photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-stay.svg": {
+      "title": "Where to Stay icon",
+      "alt_text": ""
+    },
+    "assets/images/card-03.webp": {
+      "title": "Driving Information photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-driving.svg": {
+      "title": "Driving Information icon",
+      "alt_text": ""
+    },
+    "assets/images/card-04.webp": {
+      "title": "Parking photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-parking.svg": {
+      "title": "Parking icon",
+      "alt_text": ""
+    },
+    "assets/images/card-05.webp": {
+      "title": "Food & Dining photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-food.svg": {
+      "title": "Food & Dining icon",
+      "alt_text": ""
+    },
+    "assets/images/card-06.webp": {
+      "title": "What to Pack photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-pack.svg": {
+      "title": "What to Pack icon",
+      "alt_text": ""
+    },
+    "assets/images/card-07.webp": {
+      "title": "Useful Information photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-info.svg": {
+      "title": "Useful Information icon",
+      "alt_text": ""
+    },
+    "assets/images/card-08.webp": {
+      "title": "Trip Duration photo",
+      "alt_text": ""
+    },
+    "assets/icons/icon-duration.svg": {
+      "title": "Trip Duration icon",
+      "alt_text": ""
+    },
+    "assets/images/author-emily.webp": {
+      "title": "Story author photo",
+      "alt_text": ""
+    },
+    "assets/images/post-1.webp": {
+      "title": "Story cover 1",
+      "alt_text": ""
+    },
+    "assets/images/post-2.webp": {
+      "title": "Story cover 2",
+      "alt_text": ""
+    },
+    "assets/images/post-3.webp": {
+      "title": "Story cover 3",
+      "alt_text": ""
+    },
+    "assets/images/instagram-1.webp": {
+      "title": "Footer gallery photo 1",
+      "alt_text": ""
+    },
+    "assets/images/instagram-2.webp": {
+      "title": "Footer gallery photo 2",
+      "alt_text": ""
+    },
+    "assets/images/instagram-3.webp": {
+      "title": "Footer gallery photo 3",
+      "alt_text": ""
+    },
+    "assets/images/instagram-4.webp": {
+      "title": "Footer gallery photo 4",
+      "alt_text": ""
+    },
+    "assets/images/instagram-5.webp": {
+      "title": "Footer gallery photo 5",
+      "alt_text": ""
+    },
+    "assets/images/instagram-6.webp": {
+      "title": "Footer gallery photo 6",
+      "alt_text": ""
+    }
+  },
+  "tour": {
+    "title": "EA600 East Anglia Road Trip",
+    "slug": "ea600",
+    "summary": "Escape the motorways and discover a slower, more beautiful side of England on the EA600 — a spectacular circular road trip through the timeless landscapes, coastlines and hidden treasures of East Anglia.",
+    "description": "The EA600 traces a circle from Cambridge through the fens, along the whole of the Norfolk and Suffolk coast, and home through medieval wool towns — on quiet A and B roads built for slow driving.",
+    "cover": "assets/images/hero-bg.webp",
+    "map_image": "assets/images/route-map.webp",
+    "distance_miles": 600,
+    "duration_days": 7,
+    "counties": 3,
+    "start_finish": "Cambridge",
+    "best_season": "May – Sept",
+    "road_types": "A & B roads",
+    "is_published": true
+  },
+  "stops": [
+    {
+      "title": "Cambridge",
+      "region": "Cambridgeshire",
+      "description": "College spires, the Backs and the start line.",
+      "day_number": 1,
+      "onward_journey": "30 miles · 40m to Ely",
+      "position": 0,
+      "map_x": 19.08,
+      "map_y": 65.7,
+      "guide_points": [
+        [
+          15.04,
+          61.44
+        ],
+        [
+          18.0,
+          56.19
+        ]
+      ]
+    },
+    {
+      "title": "Ely",
+      "region": "Cambridgeshire",
+      "description": "The 'Ship of the Fens' rising over flat black earth.",
+      "day_number": 1,
+      "onward_journey": "48 miles · 1h 05m to King's Lynn",
+      "position": 1,
+      "map_x": 18.96,
+      "map_y": 49.77,
+      "guide_points": [
+        [
+          20.32,
+          41.7
+        ],
+        [
+          25.69,
+          38.63
+        ]
+      ]
+    },
+    {
+      "title": "King's Lynn",
+      "region": "Norfolk",
+      "description": "Medieval merchant quays on the Great Ouse.",
+      "day_number": 1,
+      "onward_journey": "30 miles · 40m to Hunstanton",
+      "position": 2,
+      "map_x": 27.06,
+      "map_y": 32.31,
+      "guide_points": [
+        [
+          34.0,
+          26.23
+        ],
+        [
+          32.95,
+          20.15
+        ]
+      ]
+    },
+    {
+      "title": "Hunstanton",
+      "region": "Norfolk",
+      "description": "Striped cliffs and sunsets over the Wash.",
+      "day_number": 2,
+      "onward_journey": "42 miles · 1h 05m to Wells",
+      "position": 3,
+      "map_x": 33.98,
+      "map_y": 15.91,
+      "guide_points": [
+        [
+          40.75,
+          19.27
+        ],
+        [
+          46.52,
+          20.63
+        ]
+      ]
+    },
+    {
+      "title": "Wells-next-the-Sea",
+      "region": "Norfolk",
+      "description": "Harbour town, Holkham sands and pinewoods.",
+      "day_number": 2,
+      "onward_journey": "30 miles · 50m to Cromer",
+      "position": 4,
+      "map_x": 49.49,
+      "map_y": 14.97,
+      "guide_points": [
+        [
+          53.71,
+          23.42
+        ],
+        [
+          58.96,
+          26.66
+        ],
+        [
+          63.96,
+          24.66
+        ]
+      ]
+    },
+    {
+      "title": "Cromer",
+      "region": "Norfolk",
+      "description": "Victorian pier, crab shacks and clifftop air.",
+      "day_number": 3,
+      "onward_journey": "88 miles · 2h 30m to Norwich",
+      "position": 5,
+      "map_x": 67.81,
+      "map_y": 20.5,
+      "guide_points": [
+        [
+          68.28,
+          25.81
+        ],
+        [
+          63.33,
+          30.44
+        ]
+      ]
+    },
+    {
+      "title": "Norwich",
+      "region": "Norfolk",
+      "description": "Cathedral city on the edge of the Broads.",
+      "day_number": 4,
+      "onward_journey": "46 miles · 1h 10m to Great Yarmouth",
+      "position": 6,
+      "map_x": 57.92,
+      "map_y": 36.52,
+      "guide_points": [
+        [
+          65.03,
+          36.47
+        ],
+        [
+          70.15,
+          38.71
+        ]
+      ]
+    },
+    {
+      "title": "Great Yarmouth",
+      "region": "Norfolk",
+      "description": "Golden mile, seals and wide eastern skies.",
+      "day_number": 5,
+      "onward_journey": "50 miles · 1h 20m to Southwold",
+      "position": 7,
+      "map_x": 72.56,
+      "map_y": 40.47,
+      "guide_points": [
+        [
+          70.37,
+          44.52
+        ]
+      ]
+    },
+    {
+      "title": "Southwold",
+      "region": "Suffolk",
+      "description": "Lighthouse, beach huts and Adnams ale.",
+      "day_number": 5,
+      "onward_journey": "46 miles · 1h 10m to Aldeburgh",
+      "position": 8,
+      "map_x": 65.47,
+      "map_y": 46.22,
+      "guide_points": [
+        [
+          71.91,
+          50.58
+        ],
+        [
+          71.89,
+          59.99
+        ]
+      ]
+    },
+    {
+      "title": "Aldeburgh",
+      "region": "Suffolk",
+      "description": "Shingle, fishing boats and Britten's scallop.",
+      "day_number": 6,
+      "onward_journey": "48 miles · 1h 20m to Woodbridge",
+      "position": 9,
+      "map_x": 70.57,
+      "map_y": 65.43,
+      "guide_points": [
+        [
+          67.32,
+          69.06
+        ]
+      ]
+    },
+    {
+      "title": "Woodbridge",
+      "region": "Suffolk",
+      "description": "Tide mill, river Deben and Sutton Hoo.",
+      "day_number": 6,
+      "onward_journey": "48 miles · 1h 20m to Lavenham",
+      "position": 10,
+      "map_x": 58.93,
+      "map_y": 76.88,
+      "guide_points": [
+        [
+          54.98,
+          78.51
+        ],
+        [
+          48.92,
+          82.24
+        ]
+      ]
+    },
+    {
+      "title": "Lavenham",
+      "region": "Suffolk",
+      "description": "England's finest medieval wool town.",
+      "day_number": 7,
+      "onward_journey": "52 miles · 1h 15m to Cambridge",
+      "position": 11,
+      "map_x": 41.64,
+      "map_y": 77.23,
+      "guide_points": [
+        [
+          33.01,
+          76.22
+        ],
+        [
+          21.7,
+          72.3
+        ]
+      ]
+    }
+  ],
+  "days": [
+    {
+      "number": 1,
+      "title": "Fens & Cathedrals",
+      "route": "Cambridge → Ely → King's Lynn",
+      "distance": "78 miles",
+      "driving_time": "2h 10m",
+      "overnight": "King's Lynn",
+      "tip": "Stop at Wicken Fen for the reed beds at dusk.",
+      "highlights": "Breakfast on King's Parade\nEly Cathedral's octagon tower\nMerchant houses of King's Lynn",
+      "photo": "assets/images/day-01.webp"
+    }
+  ],
+  "homepage": {
+    "site_title": "EA600 — 600 Miles of Discovery Through East Anglia",
+    "hero_title": "EA600",
+    "hero_eyebrow": "600 MILES OF DISCOVERY THROUGH EAST ANGLIA",
+    "hero_description": "Escape the motorways and discover a slower, more beautiful side of England on the EA600 — a spectacular circular road trip through the timeless landscapes, coastlines and hidden treasures of East Anglia.",
+    "hero_quote": "More than a road trip. It's a journey you'll never forget.",
+    "hero_route_label": "Explore the Route",
+    "hero_itinerary_label": "View Itinerary",
+    "intro_title": "One loop. Three counties. Endless horizon.",
+    "intro_description": "The EA600 traces a circle from Cambridge through the fens, along the whole of the Norfolk and Suffolk coast, and home through medieval wool towns — on quiet A and B roads built for slow driving.",
+    "route_title": "Castles, Coastlines & Charming Towns",
+    "route_subtitle": "EAST ANGLIA ROAD TRIP",
+    "route_description": "A scenic journey through England's most beautiful towns and coastal gems.",
+    "destinations_title": "Places that stay with you.",
+    "destinations_description": "Lighthouses and lost ports, pinewood beaches and timber-framed towns. These are the stops our drivers talk about long after they're home.",
+    "itinerary_title": "Seven days, day by day.",
+    "itinerary_subtitle": "the navigator's logbook",
+    "itinerary_description": "A balanced week of around 85 miles a day — enough time behind the wheel to feel the road, and enough out of the car to find the places in between.",
+    "planning_title": "Everything you need before you go.",
+    "planning_description": "Practical notes from our route team — the essentials for planning a relaxed, well-paced week on the EA600.",
+    "stories_title": "Stories from the road.",
+    "stories_subtitle": "notes, detours & good lunches",
+    "faq_title": "Frequently asked questions",
+    "cta_title": "Ready for the road?",
+    "cta_subtitle": "the road is waiting",
+    "cta_description": "Plan your journey through 600 miles of East Anglia.",
+    "cta_button": "Plan your trip",
+    "footer_tagline": "A slower, more beautiful way to see England.",
+    "footer_legal": "© 2026 EA600. 600 Miles of Discovery Through East Anglia.",
+    "footer_motto": "drive slowly, look closely",
+    "contact_email": "hello@ea600.co.uk",
+    "contact_phone": "01603 000000",
+    "contact_region": "Cambs, Norfolk, Suffolk and Essex",
+    "hero_photo": "assets/images/hero-bg.webp",
+    "logo": "assets/images/logo-vector.webp",
+    "badge_logo": "assets/images/logo-footer.webp",
+    "intro_map": "assets/images/intro-map.webp",
+    "intro_photo_one": "assets/images/intro-stack-1.webp",
+    "intro_photo_two": "assets/images/intro-stack-2.webp",
+    "intro_photo_three": "assets/images/intro-stack-3.webp",
+    "faq_photo": "assets/images/faq-photo.webp",
+    "footer_photo": "assets/images/footer-bg.webp",
+    "cta_photo": "assets/images/cta-panel.webp"
+  },
+  "highlights": [
+    {
+      "title": "Scenic Drives",
+      "description": "Winding country roads, vast skies and unforgettable views at every turn.",
+      "icon": "assets/icons/icon-scenic.webp",
+      "position": 0
+    },
+    {
+      "title": "Rich History",
+      "description": "Castles, cathedral cities, medieval towns and England's fascinating heritage.",
+      "icon": "assets/icons/icon-history.webp",
+      "position": 1
+    },
+    {
+      "title": "Coastal Beauty",
+      "description": "Sandy beaches, estuaries, hidden harbours and charming seaside towns.",
+      "icon": "assets/icons/icon-coastal.webp",
+      "position": 2
+    },
+    {
+      "title": "Hidden Gems",
+      "description": "Villages, marshes and secret places waiting to be explored.",
+      "icon": "assets/icons/icon-gems.webp",
+      "position": 3
+    }
+  ],
+  "destinations": [
+    {
+      "title": "Norwich",
+      "region": "Norfolk",
+      "description": "A Norman cathedral, cobbled lanes and the gateway to the Broads.",
+      "photo": "assets/images/norwich.webp",
+      "position": 0
+    },
+    {
+      "title": "Cromer",
+      "region": "Norfolk Coast",
+      "description": "Pier-end sunsets and the famous sweet Cromer crab.",
+      "photo": "assets/images/cromer.webp",
+      "position": 1
+    },
+    {
+      "title": "Holkham",
+      "region": "North Norfolk Coast",
+      "description": "Four miles of empty sand backed by Corsican pines — the finest beach in England.",
+      "photo": "assets/images/holkham.webp",
+      "position": 2
+    },
+    {
+      "title": "Lavenham",
+      "region": "Babergh, Suffolk",
+      "description": "Crooked timber-framed houses built on medieval wool fortunes.",
+      "photo": "assets/images/lavenham.webp",
+      "position": 3
+    },
+    {
+      "title": "Southwold",
+      "region": "Suffolk Heritage Coast",
+      "description": "A white lighthouse standing guard over pastel cottages, beach huts and a pier that still feels like 1938.",
+      "photo": "assets/images/southwold.webp",
+      "position": 4
+    }
+  ],
+  "planning_tips": [
+    {
+      "title": "When to Go",
+      "description": "May through September is ideal for long evenings and open attractions. Spring and autumn are quieter on the roads.",
+      "photo": "assets/images/card-01.webp",
+      "icon": "assets/icons/icon-when.svg",
+      "panel_left": false,
+      "position": 0
+    },
+    {
+      "title": "Where to Stay",
+      "description": "Coaching inns, harbour cottages and country-house hotels in each overnight town.",
+      "photo": "assets/images/card-02.webp",
+      "icon": "assets/icons/icon-stay.svg",
+      "panel_left": false,
+      "position": 1
+    },
+    {
+      "title": "Driving Information",
+      "description": "Mostly A and B roads with single-track coastal lanes. Drive on the left.",
+      "photo": "assets/images/card-03.webp",
+      "icon": "assets/icons/icon-driving.svg",
+      "panel_left": false,
+      "position": 2
+    },
+    {
+      "title": "Parking",
+      "description": "Pay-and-display in most towns. National Trust members park free at many sites.",
+      "photo": "assets/images/card-04.webp",
+      "icon": "assets/icons/icon-parking.svg",
+      "panel_left": false,
+      "position": 3
+    },
+    {
+      "title": "Food & Dining",
+      "description": "Cromer crab, Brancaster mussels, Adnams ale and proper Sunday roasts.",
+      "photo": "assets/images/card-05.webp",
+      "icon": "assets/icons/icon-food.svg",
+      "panel_left": true,
+      "position": 4
+    },
+    {
+      "title": "What to Pack",
+      "description": "Layers for coastal wind, walking boots and something for the beach.",
+      "photo": "assets/images/card-06.webp",
+      "icon": "assets/icons/icon-pack.svg",
+      "panel_left": true,
+      "position": 5
+    },
+    {
+      "title": "Useful Information",
+      "description": "Emergency 999. Many village shops close early and on Sundays.",
+      "photo": "assets/images/card-07.webp",
+      "icon": "assets/icons/icon-info.svg",
+      "panel_left": false,
+      "position": 6
+    },
+    {
+      "title": "Trip Duration",
+      "description": "Seven days is ideal. Five is possible; ten lets you slow right down.",
+      "photo": "assets/images/card-08.webp",
+      "icon": "assets/icons/icon-duration.svg",
+      "panel_left": false,
+      "position": 7
+    }
+  ],
+  "stories": [
+    {
+      "title": "In Search of the Perfect Cromer Crab",
+      "slug": "in-search-of-the-perfect-cromer-crab",
+      "category": "Local Flavour",
+      "excerpt": "Smaller, sweeter and caught just offshore — a morning with Cromer's crab fishermen.",
+      "date": "2026-08-09",
+      "author": "David",
+      "author_photo": "assets/images/author-emily.webp",
+      "cover": "assets/images/post-1.webp",
+      "reading_time": "6 min read",
+      "position": 0,
+      "is_published": true
+    },
+    {
+      "title": "In Search of the Perfect Cromer Crab",
+      "slug": "in-search-of-the-perfect-cromer-crab-2",
+      "category": "Local Flavour",
+      "excerpt": "Smaller, sweeter and caught just offshore — a morning with Cromer's crab fishermen.",
+      "date": "2026-08-09",
+      "author": "David",
+      "author_photo": "assets/images/author-emily.webp",
+      "cover": "assets/images/post-2.webp",
+      "reading_time": "6 min read",
+      "position": 1,
+      "is_published": true
+    },
+    {
+      "title": "Seven Country Pubs Worth the Detour",
+      "slug": "seven-country-pubs-worth-the-detour",
+      "category": "Eat & Drink",
+      "excerpt": "Flint walls, open fires and local ale — our favourite inns along the EA600.",
+      "date": "2026-08-28",
+      "author": "David",
+      "author_photo": "assets/images/author-emily.webp",
+      "cover": "assets/images/post-3.webp",
+      "reading_time": "6 min read",
+      "position": 2,
+      "is_published": true
+    }
+  ],
+  "questions": [
+    {
+      "question": "How long does the full route take?",
+      "answer": "Most travelers take 5 to 7 days, but the route can flex from a long weekend to two relaxed weeks.",
+      "position": 0
+    },
+    {
+      "question": "What's the best season to drive it?",
+      "answer": "May through September offers the longest days; spring and autumn are quieter.",
+      "position": 1
+    },
+    {
+      "question": "Are there EV charging stops along the way?",
+      "answer": "Major towns on the loop have public chargers — plan overnight stops in advance.",
+      "position": 2
+    },
+    {
+      "question": "What type of car can I bring?",
+      "answer": "Any comfortable car works; narrow coastal lanes reward a smaller footprint.",
+      "position": 3
+    },
+    {
+      "question": "Can I drive the route in sections?",
+      "answer": "Yes — the EA600 works as day trips or multi-day stages from Cambridge or Norwich.",
+      "position": 4
+    }
+  ],
+  "footer_photos": [
+    {
+      "photo": "assets/images/instagram-1.webp",
+      "position": 0
+    },
+    {
+      "photo": "assets/images/instagram-2.webp",
+      "position": 1
+    },
+    {
+      "photo": "assets/images/instagram-3.webp",
+      "position": 2
+    },
+    {
+      "photo": "assets/images/instagram-4.webp",
+      "position": 3
+    },
+    {
+      "photo": "assets/images/instagram-5.webp",
+      "position": 4
+    },
+    {
+      "photo": "assets/images/instagram-6.webp",
+      "position": 5
+    }
+  ]
+}

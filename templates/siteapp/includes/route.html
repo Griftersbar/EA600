@@ -1,0 +1,74 @@
+{% load l10n %}
+<div class="route-layout{% if not show_map %} route-layout--no-map{% endif %}">
+    {% if show_map %}
+        <div class="route-map-stage">
+            <div class="map-block map-block--route route-map-frame">
+                <img class="map-block__img route-map-frame__img" src="{{ tour.map_image.url }}"
+                     alt="{{ tour.map_image.alt_text }}" width="796" height="531" loading="lazy" decoding="async">
+                <div class="route-map-guides" aria-hidden="true">
+                    {% for stop in stops %}
+                        {% if stop.has_map_position %}
+                            {% for point in stop.guide_points %}
+                                <span class="route-map-guide" data-segment="{{ forloop.parentloop.counter0 }}"
+                                      style="--mx:{{ point.0|unlocalize }}%; --my:{{ point.1|unlocalize }}%"></span>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <svg class="route-map-svg route-map-svg--track" viewBox="0 0 796 531" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="route-map-path route-map-path--track" d="" />
+                </svg>
+                <svg class="route-map-svg route-map-svg--draw" viewBox="0 0 796 531" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="route-map-path route-map-path--draw" d="" />
+                </svg>
+                <div class="route-map-pins">
+                    {% for stop in stops %}
+                        {% if stop.has_map_position %}
+                            <span class="route-map-pin" data-stop-index="{{ forloop.counter }}"
+                                  style="--mx:{{ stop.map_x|unlocalize }}%; --my:{{ stop.map_y|unlocalize }}%">
+                                <span class="route-map-pin__num">{{ forloop.counter|stringformat:"02d" }}</span>
+                            </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <aside class="route-map-legend" aria-label="Route summary">
+                <div class="route-map-legend__inner" aria-live="polite">
+                    <span class="route-map-legend__place" data-route-legend-place>{{ stops.0.title }}</span>
+                    <p class="route-map-legend__next">
+                        Next:
+                        <strong data-route-legend-distance>{{ stops.0.onward_journey }}</strong>
+                        <span class="route-map-legend__sep" aria-hidden="true">·</span>
+                        <span data-route-legend-drive></span>
+                        <span class="route-map-legend__to-label"> to </span>
+                        <span data-route-legend-to></span>
+                    </p>
+                </div>
+            </aside>
+        </div>
+    {% endif %}
+    <div class="stop-list stop-list--scroll-sync" data-card-slider>
+        {% for stop in stops %}
+            <article class="stop-card{% if forloop.first %} stop-card--active{% endif %}"
+                     data-stop-index="{{ forloop.counter }}" data-place="{{ stop.title }}">
+                <header class="stop-card__head">
+                    <span class="stop-card__stop">Stop {{ forloop.counter|stringformat:"02d" }}</span>
+                    {% if stop.day_number %}
+                        <span class="stop-card__day">Day {{ stop.day_number|stringformat:"02d" }}</span>
+                    {% endif %}
+                </header>
+                <div class="stop-card__body">
+                    <h3 class="stop-card__place">{{ stop.title }}</h3>
+                    {% if stop.region %}<p class="stop-card__region">{{ stop.region }}</p>{% endif %}
+                    {% if stop.description %}<p class="stop-card__text">{{ stop.description|linebreaksbr }}</p>{% endif %}
+                    {% if stop.onward_journey %}
+                        <p class="stop-card__distance">
+                            <img class="stop-card__distance-icon" src="/static/assets/icons/route-distance.svg" alt="" width="16" height="16">
+                            <span>{{ stop.onward_journey }}</span>
+                        </p>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</div>

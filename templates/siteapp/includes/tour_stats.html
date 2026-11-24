@@ -1,0 +1,26 @@
+<div class="stat-row">
+    {% if tour.distance_miles %}
+        <div class="stat-tile">
+            <p class="stat-tile__value">{{ tour.distance_miles }}</p>
+            <p class="stat-tile__label">Miles</p>
+        </div>
+    {% endif %}
+    {% if tour.duration_days %}
+        <div class="stat-tile">
+            <p class="stat-tile__value">{{ tour.duration_days }}</p>
+            <p class="stat-tile__label">Days</p>
+        </div>
+    {% endif %}
+    {% if stops %}
+        <div class="stat-tile">
+            <p class="stat-tile__value">{{ stops|length }}</p>
+            <p class="stat-tile__label">Stops</p>
+        </div>
+    {% endif %}
+    {% if tour.counties %}
+        <div class="stat-tile">
+            <p class="stat-tile__value">{{ tour.counties }}</p>
+            <p class="stat-tile__label">Counties</p>
+        </div>
+    {% endif %}
+</div>

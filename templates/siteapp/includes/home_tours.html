@@ -1,0 +1,11 @@
+<section class="page-section page-section--muted" id="tours" aria-labelledby="tours-title">
+    <div class="container">
+        <header class="tour-section-heading">
+            <h2 class="heading-section" id="tours-title">Explore the tours</h2>
+            <a class="btn btn--primary" href="{% url 'tour_list' %}">View all tours</a>
+        </header>
+        <div class="tour-grid">
+            {% for entry in tours %}{% include "siteapp/includes/tour_card.html" %}{% endfor %}
+        </div>
+    </div>
+</section>

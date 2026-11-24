@@ -1,0 +1,36 @@
+<article class="blog-card">
+                        <a class="blog-card__media {% if forloop.first %}blog-card__media--overlay{% endif %}" href="{{ story.get_absolute_url }}">
+                            {% if story.cover %}<img
+                                src="{{ story.cover.url }}"
+                                alt="{{ story.cover.alt_text }}"
+                                width="433"
+                                height="280"
+                                loading="lazy"
+                                decoding="async"
+                            >{% endif %}
+                        </a>
+                        <div class="blog-card__body">
+                            <div class="blog-card__meta">
+                                <span class="blog-card__category">{{ story.category }}</span>
+                                {% if story.date %}<time class="blog-card__date" datetime="{{ story.date|date:'Y-m-d' }}">{{ story.date|date:"j F Y" }}</time>{% endif %}
+                            </div>
+                            <h3 class="blog-card__title">
+                                <a href="{{ story.get_absolute_url }}">{{ story.title }}</a>
+                            </h3>
+                            <p class="blog-card__excerpt">{{ story.excerpt }}</p>
+                            <footer class="blog-card__author">
+                                {% if story.author_photo %}<img decoding="async" loading="lazy"
+                                    class="blog-card__avatar"
+                                    src="{{ story.author_photo.url }}"
+                                    alt=""
+                                    width="40"
+                                    height="40"
+                                >{% endif %}
+                                <span class="blog-card__by">By
+                                    <strong>{{ story.author }}</strong>
+                                </span>
+                                <span class="blog-card__sep" aria-hidden="true">|</span>
+                                <span class="blog-card__read">{{ story.reading_time }}</span>
+                            </footer>
+                        </div>
+                    </article>

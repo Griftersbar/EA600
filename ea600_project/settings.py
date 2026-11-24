@@ -62,10 +62,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "ea600_project.wsgi.application"
 ASGI_APPLICATION = "ea600_project.asgi.application"
 
+DATA_DIR = Path(os.environ.get("RAILWAY_VOLUME_MOUNT_PATH", BASE_DIR))
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": DATA_DIR / "db.sqlite3",
     }
 }
 
@@ -89,9 +91,10 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_URL = "/media/"
+MEDIA_ROOT = DATA_DIR / "media"
 STATICFILES_DIRS = [
     ("assets", BASE_DIR / "assets"),
     ("css", BASE_DIR / "css"),

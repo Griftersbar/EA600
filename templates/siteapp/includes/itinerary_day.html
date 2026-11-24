@@ -1,0 +1,35 @@
+<div class="itinerary-card" id="day-{{ day.number }}">
+    <aside class="day-sidebar" aria-label="Day {{ day.number }} overview">
+        <p class="day-sidebar__day">Day {{ day.number|stringformat:"02d" }}</p>
+        <dl class="day-sidebar__meta">
+            {% if day.distance %}
+                <div class="day-sidebar__row"><dt>Distance</dt><dd>{{ day.distance }}</dd></div>
+            {% endif %}
+            {% if day.driving_time %}
+                <div class="day-sidebar__row"><dt>Driving</dt><dd>{{ day.driving_time }}</dd></div>
+            {% endif %}
+            {% if day.overnight %}
+                <div class="day-sidebar__row"><dt>Overnight</dt><dd>{{ day.overnight }}</dd></div>
+            {% endif %}
+        </dl>
+    </aside>
+    <article class="day-panel{% if not day.photo %} day-panel--no-photo{% endif %}">
+        {% if day.photo %}
+            <div class="day-panel__media">
+                <img class="day-panel__image" src="{{ day.photo.url }}" alt="{{ day.photo.alt_text }}"
+                     width="680" height="340" loading="lazy" decoding="async">
+            </div>
+        {% endif %}
+        <div class="day-panel__detail">
+            <p class="day-panel__number" aria-hidden="true">{{ day.number|stringformat:"02d" }}</p>
+            <h3 class="day-panel__title">{{ day.title }}</h3>
+            {% if day.route %}<p class="day-panel__route">{{ day.route }}</p>{% endif %}
+            {% if day.tip %}<p class="day-panel__tip">“{{ day.tip|linebreaksbr }}”</p>{% endif %}
+            {% if day.highlights %}
+                <ul class="day-panel__list">
+                    {% for highlight in day.highlight_list %}<li>{{ highlight }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </article>
+</div>

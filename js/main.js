@@ -407,7 +407,8 @@ function collectOrderedRoutePoints(section, pins) {
   const { width, height } = ROUTE_MAP_VIEWBOX;
   const points = [];
 
-  pins.forEach((pin, index) => {
+  pins.forEach((pin) => {
+    const index = Number(pin.dataset.stopIndex) - 1;
     points.push(mapPointFromElement(pin, width, height));
     section
       .querySelectorAll(`.route-map-guide[data-segment="${index}"]`)
@@ -439,7 +440,8 @@ function orientRouteGuides(section, pins) {
   const { width, height } = ROUTE_MAP_VIEWBOX;
   const entries = [];
 
-  pins.forEach((pin, index) => {
+  pins.forEach((pin) => {
+    const index = Number(pin.dataset.stopIndex) - 1;
     entries.push({ el: pin, ...mapPointFromElement(pin, width, height) });
     section
       .querySelectorAll(`.route-map-guide[data-segment="${index}"]`)
@@ -541,7 +543,7 @@ function initRouteMapScroll(root = document) {
   const cards = [...section.querySelectorAll(".stop-card[data-stop-index]")].sort(sortByStopIndex);
   const pins = [...section.querySelectorAll(".route-map-pin")].sort(sortByStopIndex);
   ensurePinWaveLayers(pins);
-  const stopCount = pins.length;
+  const stopCount = cards.length;
   const drawPath = section.querySelector(".route-map-path--draw");
   const routeUiTargets = {
     legendPlace: section.querySelector("[data-route-legend-place]"),
@@ -602,7 +604,8 @@ function initRouteMapScroll(root = document) {
     if (!drawPath) return;
 
     const path = closedSmoothPathD(collectOrderedRoutePoints(section, pins));
-    if (path) applyRoutePathD(section, path);
+    if (!path) return;
+    applyRoutePathD(section, path);
 
     drawPath.removeAttribute("pathLength");
     pathLength = drawPath.getTotalLength();
@@ -610,10 +613,12 @@ function initRouteMapScroll(root = document) {
     drawPath.style.strokeDashoffset = String(pathLength);
 
     const { width, height } = ROUTE_MAP_VIEWBOX;
-    stopProgress = pins.map((pin) => {
+    stopProgress = [];
+    pins.forEach((pin) => {
       const { x, y } = mapPointFromElement(pin, width, height);
-      if (Number.isNaN(x) || Number.isNaN(y)) return 0;
-      return closestProgressOnPath(drawPath, x, y);
+      if (!Number.isNaN(x) && !Number.isNaN(y)) {
+        stopProgress[Number(pin.dataset.stopIndex) - 1] = closestProgressOnPath(drawPath, x, y);
+      }
     });
 
     orientRouteGuides(section, pins);

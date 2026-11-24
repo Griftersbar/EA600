@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "siteapp/includes/site_head.html" %}
+    </head>
+    <body id="top">
+        {% include "siteapp/includes/site_header.html" %}
+        <section class="hero" aria-label="Hero">
+            <div class="hero__backdrop" aria-hidden="true">
+                <div class="media media--hero-bg">
+                    {% if homepage.hero_photo %}<img decoding="async" fetchpriority="high" loading="eager"
+                        class="media__img"
+                        src="{{ homepage.hero_photo.url }}"
+                        alt=""
+                        width="1440"
+                        height="731"
+                    >{% endif %}
+                </div>
+                <div class="hero__scrim"></div>
+                <div class="hero__legibility"></div>
+            </div>
+            <div class="hero__stage">
+                <div class="hero__content">
+                    <div class="hero__copy">
+                        <p class="hero__eyebrow">{{ homepage.hero_eyebrow }}</p>
+                        <h1 class="hero__title">{{ homepage.hero_title }}</h1>
+                        <p class="hero__description">{{ homepage.hero_description|linebreaksbr }}</p>
+                    </div>
+                    <div class="hero__actions btn-group">
+                        <a class="btn btn--primary" href="#routes">{{ homepage.hero_route_label }}</a>
+                        <a class="btn btn--secondary" href="#itinerary">{{ homepage.hero_itinerary_label }}</a>
+                    </div>
+                </div>
+                <aside class="hero__panel feature-panel" aria-label="Highlights">
+                    <div class="feature-panel__grid">
+                        {% for highlight in highlights %}
+                        <article class="feature-item">
+                            {% if highlight.icon %}<img decoding="async" loading="lazy"
+                                class="icon"
+                                src="{{ highlight.icon.url }}"
+                                alt=""
+                                width="49"
+                                height="50"
+                            >{% endif %}
+                            <div>
+                                <h2 class="feature-item__title">{{ highlight.title }}</h2>
+                                <p class="feature-item__text">{{ highlight.description|linebreaksbr }}</p>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    <div class="feature-panel__quote">
+                        <span class="feature-panel__quote-line">
+                            <img decoding="async" loading="lazy"
+                                src="/static/assets/icons/line-decor.svg"
+                                alt=""
+                                width="99"
+                                height="3"
+                            >
+                        </span>
+                        <span class="hero__quote">{{ homepage.hero_quote }}</span>
+                        <span class="feature-panel__quote-line">
+                            <img decoding="async" loading="lazy"
+                                src="/static/assets/icons/line-decor.svg"
+                                alt=""
+                                width="99"
+                                height="3"
+                            >
+                        </span>
+                    </div>
+                </aside>
+            </div>
+        </section>
+        <section class="page-section page-section--muted intro-section" id="about" aria-labelledby="about-title">
+            <div class="container intro-section__inner">
+                <div class="intro-section__map-wrap" aria-hidden="true">
+                    {% if homepage.intro_map %}<img loading="lazy"
+                        class="intro-section__map"
+                        src="{{ homepage.intro_map.url }}"
+                        alt=""
+                        width="552"
+                        height="349"
+                        decoding="async"
+                    >{% endif %}
+                </div>
+                <div class="intro-section__layout">
+                    <div class="intro-section__copy">
+                        <h2 class="intro-section__title" id="about-title">{{ homepage.intro_title }}</h2>
+                        <p class="intro-section__lead">{{ homepage.intro_description|linebreaksbr }}</p>
+                        {% if tour %}{% include "siteapp/includes/tour_stats.html" %}{% endif %}
+                    </div>
+                    <div class="intro-section__media">
+                        <div class="intro-section__rail" aria-hidden="true"></div>
+                        <div class="intro-collage">
+                            <figure class="intro-collage__card intro-collage__card--1">
+                                {% if homepage.intro_photo_one %}<img loading="lazy"
+                                    src="{{ homepage.intro_photo_one.url }}"
+                                    alt=""
+                                    width="415"
+                                    height="233"
+                                    decoding="async"
+                                >{% endif %}
+                            </figure>
+                            <figure class="intro-collage__card intro-collage__card--2">
+                                {% if homepage.intro_photo_two %}<img loading="lazy"
+                                    src="{{ homepage.intro_photo_two.url }}"
+                                    alt=""
+                                    width="415"
+                                    height="233"
+                                    decoding="async"
+                                >{% endif %}
+                            </figure>
+                            <figure class="intro-collage__card intro-collage__card--3 intro-collage__card--crop">
+                                <div class="intro-collage__crop">
+                                    {% if homepage.intro_photo_three %}<img loading="lazy"
+                                        src="{{ homepage.intro_photo_three.url }}"
+                                        alt=""
+                                        width="415"
+                                        height="233"
+                                        decoding="async"
+                                    >{% endif %}
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section
+            class="page-section page-section--cream route-section"
+            id="routes"
+            data-route-section
+            aria-labelledby="routes-title"
+        >
+            <div class="container">
+                <header class="section-heading section-heading--center">
+                    <h2 class="heading-section heading-section--center" id="routes-title">{{ homepage.route_title }}</h2>
+                    <p class="text-script-accent">{{ homepage.route_subtitle }}</p>
+                    <p class="text-lead text-lead--center">{{ homepage.route_description|linebreaksbr }}</p>
+                </header>
+                {% if stops %}{% include "siteapp/includes/route.html" %}{% endif %}
+            </div>
+        </section>
+        {% if tours %}{% include "siteapp/includes/home_tours.html" %}{% endif %}
+        <section class="page-section" id="destinations" aria-labelledby="destinations-title">
+            <div class="container">
+                <div class="destinations-section__row destinations-section__row--top">
+                    <div class="destinations-section__intro">
+                        <h2 class="heading-section" id="destinations-title">{{ homepage.destinations_title }}</h2>
+                        <p class="text-lead">{{ homepage.destinations_description|linebreaksbr }}</p>
+                    </div>
+                    <div class="destinations-section__cards">
+                        {% for destination in destinations|slice:":2" %}
+                            {% include "siteapp/includes/destination_card.html" with size="md" %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="destinations-section__row destinations-section__row--bottom">
+                    {% for destination in destinations|slice:"2:" %}
+                        {% if forloop.counter == 3 %}
+                            {% include "siteapp/includes/destination_card.html" with size="lg" %}
+                        {% else %}
+                            {% include "siteapp/includes/destination_card.html" with size="sm" %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="page-section page-section--cream itinerary-section" id="itinerary" aria-labelledby="itinerary-title">
+            <div class="container">
+                <header class="itinerary-header">
+                    <div class="itinerary-header__copy">
+                        <h2 class="heading-section" id="itinerary-title">{{ homepage.itinerary_title }}</h2>
+                        <p class="text-script-accent">{{ homepage.itinerary_subtitle }}</p>
+                        <p class="text-lead itinerary-header__lead">{{ homepage.itinerary_description|linebreaksbr }}</p>
+                    </div>
+                    {% if tour and days %}<a class="btn btn--primary itinerary-header__cta" href="{{ tour.get_absolute_url }}#itinerary">View all Days</a>{% endif %}
+                </header>
+                {% if days %}{% include "siteapp/includes/itinerary_day.html" with day=days.0 %}{% endif %}
+            </div>
+        </section>
+        <section class="page-section page-section--muted" id="planning" aria-labelledby="planning-title">
+            <div class="container">
+                <header class="section-heading section-heading--center">
+                    <h2 class="heading-section heading-section--center" id="planning-title">{{ homepage.planning_title }}</h2>
+                    {% if homepage.planning_subtitle %}<p class="text-script-accent">{{ homepage.planning_subtitle }}</p>{% endif %}
+                    <p class="text-lead text-lead--center">{{ homepage.planning_description|linebreaksbr }}</p>
+                </header>
+                <div class="planning-grid">
+                    {% for tip in planning_tips %}
+                        {% include "siteapp/includes/planning_card.html" %}
+                    {% endfor %}
+                </div>
+                {% if tour %}
+                    <div class="fact-bar">
+                        {% if tour.start_finish %}
+                            <div class="fact-bar__item"><p class="fact-bar__label">Start &amp; finish</p><p class="fact-bar__value">{{ tour.start_finish }}</p></div>
+                        {% endif %}
+                        {% if tour.duration_days %}
+                            <div class="fact-bar__item"><p class="fact-bar__label">Recommended</p><p class="fact-bar__value">{{ tour.duration_days }} day{{ tour.duration_days|pluralize }}</p></div>
+                        {% endif %}
+                        {% if tour.best_season %}
+                            <div class="fact-bar__item"><p class="fact-bar__label">Best season</p><p class="fact-bar__value">{{ tour.best_season }}</p></div>
+                        {% endif %}
+                        {% if tour.road_types %}
+                            <div class="fact-bar__item"><p class="fact-bar__label">Roads</p><p class="fact-bar__value">{{ tour.road_types }}</p></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+        <!-- <section class="testimonial-section page-section" id="stories" aria-labelledby="stories-title">
+            <div class="container testimonial-section__inner">
+                <div class="testimonial-section__media">
+                    <div class="testimonial-section__photo-wrap">
+                        <img
+                            class="testimonial-section__photo"
+                            src="/static/assets/images/photo.webp"
+                            alt=""
+                            loading="lazy"
+                            width="608"
+                            height="410"
+                            decoding="async"
+                        >
+                    </div>
+                </div>
+                <div class="testimonial-section__content">
+                    <div class="testimonial-section__intro">
+                        <span class="testimonial-badge">
+                            <img decoding="async" loading="lazy"
+                                class="testimonial-badge__dot"
+                                src="/static/assets/icons/badge-dot.svg"
+                                alt=""
+                                width="8"
+                                height="8"
+                            >
+                            Client Feedback
+                        </span>
+                        <h2 class="testimonial-section__title" id="stories-title">Real stories from travelers</h2>
+                    </div>
+                    <blockquote class="testimonial-card">
+                        <img decoding="async" loading="lazy"
+                            class="testimonial-card__shape"
+                            src="/static/assets/images/card-shape.svg"
+                            alt=""
+                            aria-hidden="true"
+                        >
+                        <div class="testimonial-card__body">
+                            <div class="testimonial-card__head">
+                                <p class="testimonial-card__category">Private villas </p>
+                                <img decoding="async" loading="lazy"
+                                    class="testimonial-card__rating"
+                                    src="/static/assets/icons/rating-stars.svg"
+                                    alt="5 out of 5 stars"
+                                    width="136"
+                                    height="24"
+                                >
+                            </div>
+                            <p class="testimonial-card__quote">Xplore's commitment to customer satisfaction is truly commendable. If you want a travel experience that goes beyond the ordinary. highly recommend Xplore.</p>
+                            <footer class="testimonial-card__author">
+                                <img decoding="async" loading="lazy"
+                                    class="testimonial-card__avatar"
+                                    src="/static/assets/images/avatar.webp"
+                                    alt=""
+                                    width="48"
+                                    height="48"
+                                >
+                                <div class="testimonial-card__meta">
+                                    <cite class="testimonial-card__name">Priya Marcella</cite>
+                                    <span class="testimonial-card__location">India</span>
+                                </div>
+                            </footer>
+                        </div>
+                        <span class="testimonial-card__quote-mark" aria-hidden="true">
+                            <img decoding="async" loading="lazy"
+                                src="/static/assets/icons/quote.svg"
+                                alt=""
+                                width="27"
+                                height="27"
+                            >
+                        </span>
+                    </blockquote>
+                </div>
+            </div>
+        </section> -->
+        <section class="blog-section page-section" id="blog" aria-labelledby="blog-title">
+            <div class="container blog-section__inner">
+                <header class="blog-header">
+                    <div class="blog-header__copy">
+                        <h2 class="blog-header__title" id="blog-title">{{ homepage.stories_title }}</h2>
+                        <p class="blog-header__script">{{ homepage.stories_subtitle }}</p>
+                    </div>
+                    {% if stories %}<a class="blog-header__cta" href="{{ stories.0.get_absolute_url }}">Read the story</a>{% endif %}
+                </header>
+                <div class="blog-grid" data-card-slider role="region" aria-label="Latest stories" aria-roledescription="carousel">
+                    {% for story in stories %}
+                        {% include "siteapp/includes/story_card.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="faq-section page-section" id="faq" aria-labelledby="faq-title">
+            <div class="container faq-layout">
+                <div class="faq-layout__intro">
+                    <h2 class="faq-layout__title" id="faq-title">{{ homepage.faq_title }}</h2>
+                    <div class="faq-layout__media">
+                        {% if homepage.faq_photo %}<img
+                            class="faq-layout__image"
+                            src="{{ homepage.faq_photo.url }}"
+                            alt=""
+                            loading="lazy"
+                            width="492"
+                            height="314"
+                            decoding="async"
+                        >{% endif %}
+                    </div>
+                </div>
+                <div class="faq-list" data-faq-accordion>
+                    {% for question in questions %}
+                    <div class="faq-item">
+                        <button
+                            type="button"
+                            class="faq-item__trigger"
+                            id="faq-trigger-{{ question.pk }}"
+                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                            aria-controls="faq-panel-{{ question.pk }}"
+                        >
+                            <span class="faq-item__question">{{ question.question }}</span>
+                            <span class="faq-item__icon" aria-hidden="true">
+                                <img
+                                    decoding="async"
+                                    loading="lazy"
+                                    class="faq-item__icon-img"
+                                    src="/static/assets/icons/arrow-down.svg"
+                                    alt=""
+                                    width="20"
+                                    height="20"
+                                >
+                            </span>
+                        </button>
+                        <div
+                            id="faq-panel-{{ question.pk }}"
+                            class="faq-item__collapse{% if forloop.first %} is-open{% endif %}"{% if not forloop.first %} hidden{% endif %}
+                            role="region"
+                            aria-labelledby="faq-trigger-{{ question.pk }}"
+                        >
+                            <div class="faq-item__collapse-inner">
+                                <p class="faq-item__answer">{{ question.answer|linebreaksbr }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <footer class="site-footer site-footer--full" id="contact">
+            <div class="site-footer__bg" aria-hidden="true">
+                {% if homepage.footer_photo %}<img decoding="async" loading="lazy"
+                    src="{{ homepage.footer_photo.url }}"
+                    alt=""
+                    width="1440"
+                    height="840"
+                >{% endif %}
+                <div class="site-footer__bg-scrim"></div>
+            </div>
+            <div class="site-footer__wrap">
+                <div class="container">
+                    <div class="site-footer__cta-panel">
+                        <div class="site-footer__cta-bg" aria-hidden="true">
+                            {% if homepage.cta_photo %}<img decoding="async" loading="lazy" src="{{ homepage.cta_photo.url }}" alt="">{% endif %}
+                        </div>
+                        <div class="site-footer__cta-inner">
+                            <div class="site-footer__cta-copy">
+                                <p class="site-footer__cta-script">{{ homepage.cta_subtitle }}</p>
+                                <h2 class="site-footer__cta-title">{{ homepage.cta_title }}</h2>
+                                <p class="site-footer__cta-text">{{ homepage.cta_description|linebreaksbr }}</p>
+                            </div>
+                            <a class="site-footer__cta-btn" href="#planning">{{ homepage.cta_button }}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="container site-footer__main">
+                    <div class="site-footer__brand-col">
+                        <div class="site-footer__logo">
+                            <a href="#top" class="logo logo--footer" aria-label="EA600 home">
+                                {% if homepage.badge_logo %}<img loading="lazy"
+                                    src="{{ homepage.badge_logo.url }}"
+                                    alt=""
+                                    width="96"
+                                    height="96"
+                                    decoding="async"
+                                >{% endif %}
+                            </a>
+                        </div>
+                        <p class="site-footer__tagline">{{ homepage.footer_tagline }}</p>
+                        <form class="newsletter-form" action="" method="post">
+                            <label class="newsletter-form__label">Road notes, monthly</label>
+                            <div class="newsletter-form__row">
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Your email address"
+                                    autocomplete="email" required
+                                >
+                                <button type="submit" aria-label="Subscribe">
+                                    <img decoding="async" loading="lazy"
+                                        src="/static/assets/icons/subscribe.svg"
+                                        alt=""
+                                        width="20"
+                                        height="20"
+                                    >
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="site-footer__aside">
+                        <div class="site-footer__links-col">
+                            <div class="site-footer__link-block">
+                                <p class="site-footer__col-title">Explore</p>
+                                <ul class="site-footer__link-list">
+                                    <li>
+                                        <a href="#routes">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">The Route</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#destinations">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Destinations</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#itinerary">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Itinerary</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#planning">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Planning</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#blog">
+                                            <span class="site-footer__link-arrow" aria-hidden="true">
+                                                <span class="site-footer__link-arrow-icon">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="10"
+                                                        height="10"
+                                                        viewBox="0 0 10 10"
+                                                        fill="none"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M0.57375 9.82375L0 9.25L8.40063 0.833333H0.657083V0H9.82375V9.16667H8.99042V1.42313L0.57375 9.82375Z"
+                                                            fill="#F2CB83"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="site-footer__link-text">Blog</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="site-footer__link-block">
+                                <p class="site-footer__col-title">Contact</p>
+                                <ul class="site-footer__contact">
+                                    <li>
+                                        {% if homepage.contact_email %}<a href="mailto:{{ homepage.contact_email }}">
+                                            <img decoding="async" loading="lazy"
+                                                src="/static/assets/icons/icon-email.svg"
+                                                alt=""
+                                                width="16"
+                                                height="16"
+                                            >
+                                            {{ homepage.contact_email }}
+                                        </a>{% endif %}
+                                    </li>
+                                    <li>
+                                        {% if homepage.contact_phone %}<a href="tel:{{ homepage.contact_phone|cut:" " }}">
+                                            <img decoding="async" loading="lazy"
+                                                src="/static/assets/icons/icon-phone.svg"
+                                                alt=""
+                                                width="16"
+                                                height="16"
+                                            >
+                                            {{ homepage.contact_phone }}
+                                        </a>{% endif %}
+                                    </li>
+                                    <li class="site-footer__contact-place">{{ homepage.contact_region }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="site-footer__instagram">
+                            <div class="site-footer__instagram-head">
+                                <h3 class="site-footer__instagram-title">instagram</h3>
+                                <span class="site-footer__instagram-rule" aria-hidden="true">
+                                    <span class="site-footer__instagram-rule-accent"></span>
+                                </span>
+                            </div>
+                            <div class="site-footer__insta-grid">
+                                {% for entry in footer_photos %}
+                                    {% if entry.link %}
+                                        <a class="site-footer__insta-cell" href="{{ entry.link }}">
+                                    {% else %}
+                                        <span class="site-footer__insta-cell">
+                                    {% endif %}
+                                        <img src="{{ entry.photo.url }}" alt="{{ entry.photo.alt_text }}" loading="lazy" width="98" height="91">
+                                    {% if entry.link %}</a>{% else %}</span>{% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="site-footer__bar">
+                    <div class="container site-footer__bar-inner">
+                        <div class="site-footer__bar-copy">
+                            <p class="site-footer__legal">{{ homepage.footer_legal }}</p>
+                            <p class="site-footer__motto">{{ homepage.footer_motto }}</p>
+                        </div>
+                        <div class="site-footer__social">
+                            <a class="site-footer__social-link" href="{{ homepage.instagram_url|default:'#' }}" aria-label="Instagram">
+                                <img decoding="async" loading="lazy"
+                                    src="/static/assets/icons/social-instagram.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                            <a class="site-footer__social-link" href="{{ homepage.facebook_url|default:'#' }}" aria-label="Facebook">
+                                <img decoding="async" loading="lazy"
+                                    src="/static/assets/icons/social-facebook.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                            <a class="site-footer__social-link" href="{{ homepage.youtube_url|default:'#' }}" aria-label="YouTube">
+                                <img decoding="async" loading="lazy"
+                                    src="/static/assets/icons/social-youtube.svg"
+                                    alt=""
+                                    width="24"
+                                    height="24"
+                                >
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script type="module" src="/static/js/main.js"></script>
+    </body>
+</html>

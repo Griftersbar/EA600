@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "siteapp/includes/site_head.html" %}
+    </head>
+    <body id="top">
+        {% include "siteapp/includes/site_header.html" %}
+        <main class="content-page">
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="content-page__footer">
+            <div class="container">
+                <a href="{% url 'home' %}">{{ homepage.hero_title }}</a>
+                {% if homepage.footer_legal %}<p>{{ homepage.footer_legal }}</p>{% endif %}
+            </div>
+        </footer>
+        <script type="module" src="/static/js/main.js"></script>
+    </body>
+</html>

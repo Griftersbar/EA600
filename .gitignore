@@ -8,6 +8,7 @@ venv/
 
 # Local Django data
 *.sqlite3
+/media/
 
 # OS/editor files
 .DS_Store
