@@ -1,0 +1,20 @@
+<div class="builder-row" data-row{% if day.DELETE.value %} hidden{% endif %}>
+    {% for field in day.hidden_fields %}{{ field }}{{ field.errors }}{% endfor %}
+    <div hidden>{{ day.DELETE }}</div>
+    <details{% if day.errors %} open{% endif %}>
+        <summary><span class="builder-row__order" data-row-order>Day {{ day.number.value|default:"" }}</span><strong data-row-title>{{ day.title.value|default:"New day" }}</strong></summary>
+        <div class="builder-row__fields builder-field-grid">
+            {{ day.non_field_errors }}
+            {% include "siteapp/builder/field.html" with field=day.title %}
+            {% include "siteapp/builder/field.html" with field=day.number %}
+            {% include "siteapp/builder/field.html" with field=day.route full=True %}
+            {% include "siteapp/builder/field.html" with field=day.distance %}
+            {% include "siteapp/builder/field.html" with field=day.driving_time %}
+            {% include "siteapp/builder/field.html" with field=day.overnight %}
+            {% include "siteapp/builder/field.html" with field=day.tip full=True %}
+            {% include "siteapp/builder/field.html" with field=day.highlights full=True %}
+            {% include "siteapp/builder/field.html" with field=day.photo full=True %}
+        </div>
+    </details>
+    {% include "siteapp/builder/row_actions.html" with item="day" %}
+</div>

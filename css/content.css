@@ -141,3 +141,12 @@
 .guide-tour > h2 {
   margin-bottom: var(--space-4);
 }
+
+.tour-preview-banner {
+  margin: 0;
+  padding: .65rem 1rem;
+  background: var(--color-brand-dark);
+  color: var(--color-cream);
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+}

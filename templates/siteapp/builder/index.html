@@ -1,0 +1,65 @@
+{% extends "siteapp/builder/base.html" %}
+{% block content %}
+    <div class="builder-heading">
+        <div>
+            <h1>Tour Builder</h1>
+            <p class="builder-muted">{{ page.paginator.count }} tour{{ page.paginator.count|pluralize }}</p>
+        </div>
+        {% if perms.siteapp.add_tour %}
+            <a class="builder-button builder-button--primary" href="{% url 'builder_new' %}"><span aria-hidden="true">+</span> New tour</a>
+        {% endif %}
+    </div>
+
+    {% if perms.siteapp.change_tour %}
+        <form class="builder-filter" method="get" aria-label="Filter tours">
+            <label class="builder-filter__search">
+                <span>Search tours</span>
+                <input name="q" value="{{ query }}" type="search" placeholder="Search by title or summary">
+            </label>
+            <label>
+                <span>Status</span>
+                <select name="status">
+                    <option value="">All tours</option>
+                    <option value="draft"{% if status == 'draft' %} selected{% endif %}>Drafts</option>
+                    <option value="published"{% if status == 'published' %} selected{% endif %}>Published</option>
+                </select>
+            </label>
+            <button class="builder-button" type="submit">Filter</button>
+        </form>
+
+        <div class="builder-tour-grid">
+            {% for tour in page %}
+                <article class="builder-tour-card">
+                    <a class="builder-tour-card__image" href="{% url 'builder_edit' pk=tour.pk %}" aria-label="Edit {{ tour.title }}">
+                        {% if tour.cover %}
+                            <img src="{{ tour.cover.url }}" alt="{{ tour.cover.alt_text }}" width="560" height="300" loading="lazy">
+                        {% else %}
+                            <span>No cover photo</span>
+                        {% endif %}
+                    </a>
+                    <div class="builder-tour-card__body">
+                        <span class="builder-status{% if tour.is_published %} builder-status--live{% endif %}">
+                            {% if tour.is_published %}Published{% else %}Draft{% endif %}
+                        </span>
+                        <h2><a href="{% url 'builder_edit' pk=tour.pk %}">{{ tour.title }}</a></h2>
+                        <p>{{ tour.summary|truncatewords:24 }}</p>
+                        <div class="builder-tour-card__footer">
+                            <a class="builder-button" href="{% url 'builder_edit' pk=tour.pk %}">Edit tour</a>
+                            {% if tour.is_published %}<a href="{{ tour.get_absolute_url }}">View live <span aria-hidden="true">↗</span></a>{% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="builder-empty">{% if query or status %}No tours match your filters.{% else %}Create a tour to get started.{% endif %}</p>
+            {% endfor %}
+        </div>
+
+        {% if page.has_other_pages %}
+            <nav class="builder-pages" aria-label="Tour pages">
+                {% if page.has_previous %}<a class="builder-button" href="?q={{ query|urlencode }}&amp;status={{ status|urlencode }}&amp;page={{ page.previous_page_number }}">Previous</a>{% endif %}
+                <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                {% if page.has_next %}<a class="builder-button" href="?q={{ query|urlencode }}&amp;status={{ status|urlencode }}&amp;page={{ page.next_page_number }}">Next</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

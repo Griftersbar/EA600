@@ -1,0 +1,23 @@
+<div class="builder-row" data-row{% if stop.DELETE.value %} hidden{% endif %}>
+    {% for field in stop.hidden_fields %}{{ field }}{{ field.errors }}{% endfor %}
+    <div hidden>{{ stop.DELETE }}</div>
+    <details{% if stop.errors %} open{% endif %}>
+        <summary><span class="builder-row__order" data-row-order>Stop</span><strong data-row-title>{{ stop.title.value|default:"New stop" }}</strong></summary>
+        <div class="builder-row__fields builder-field-grid">
+            {{ stop.non_field_errors }}
+            {% include "siteapp/builder/field.html" with field=stop.title %}
+            {% include "siteapp/builder/field.html" with field=stop.region %}
+            {% include "siteapp/builder/field.html" with field=stop.description full=True %}
+            {% include "siteapp/builder/field.html" with field=stop.day_number %}
+            {% include "siteapp/builder/field.html" with field=stop.onward_journey %}
+            <details class="builder-field--full builder-options"{% if stop.map_x.errors or stop.map_y.errors %} open{% endif %}>
+                <summary>Map pin position</summary>
+                <div class="builder-field-grid">
+                    {% include "siteapp/builder/field.html" with field=stop.map_x %}
+                    {% include "siteapp/builder/field.html" with field=stop.map_y %}
+                </div>
+            </details>
+        </div>
+    </details>
+    {% include "siteapp/builder/row_actions.html" with item="stop" %}
+</div>

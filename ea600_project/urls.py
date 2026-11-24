@@ -4,12 +4,16 @@ from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from siteapp import views
+from siteapp import builder_views, views
 
 urlpatterns = [
     path("", views.home, name="home"),
     path("tours/", views.tour_list, name="tour_list"),
     path("tours/<slug:slug>/", views.tour_detail, name="tour_detail"),
+    path("builder/tours/", builder_views.builder_index, name="builder_index"),
+    path("builder/tours/new/", builder_views.builder_edit, name="builder_new"),
+    path("builder/tours/<int:pk>/", builder_views.builder_edit, name="builder_edit"),
+    path("builder/photos/", builder_views.builder_photos, name="builder_photos"),
     path("stories/<slug:slug>/", views.story_detail, name="story_detail"),
     path("admin/", admin.site.urls),
     path("cms/", include(wagtailadmin_urls)),

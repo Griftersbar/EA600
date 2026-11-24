@@ -25,13 +25,16 @@ def published_tours():
     return Tour.objects.filter(is_published=True).select_related("cover", "map_image")
 
 
-def route_content(tour):
-    stops = list(tour.stops.all()) if tour else []
+def route_content(tour, *, stops=None, days=None):
+    if stops is None:
+        stops = list(tour.stops.all()) if tour else []
+    if days is None:
+        days = tour.days.select_related("photo") if tour else []
     return {
         "tour": tour,
         "stops": stops,
         "show_map": bool(tour and tour.map_image and any(stop.has_map_position for stop in stops)),
-        "days": tour.days.select_related("photo") if tour else [],
+        "days": days,
     }
 
 
@@ -65,9 +68,20 @@ def tour_list(request):
 
 def tour_detail(request, slug):
     tour = get_object_or_404(published_tours().prefetch_related("gallery"), slug=slug)
-    return render(request, "siteapp/tour_detail.html", {
-        "homepage": homepage_content(), "page_title": f"{tour.title} · EA600", **route_content(tour),
+    return render_tour_detail(request, tour)
+
+
+def render_tour_detail(request, tour, *, stops=None, days=None, photos=None, builder_preview=False):
+    response = render(request, "siteapp/tour_detail.html", {
+        "homepage": homepage_content(),
+        "page_title": f"{tour.title} · EA600",
+        "photos": tour.gallery.all() if photos is None else photos,
+        "builder_preview": builder_preview,
+        **route_content(tour, stops=stops, days=days),
     })
+    if builder_preview:
+        response.headers["X-Robots-Tag"] = "noindex"
+    return response
 
 
 def story_detail(request, slug):

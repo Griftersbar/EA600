@@ -1,0 +1,37 @@
+<dialog class="builder-dialog" data-photo-dialog data-photo-url="{% url 'builder_photos' %}" aria-labelledby="photo-library-title">
+    <div class="builder-dialog__header">
+        <h2 id="photo-library-title">Photo library</h2>
+        <form method="dialog"><button type="submit" class="builder-icon-button" aria-label="Close photo library">×</button></form>
+    </div>
+    <div class="builder-dialog__body">
+        <label class="builder-field">
+            <span>Search photos</span>
+            <input data-photo-search type="search" placeholder="Search by title">
+        </label>
+        <p class="builder-muted" data-photo-status role="status" hidden></p>
+        <div class="builder-library-grid" data-library-photos></div>
+        <nav class="builder-pages" data-photo-pages aria-label="Photo library pages" hidden>
+            <button type="button" class="builder-button" data-photo-back>Previous</button>
+            <button type="button" class="builder-button" data-photo-next>Next</button>
+        </nav>
+
+        {% if perms.siteapp.add_photo %}
+            <details class="builder-upload">
+                <summary>Upload a photo</summary>
+                <form enctype="multipart/form-data" method="post" action="{% url 'builder_photos' %}" data-photo-upload>
+                    {% csrf_token %}
+                    <div class="builder-field-grid">
+                        {% include "siteapp/builder/field.html" with field=photo_form.title %}
+                        {% include "siteapp/builder/field.html" with field=photo_form.alt_text %}
+                        {% include "siteapp/builder/field.html" with field=photo_form.image full=True %}
+                    </div>
+                    <p data-upload-status role="status" hidden></p>
+                    <button type="submit" class="builder-button builder-button--primary">Upload and choose</button>
+                </form>
+            </details>
+        {% endif %}
+    </div>
+    <div class="builder-dialog__footer">
+        <form method="dialog"><button type="submit" class="builder-button">Done</button></form>
+    </div>
+</dialog>

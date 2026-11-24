@@ -1,0 +1,6 @@
+<div class="builder-field{% if full %} builder-field--full{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="builder-required" aria-hidden="true">*</span>{% endif %}</label>
+    {{ field }}
+    {% if field.help_text %}<small class="builder-help" id="{{ field.id_for_label }}_helptext">{{ field.help_text }}</small>{% endif %}
+    {{ field.errors }}
+</div>

@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex">
+        <title>{{ page_title }} · EA600</title>
+        <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" sizes="any">
+        <link rel="stylesheet" href="{% static 'css/design-tokens.css' %}">
+        <link rel="stylesheet" href="{% static 'css/tour-builder.css' %}">
+    </head>
+    <body class="builder">
+        <header class="builder-topbar">
+            <div class="builder-wrap builder-topbar__inner">
+                <a href="{% url 'builder_index' %}" class="builder-brand">
+                    <img src="{% static 'assets/images/logo-vector.webp' %}" width="44" height="44" alt="">
+                    <span><strong>EA600</strong><small>Tour Builder</small></span>
+                </a>
+                <nav class="builder-topbar__nav" aria-label="Site links">
+                    {% if perms.wagtailadmin.access_admin %}<a href="{% url 'wagtailadmin_home' %}">Wagtail</a>{% endif %}
+                    <a href="{% url 'tour_list' %}">View site <span aria-hidden="true">↗</span></a>
+                </nav>
+            </div>
+        </header>
+        <main class="builder-wrap builder-main">
+            {% for message in messages %}<p class="builder-message" role="status">{{ message }}</p>{% endfor %}
+            {% block content %}{% endblock %}
+        </main>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

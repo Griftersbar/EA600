@@ -1,5 +1,8 @@
 {% extends "siteapp/content_page.html" %}
 {% block content %}
+    {% if builder_preview %}
+        <p class="tour-preview-banner">Preview · Close this tab to return to Tour Builder.</p>
+    {% endif %}
     <section class="page-section">
         <div class="container">
             <a class="content-page__back" href="{% url 'tour_list' %}">All tours</a>
@@ -37,18 +40,16 @@
             </div>
         </section>
     {% endif %}
-    {% with photos=tour.gallery.all %}
-        {% if photos %}
-            <section class="page-section" aria-labelledby="tour-photos-title">
-                <div class="container">
-                    <h2 class="heading-section content-page__title" id="tour-photos-title">Tour photos</h2>
-                    <div class="tour-grid tour-gallery">
-                        {% for photo in photos %}
-                            <img src="{{ photo.url }}" alt="{{ photo.alt_text }}" width="420" height="280" loading="lazy" decoding="async">
-                        {% endfor %}
-                    </div>
+    {% if photos %}
+        <section class="page-section" aria-labelledby="tour-photos-title">
+            <div class="container">
+                <h2 class="heading-section content-page__title" id="tour-photos-title">Tour photos</h2>
+                <div class="tour-grid tour-gallery">
+                    {% for photo in photos %}
+                        <img src="{{ photo.url }}" alt="{{ photo.alt_text }}" width="420" height="280" loading="lazy" decoding="async">
+                    {% endfor %}
                 </div>
-            </section>
-        {% endif %}
-    {% endwith %}
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,15 @@
+<div class="builder-photo-picker" data-photo-picker data-field="{{ widget.name }}"{% if widget.multiple %} data-multiple{% endif %}>
+    <div class="builder-picked-photos" data-picked-photos>
+        {% for photo in widget.photos %}
+            <div class="builder-picked-photo" data-photo-id="{{ photo.pk }}">
+                <input type="hidden" name="{{ widget.name }}" value="{{ photo.pk }}">
+                <img src="{{ photo.url }}" alt="" width="70" height="50" loading="lazy">
+                <span>{{ photo.title }}</span>
+                <button type="button" data-remove-photo aria-label="Remove {{ photo.title }}">×</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="builder-button builder-button--quiet" data-choose-photos{% if widget.attrs.id %} id="{{ widget.attrs.id }}"{% endif %}>
+        {% if widget.multiple %}Choose photos{% else %}Choose photo{% endif %}
+    </button>
+</div>

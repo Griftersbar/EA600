@@ -20,6 +20,7 @@ Open the homepage at `http://127.0.0.1:8000/` or sign in at `/admin/`.
 
 ## Manage content
 
+- Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos from the shared library, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
 - Add or reuse images under **Photos**, including alt text for meaningful images.
 - Add a **Tour** with a title, slug, summary, cover, stops and itinerary days. Choose **Is published** when it is ready for `/tours/`. Pick the homepage's featured route under **Homepage content**.
 - Edit homepage text and images under **Homepage content**. Highlights, destinations, planning tips, stories, FAQs and footer photos each have their own admin list.
