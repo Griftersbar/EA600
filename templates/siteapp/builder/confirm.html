@@ -1,0 +1,26 @@
+{% extends "siteapp/builder/base.html" %}
+{% block content %}
+    <div class="builder-heading"><h1>{{ page_title }}</h1></div>
+    <div class="builder-panel builder-confirm">
+        <h2>{{ tour.title }}</h2>
+        {% if conflict %}
+            <p class="builder-error" role="alert">This tour changed while you were confirming. Review it before trying again.</p>
+        {% elif deleting %}
+            <p>This permanently deletes the tour, its route stops and its itinerary. Its photos will stay in the photo library.{% if tour.is_published %} The public tour page will stop working immediately.{% endif %}</p>
+        {% else %}
+            <p>This removes the tour from the public catalogue. It will remain here as a draft and you can publish it again later.</p>
+        {% endif %}
+        <form method="post" class="builder-confirm__actions">
+            {% csrf_token %}
+            <input type="hidden" name="version" value="{{ version }}">
+            {% if perms.siteapp.change_tour %}
+                <a class="builder-button" href="{% url 'builder_edit' pk=tour.pk %}">{% if conflict %}Review tour{% else %}Cancel{% endif %}</a>
+            {% else %}
+                <a class="builder-button" href="{% url 'builder_index' %}">All tours</a>
+            {% endif %}
+            {% if not conflict %}
+                <button class="builder-button {% if deleting %}builder-button--danger{% else %}builder-button--primary{% endif %}" type="submit">{{ page_title }}</button>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

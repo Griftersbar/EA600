@@ -95,6 +95,17 @@
                 <a href="#stops">Route stops</a>
                 <a href="#days">Itinerary</a>
             </nav>
+            {% if published or editing and perms.siteapp.delete_tour %}
+                <div class="builder-panel builder-publish">
+                    <h2>Manage tour</h2>
+                    {% if published %}
+                        <a class="builder-button" href="{% url 'builder_unpublish' pk=form.instance.pk %}">Unpublish tour</a>
+                    {% endif %}
+                    {% if perms.siteapp.delete_tour %}
+                        <a class="builder-button builder-button--danger" href="{% url 'builder_delete' pk=form.instance.pk %}">Delete tour</a>
+                    {% endif %}
+                </div>
+            {% endif %}
         </aside>
     </form>
     {% include "siteapp/builder/photo_library.html" %}

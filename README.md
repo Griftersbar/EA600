@@ -1,6 +1,6 @@
 # EA600 Django app
 
-EA600's homepage and tour catalogue are managed through Django admin. The first migration of the content models imports the existing EA600 route, stops, itinerary, homepage copy and images.
+Manage EA600's site content in Wagtail and its tour catalogue in Tour Builder. The first migration of the content models imports the existing EA600 route, stops, itinerary, homepage copy and images.
 
 ## Run locally
 
@@ -16,15 +16,15 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Open the homepage at `http://127.0.0.1:8000/` or sign in at `/admin/`.
+Open the homepage at `http://127.0.0.1:8000/` or sign in to Wagtail at `/cms/`.
 
 ## Manage content
 
-- Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos from the shared library, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
-- Add or reuse images under **Photos**, including alt text for meaningful images.
-- Add a **Tour** with a title, slug, summary, cover, stops and itinerary days. Choose **Is published** when it is ready for `/tours/`. Pick the homepage's featured route under **Homepage content**.
-- Edit homepage text and images under **Homepage content**. Highlights, destinations, planning tips, stories, FAQs and footer photos each have their own admin list.
-- Use **Destinations** in Wagtail at `/cms/destinations/` to edit the title, region, text, photo, link and position of each homepage destination card. The editor uses the shared EA600 photo library.
+- Use **Homepage** in Wagtail at `/cms/homepage/` to edit copy and images or feature a published tour.
+- Open **Settings → Site settings** at `/cms/site-settings/` to edit the site name, logos, footer text, contact details and social links.
+- Open **Content** in the Wagtail sidebar to manage destination cards, planning tips, stories, FAQs, highlights and footer photos. Select **Published** on a story to make it public. Image fields use the shared EA600 photo library.
+- Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
+- Under **Manage tour**, use **Unpublish tour** to take a published tour offline and keep it as a draft. **Delete tour** opens a confirmation page for permanent deletion. Photos stay in the shared library.
 
 ## Create a destination guide
 

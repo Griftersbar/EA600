@@ -3,12 +3,13 @@ from tempfile import TemporaryDirectory
 
 from PIL import Image
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
 from .builder_views import tour_version
-from .models import ItineraryDay, Photo, Tour, TourStop
+from .models import HomeContent, ItineraryDay, Photo, Tour, TourStop
 
 
 class TourBuilderTests(TestCase):
@@ -89,6 +90,46 @@ class TourBuilderTests(TestCase):
         tour.refresh_from_db()
         self.assertEqual(tour.title, "Saved")
         self.assertEqual(tour.stops.count(), 1)
+
+    def test_unpublish_featured_tour_keeps_a_draft_and_homepage_falls_back(self):
+        home = HomeContent.objects.get()
+        tour = home.featured_tour
+        fallback = Tour.objects.create(
+            title="Fallback", slug="fallback", summary="Another published tour", is_published=True,
+        )
+        url = reverse("builder_unpublish", args=[tour.pk])
+        self.assertContains(self.client.get(url), "It will remain here as a draft")
+        self.assertEqual(self.client.get(tour.get_absolute_url()).status_code, 200)
+        edit = reverse("builder_edit", args=[tour.pk])
+        self.assertRedirects(self.client.post(url, {"version": tour_version(tour)}), edit)
+        tour.refresh_from_db()
+        self.assertFalse(tour.is_published)
+        self.assertTrue(tour.stops.exists())
+        self.assertEqual(self.client.get(tour.get_absolute_url()).status_code, 404)
+        self.assertEqual(self.client.get("/").context["tour"], fallback)
+
+    def test_delete_checks_permissions_and_confirmation_then_preserves_photos(self):
+        tour = HomeContent.objects.get().featured_tour
+        photo = tour.cover
+        url = reverse("builder_delete", args=[tour.pk])
+        editor = get_user_model().objects.create_user(username="changes-only", is_staff=True)
+        editor.user_permissions.add(Permission.objects.get(codename="change_tour"))
+        self.client.force_login(editor)
+        self.assertEqual(self.client.post(url, {"version": tour_version(tour)}).status_code, 403)
+
+        self.client.force_login(self.editor)
+        self.assertContains(self.client.get(url), "This permanently deletes the tour")
+        self.assertTrue(Tour.objects.filter(pk=tour.pk).exists())
+        self.assertEqual(self.client.post(url, {"version": "stale"}).status_code, 409)
+        self.assertTrue(Tour.objects.filter(pk=tour.pk).exists())
+        self.assertRedirects(self.client.post(url, {
+            "version": tour_version(tour),
+        }), reverse("builder_index"))
+        self.assertFalse(Tour.objects.filter(pk=tour.pk).exists())
+        self.assertFalse(TourStop.objects.filter(tour=tour).exists())
+        self.assertTrue(Photo.objects.filter(pk=photo.pk).exists())
+        self.assertIsNone(HomeContent.objects.get().featured_tour)
+        self.assertEqual(self.client.get(tour.get_absolute_url()).status_code, 404)
 
     def test_photo_upload_uses_the_shared_library_and_builder_requires_permission(self):
         protected = reverse("builder_photos")

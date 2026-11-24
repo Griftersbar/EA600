@@ -89,6 +89,8 @@
   color: #fff;
 }
 .builder .builder-button--primary:hover { background: #226344; }
+.builder .builder-button--danger { color: #942f23; }
+.builder .builder-button--danger:hover { background: #fbece6; }
 .builder .builder-button--quiet { background: transparent; }
 .builder button:disabled { opacity: .42; cursor: default; }
 .builder-icon-button { min-width: 2.75rem; padding: .4rem; font-size: 1.35rem; }
@@ -184,6 +186,8 @@
 .builder-editor-nav { display: grid; gap: .35rem; padding-inline: .35rem; }
 .builder-editor-nav a { padding: .35rem .55rem; font-size: .92rem; text-decoration: none; }
 .builder-editor-nav a:hover { text-decoration: underline; }
+.builder-confirm { max-width: 40rem; }
+.builder-confirm__actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.25rem; }
 .builder-message, .builder-error, .builder .errorlist {
   padding: .7rem .9rem;
   margin: 0 0 .9rem;

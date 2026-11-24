@@ -194,6 +194,43 @@ def builder_edit(request, pk=None):
     }, status=response_status)
 
 
+@staff_member_required
+@require_http_methods(["GET", "POST"])
+@never_cache
+@transaction.atomic
+def builder_lifecycle(request, pk, action):
+    deleting = action == "delete"
+    permission = "delete" if deleting else "change"
+    if not request.user.has_perm(f"siteapp.{permission}_tour"):
+        raise PermissionDenied
+
+    confirming = request.method == "POST"
+    tours = Tour.objects.select_for_update() if confirming else Tour.objects.all()
+    tour = get_object_or_404(tours, pk=pk)
+    if not deleting and not tour.is_published:
+        return redirect("builder_edit", pk=pk)
+
+    version = tour_version(tour)
+    conflict = confirming and not constant_time_compare(request.POST.get("version", ""), version)
+    if confirming and not conflict:
+        if deleting:
+            tour.delete()
+            messages.success(request, "Tour deleted.")
+            return redirect("builder_index")
+        tour.is_published = False
+        tour.save(update_fields=["is_published"])
+        messages.success(request, "Tour unpublished. It is now a draft.")
+        return redirect("builder_edit", pk=pk)
+
+    return render(request, "siteapp/builder/confirm.html", {
+        "page_title": "Delete tour" if deleting else "Unpublish tour",
+        "tour": tour,
+        "deleting": deleting,
+        "version": version,
+        "conflict": conflict,
+    }, status=409 if conflict else 200)
+
+
 def photo_result(photo):
     return {"id": photo.pk, "title": photo.title, "url": photo.url}
 

@@ -13,6 +13,14 @@ urlpatterns = [
     path("builder/tours/", builder_views.builder_index, name="builder_index"),
     path("builder/tours/new/", builder_views.builder_edit, name="builder_new"),
     path("builder/tours/<int:pk>/", builder_views.builder_edit, name="builder_edit"),
+    path(
+        "builder/tours/<int:pk>/unpublish/", builder_views.builder_lifecycle,
+        {"action": "unpublish"}, name="builder_unpublish",
+    ),
+    path(
+        "builder/tours/<int:pk>/delete/", builder_views.builder_lifecycle,
+        {"action": "delete"}, name="builder_delete",
+    ),
     path("builder/photos/", builder_views.builder_photos, name="builder_photos"),
     path("stories/<slug:slug>/", views.story_detail, name="story_detail"),
     path("admin/", admin.site.urls),

@@ -8,6 +8,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
+from siteapp.builder_views import tour_version
 from siteapp.models import Photo, Tour
 
 from .models import DestinationGuidePage, GuideIndexPage
@@ -48,8 +49,18 @@ class GuideTests(TestCase):
         guide.introduction = "Private draft revision"
         guide.save_revision()
         self.assertNotContains(self.client.get("/guides/coastal/"), guide.introduction)
-        tour.is_published = False
-        tour.save(update_fields=["is_published"])
+        self.client.force_login(self.editor)
+        self.assertRedirects(
+            self.client.post(reverse("builder_unpublish", args=[tour.pk]), {"version": tour_version(tour)}),
+            reverse("builder_edit", args=[tour.pk]),
+        )
+        self.assertNotContains(self.client.get("/guides/coastal/"), 'href="/tours/ea600/"')
+        tour.refresh_from_db()
+        self.assertRedirects(
+            self.client.post(reverse("builder_delete", args=[tour.pk]), {"version": tour_version(tour)}),
+            reverse("builder_index"),
+        )
+        self.assertContains(self.client.get("/guides/coastal/"), "Published introduction")
         self.assertNotContains(self.client.get("/guides/coastal/"), 'href="/tours/ea600/"')
 
     def test_photo_uploaded_through_wagtail_can_be_used_in_django(self):
