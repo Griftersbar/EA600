@@ -4,6 +4,8 @@ EA600's homepage and tour catalogue are managed through Django admin. The first 
 
 ## Run locally
 
+Use Python 3.11 or newer for Wagtail 8.1.
+
 ```sh
 python -m venv .venv
 source .venv/bin/activate
