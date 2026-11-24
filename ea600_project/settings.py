@@ -18,6 +18,12 @@ if railway_domain:
     CSRF_TRUSTED_ORIGINS = [f"https://{railway_domain}"]
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+WAGTAIL_SITE_NAME = "EA600 Guides"
+WAGTAILADMIN_BASE_URL = f"https://{railway_domain}" if railway_domain else "http://localhost:8000"
+WAGTAILDOCS_SERVE_METHOD = "serve_view"
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -27,7 +33,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail",
+    "modelcluster",
+    "taggit",
     "siteapp",
+    "guides",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,38 @@
+{% extends "siteapp/content_page.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+    <section class="page-section">
+        <div class="container">
+            <h1 class="heading-section content-page__title">{{ page.title }}</h1>
+            {% if page.introduction %}<p class="text-lead guide-index__intro">{{ page.introduction|linebreaksbr }}</p>{% endif %}
+            {% if guides.object_list %}
+                <div class="tour-grid">
+                    {% for guide in guides %}
+                        {% pageurl guide as guide_url %}
+                        <article class="tour-card">
+                            {% if guide.cover %}
+                                <a href="{{ guide_url }}" aria-label="{{ guide.title }}">
+                                    <img class="tour-card__image" src="{{ guide.cover.url }}" alt="{{ guide.cover.alt_text }}"
+                                         width="420" height="240" loading="lazy" decoding="async">
+                                </a>
+                            {% endif %}
+                            <div class="tour-card__body">
+                                <h2 class="guide-card__title"><a href="{{ guide_url }}">{{ guide.title }}</a></h2>
+                                <p>{{ guide.introduction|linebreaksbr }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No guides have been published yet.</p>
+            {% endif %}
+            {% if guides.has_other_pages %}
+                <nav class="tour-pages" aria-label="Guide pages">
+                    {% if guides.has_previous %}<a class="btn btn--secondary" href="?page={{ guides.previous_page_number }}">Previous</a>{% endif %}
+                    <span>Page {{ guides.number }} of {{ guides.paginator.num_pages }}</span>
+                    {% if guides.has_next %}<a class="btn btn--secondary" href="?page={{ guides.next_page_number }}">Next</a>{% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

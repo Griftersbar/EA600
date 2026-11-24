@@ -1,0 +1,19 @@
+{% extends "siteapp/content_page.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+    <article class="page-section">
+        <div class="container">
+            <a class="content-page__back" href="{% url 'wagtail_serve' '' %}">All guides</a>
+            <h1 class="heading-section content-page__title">{{ page.title }}</h1>
+            <p class="text-lead">{{ page.introduction|linebreaksbr }}</p>
+            {% if page.cover %}
+                <img class="content-page__cover" src="{{ page.cover.url }}" alt="{{ page.cover.alt_text }}" decoding="async">
+            {% endif %}
+            {% if page.body %}
+                <div class="content-page__text guide-body">
+                    {% for block in page.body %}{% include_block block %}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </article>
+{% endblock %}

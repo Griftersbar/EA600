@@ -1,0 +1,6 @@
+{% if value.is_published %}
+    <section class="guide-tour">
+        <h2>Featured tour</h2>
+        {% include "siteapp/includes/tour_card.html" with entry=value %}
+    </section>
+{% endif %}

@@ -116,3 +116,28 @@
 .route-layout--no-map {
   grid-template-columns: 1fr;
 }
+
+.guide-index__intro {
+  margin-bottom: var(--space-6);
+}
+
+.guide-card__title,
+.guide-body h2 {
+  font: var(--font-weight-bold) var(--font-size-xl) / 1.2 var(--font-family-display);
+  color: var(--color-brand-dark);
+}
+
+.guide-body > * + * {
+  margin-top: var(--space-5);
+}
+
+.guide-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.guide-tour > h2 {
+  margin-bottom: var(--space-4);
+}

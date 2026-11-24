@@ -10,6 +10,10 @@ from django.views.decorators.http import require_safe
 from .models import IMAGE_TYPES, Destination, FAQ, FooterPhoto, Highlight, HomeContent, PlanningTip, Story, Tour
 
 
+IMAGE_CONTENT_TYPES = {extension: mime_type for extension, (_, mime_type) in IMAGE_TYPES.items()}
+IMAGE_CONTENT_TYPES["avif"] = "image/avif"
+
+
 def homepage_content():
     return HomeContent.objects.select_related(
         "featured_tour__map_image", "hero_photo", "logo", "badge_logo", "intro_map", "intro_photo_one",
@@ -85,4 +89,4 @@ def photo_file(request, name):
         file = default_storage.open(name, "rb")
     except FileNotFoundError as error:
         raise Http404("Photo not found.") from error
-    return FileResponse(file, content_type=IMAGE_TYPES[extension][1], headers={"Cache-Control": "public, max-age=86400"})
+    return FileResponse(file, content_type=IMAGE_CONTENT_TYPES[extension], headers={"Cache-Control": "public, max-age=86400"})

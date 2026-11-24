@@ -1,12 +1,9 @@
-from pathlib import Path
-
-from django import forms
 from django.contrib import admin
-from django.core.files.uploadedfile import UploadedFile
 from django.utils.html import format_html
 
+from .forms import PhotoForm
 from .models import (
-    IMAGE_TYPES, Destination, FAQ, FooterPhoto, Highlight, HomeContent, ItineraryDay,
+    Destination, FAQ, FooterPhoto, Highlight, HomeContent, ItineraryDay,
     Photo, PlanningTip, Story, Tour, TourStop,
 )
 
@@ -14,21 +11,6 @@ from .models import (
 admin.site.site_header = "EA600 Admin"
 admin.site.site_title = "EA600 Admin"
 admin.site.index_title = "Manage EA600 content"
-
-
-class PhotoForm(forms.ModelForm):
-    class Meta:
-        model = Photo
-        fields = "__all__"
-
-    def clean_image(self):
-        image = self.cleaned_data["image"]
-        if isinstance(image, UploadedFile):
-            extension = Path(image.name).suffix.lower().lstrip(".")
-            expected_format = IMAGE_TYPES.get(extension, ("", ""))[0]
-            if image.image.format != expected_format:
-                raise forms.ValidationError("The file extension must match the image format.")
-        return image
 
 
 @admin.register(Photo)
