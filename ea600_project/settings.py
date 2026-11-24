@@ -1,12 +1,26 @@
+import os
 from pathlib import Path
+
+from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-ea600-dev-key-change-me"
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+DEBUG = "RAILWAY_ENVIRONMENT_ID" not in os.environ
+if DEBUG:
+    SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or get_random_secret_key()
+else:
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+if railway_domain:
+    ALLOWED_HOSTS.append(railway_domain)
+    CSRF_TRUSTED_ORIGINS = [f"https://{railway_domain}"]
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -18,6 +32,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -75,8 +90,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/"
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_URL = "/media/"
 STATICFILES_DIRS = [
-    BASE_DIR / "assets",
-    BASE_DIR / "css",
-    BASE_DIR / "js",
+    ("assets", BASE_DIR / "assets"),
+    ("css", BASE_DIR / "css"),
+    ("js", BASE_DIR / "js"),
 ]
