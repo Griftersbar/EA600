@@ -1,13 +1,49 @@
 from django.urls import reverse
+from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.ui.tables import Column
+from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet, SnippetViewSetGroup
 
 from .builder_views import can_use_builder
 from .cms_views import HomepageViewSet, SiteSettingsViewSet, homepage_permissions
-from .models import Destination, FAQ, FooterPhoto, Highlight, PlanningTip, Story
+from .forms import PhotoForm
+from .models import Destination, FAQ, FooterPhoto, Highlight, Photo, PlanningTip, Story
+
+
+def photo_thumbnail(photo):
+    return format_html(
+        '<img src="{}" alt="" width="96" height="64" loading="lazy" style="object-fit:contain">',
+        photo.url,
+    )
+
+
+class PhotoLibraryViewSet(ModelViewSet):
+    model = Photo
+    name = "ea600_photos"
+    url_prefix = "photos"
+    menu_label = "EA600 Photos"
+    menu_order = 275
+    icon = "image"
+    add_to_admin_menu = True
+    inspect_view_enabled = True
+    inspect_view_fields = ("title", "alt_text")
+    list_display = ("title", Column("thumbnail", label="Preview", accessor=photo_thumbnail), "alt_text")
+    list_per_page = 20
+    search_fields = ("title", "alt_text")
+    search_backend_name = None
+
+    def get_form_class(self, for_update=False):
+        return PhotoForm
+
+    def get_common_view_kwargs(self, **kwargs):
+        return super().get_common_view_kwargs(delete_url_name=None, **kwargs)
+
+    def get_urlpatterns(self):
+        return [pattern for pattern in super().get_urlpatterns() if pattern.name != "delete"]
 
 
 class EditorialSnippetViewSet(SnippetViewSet):
@@ -103,8 +139,8 @@ hooks.register("register_permissions", homepage_permissions)
 
 
 @hooks.register("register_admin_viewset")
-def register_home_content_editors():
-    return [HomepageViewSet(), SiteSettingsViewSet()]
+def register_ea600_editors():
+    return [HomepageViewSet(), SiteSettingsViewSet(), PhotoLibraryViewSet()]
 
 
 class TourBuilderMenuItem(MenuItem):

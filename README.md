@@ -23,6 +23,7 @@ Open the homepage at `http://127.0.0.1:8000/` or sign in to Wagtail at `/cms/`.
 - Use **Homepage** in Wagtail at `/cms/homepage/` to edit copy and images or feature a published tour.
 - Open **Settings → Site settings** at `/cms/site-settings/` to edit the site name, logos, footer text, contact details and social links.
 - Open **Content** in the Wagtail sidebar to manage destination cards, planning tips, stories, FAQs, highlights and footer photos. Select **Published** on a story to make it public. Image fields use the shared EA600 photo library.
+- Open **EA600 Photos** at `/cms/photos/` to browse the shared library, upload photos, or edit titles and alt text. The same photos are available in Wagtail's EA600 photo pickers and Tour Builder.
 - Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
 - Under **Manage tour**, use **Unpublish tour** to take a published tour offline and keep it as a draft. **Delete tour** opens a confirmation page for permanent deletion. Photos stay in the shared library.
 

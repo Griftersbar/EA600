@@ -1,5 +1,10 @@
+from io import BytesIO
+from tempfile import TemporaryDirectory
+
+from PIL import Image
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms.models import model_to_dict
 from django.test import TestCase
 from django.urls import reverse
@@ -93,3 +98,41 @@ class EditorialCMSTests(TestCase):
         self.assertContains(home, "Leave time for the coast")
         self.assertContains(home, "Where can I start?")
         self.assertContains(home, 'href="/stories/along-the-coast/"')
+
+    def test_photo_library_lists_existing_images_and_searches_their_alt_text(self):
+        photo = Photo.objects.get(bundled_path="assets/images/norwich.webp")
+        photo.alt_text = "Norwich market from above"
+        photo.save(update_fields=["alt_text"])
+        other = Photo.objects.exclude(pk=photo.pk).first()
+        self.assertContains(self.client.get("/cms/"), "EA600 Photos")
+
+        result = self.client.get(reverse("ea600_photos:index"), {"q": photo.alt_text})
+        self.assertContains(result, photo.alt_text)
+        self.assertContains(result, f'src="{photo.url}"')
+        self.assertNotContains(result, f'src="{other.url}"')
+
+    def test_photo_uploaded_in_the_library_is_available_to_tour_builder(self):
+        photo_data = BytesIO()
+        Image.new("RGB", (8, 8), "green").save(photo_data, "PNG")
+        index = reverse("ea600_photos:index")
+        add = reverse("ea600_photos:add")
+        self.assertContains(self.client.get(index), "Add photo")
+        self.assertContains(self.client.get(add), 'type="file" name="image"')
+
+        with TemporaryDirectory() as media_root, self.settings(MEDIA_ROOT=media_root):
+            result = self.client.post(add, {
+                "title": "Coastal photo", "alt_text": "Path by the sea",
+                "image": SimpleUploadedFile("coast.png", photo_data.getvalue(), content_type="image/png"),
+            })
+            self.assertRedirects(result, index)
+            photo = Photo.objects.get(title="Coastal photo")
+            self.assertContains(self.client.get(index, {"q": photo.title}), f'src="{photo.url}"')
+            self.assertEqual(self.client.get(photo.url).status_code, 200)
+
+            edit = reverse("ea600_photos:edit", args=[photo.pk])
+            result = self.client.post(edit, {"title": "New coastal photo", "alt_text": "Footpath along the coast"})
+            self.assertRedirects(result, index)
+            photo.refresh_from_db()
+            self.assertEqual(photo.alt_text, "Footpath along the coast")
+            result = self.client.get(reverse("builder_photos"), {"q": photo.title})
+            self.assertEqual(result.json()["photos"], [{"id": photo.pk, "title": photo.title, "url": photo.url}])
