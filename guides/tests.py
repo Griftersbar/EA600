@@ -78,6 +78,9 @@ class GuideTests(TestCase):
             })
             self.assertEqual(response.status_code, 200)
             photo = Photo.objects.get(title="Guide upload")
+            self.assertEqual(response.json()["result"]["preview"]["url"], photo.url)
+            response = self.client.get(reverse("guide-photo-chooser:chosen", args=[photo.pk]))
+            self.assertEqual(response.json()["result"]["preview"]["url"], photo.url)
             tour = Tour.objects.get(slug="ea600")
             tour.cover = photo
             tour.save(update_fields=["cover"])

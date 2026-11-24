@@ -111,6 +111,17 @@ class EditorialCMSTests(TestCase):
         self.assertContains(result, f'src="{photo.url}"')
         self.assertNotContains(result, f'src="{other.url}"')
 
+    def test_homepage_photo_fields_show_the_selected_photo(self):
+        photo = HomeContent.objects.get().hero_photo
+        result = self.client.get(reverse("ea600_homepage:edit"))
+        self.assertContains(result, 'id="id_hero_photo-chooser"')
+        self.assertContains(
+            result,
+            f'<img class="chooser__image show-transparency" data-chooser-image alt="" '
+            f'data-default-alt-text="{photo.alt_text}" decoding="async" height="125" src="{photo.url}" width="165">',
+            html=True,
+        )
+
     def test_photo_uploaded_in_the_library_is_available_to_tour_builder(self):
         photo_data = BytesIO()
         Image.new("RGB", (8, 8), "green").save(photo_data, "PNG")
