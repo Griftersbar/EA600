@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/admin-release-notes.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> &rsaquo; Release notes</div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="release-notes">
+        <p class="release-notes__current">
+            Running version <strong>{{ current_version }}</strong>
+            {% if build_revision %}<span>Build <code>{{ build_revision }}</code></span>{% endif %}
+        </p>
+        <p>Changes are listed newest first. The history includes the original <strong>1.0</strong> tag. Other versions before 2.18.0 were assigned from Git history.</p>
+        {% for release in releases %}
+            <section class="module release-notes__entry" aria-labelledby="release-{{ release.version }}">
+                <h2 id="release-{{ release.version }}"><strong>{{ release.version }}</strong> · {{ release.title }}</h2>
+                <div class="release-notes__details">
+                    <p class="release-notes__date">
+                        <time datetime="{{ release.date|date:'Y-m-d' }}">{{ release.date|date:'j F Y' }}</time>
+                        {% if release.revision %}<span>Commit <code>{{ release.revision }}</code></span>{% endif %}
+                    </p>
+                    <ul>
+                        {% for change in release.changes %}<li>{{ change }}</li>{% endfor %}
+                    </ul>
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

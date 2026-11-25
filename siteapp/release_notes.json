@@ -1,0 +1,321 @@
+[
+  {
+    "version": "2.18.0",
+    "date": "2026-11-25",
+    "title": "Release notes in Django admin",
+    "changes": [
+      "Added a release history for superusers with the running version, dates and a summary of each change.",
+      "Recorded the original site and subsequent changes in a changelog that ships with the app."
+    ]
+  },
+  {
+    "version": "2.17.2",
+    "date": "2026-11-25",
+    "title": "Consistent styling across EA600",
+    "changes": [
+      "Unified page introductions, cards, buttons and the compact footer across the public site.",
+      "Kept the scenic Home and Advertise heroes and moved the homepage photo strip above the footer."
+    ],
+    "revision": "b894048"
+  },
+  {
+    "version": "2.17.1",
+    "date": "2026-11-25",
+    "title": "Shared navigation and jump links",
+    "changes": [
+      "Added one responsive header and visible current-section highlights.",
+      "Adjusted section, itinerary and enquiry links to land below the sticky header."
+    ],
+    "revision": "f4f9f5f"
+  },
+  {
+    "version": "2.17.0",
+    "date": "2026-11-25",
+    "title": "Three-day and fourteen-day EA600 routes",
+    "changes": [
+      "Published both itineraries in the route planner and Explore routes, with editable stops, day descriptions and map pins."
+    ],
+    "revision": "a2a2326"
+  },
+  {
+    "version": "2.16.0",
+    "date": "2026-11-25",
+    "title": "Advertiser page refresh",
+    "changes": [
+      "Redesigned the public advertiser pages and added editable guidance on eligibility, listing benefits and enquiries.",
+      "Kept one listing package with monthly and annual payment options."
+    ],
+    "revision": "4a58366"
+  },
+  {
+    "version": "2.15.0",
+    "date": "2026-11-25",
+    "title": "Editable advertising prices",
+    "changes": [
+      "Let Wagtail editors set the prices for new monthly and annual checkouts. Existing renewals retain their agreed prices."
+    ],
+    "revision": "26486ab"
+  },
+  {
+    "version": "2.14.1",
+    "date": "2026-11-25",
+    "title": "Checkout prices visible in Wagtail",
+    "changes": [
+      "Showed the active monthly and annual prices in the Advertise page settings."
+    ],
+    "revision": "e4719ae"
+  },
+  {
+    "version": "2.14.0",
+    "date": "2026-11-25",
+    "title": "Configurable Advertise page and enquiries",
+    "changes": [
+      "Moved advertiser page copy, form labels, field order and custom questions into Wagtail settings."
+    ],
+    "revision": "0620251"
+  },
+  {
+    "version": "2.13.0",
+    "date": "2026-11-25",
+    "title": "Advertising enquiries",
+    "changes": [
+      "Added a public enquiry form and a private Wagtail inbox for reviewing and replying to submissions."
+    ],
+    "revision": "2273bdd"
+  },
+  {
+    "version": "2.12.0",
+    "date": "2026-11-25",
+    "title": "Business listing pilot and reporting",
+    "changes": [
+      "Added ten fictional businesses and 30-day reporting for website, booking and directions clicks."
+    ],
+    "revision": "03f1705"
+  },
+  {
+    "version": "2.11.0",
+    "date": "2026-11-25",
+    "title": "Partner applications and test subscriptions",
+    "changes": [
+      "Added email sign-in, listing applications, staff approval and Stripe test checkout for monthly or annual subscriptions."
+    ],
+    "revision": "02b7215"
+  },
+  {
+    "version": "2.10.0",
+    "date": "2026-11-25",
+    "title": "Business listings at route stops",
+    "changes": [
+      "Added Wagtail-managed listings for local businesses and placed published cards beside relevant tour stops."
+    ],
+    "revision": "67b2d26"
+  },
+  {
+    "version": "2.9.0",
+    "date": "2026-11-25",
+    "title": "Homepage route picker",
+    "changes": [
+      "Let visitors switch the homepage map, stops and itinerary between published tours."
+    ],
+    "revision": "95a467c"
+  },
+  {
+    "version": "2.8.0",
+    "date": "2026-11-25",
+    "title": "Interactive route maps",
+    "changes": [
+      "Added GPX imports, interactive maps and geographic stop placement in Tour Builder."
+    ],
+    "revision": "b8fea96"
+  },
+  {
+    "version": "2.7.0",
+    "date": "2026-11-25",
+    "title": "Explore routes catalogue",
+    "changes": [
+      "Made published routes easier to browse through the homepage and the Explore routes page."
+    ],
+    "revision": "b926321"
+  },
+  {
+    "version": "2.6.0",
+    "date": "2026-11-25",
+    "title": "Stronger editor sign-in",
+    "changes": [
+      "Required authenticator codes for editor accounts and limited repeated password and verification attempts."
+    ],
+    "revision": "00b49c7"
+  },
+  {
+    "version": "2.5.6",
+    "date": "2026-11-25",
+    "title": "Image processing dependency update",
+    "changes": [
+      "Upgraded Pillow to include fixes for image processing security advisories."
+    ],
+    "revision": "44c5e3e"
+  },
+  {
+    "version": "2.5.5",
+    "date": "2026-11-25",
+    "title": "Tour Builder links from Django admin",
+    "changes": [
+      "Added Tour Builder links for users with the relevant tour permissions."
+    ],
+    "revision": "9581fa6"
+  },
+  {
+    "version": "2.5.4",
+    "date": "2026-11-25",
+    "title": "Wagtail link from Django admin",
+    "changes": [
+      "Added a shortcut to Wagtail for users with Wagtail access."
+    ],
+    "revision": "9ab410d"
+  },
+  {
+    "version": "2.5.3",
+    "date": "2026-11-24",
+    "title": "Preview deployment for editor access",
+    "changes": [
+      "Triggered a preview deployment for editor account provisioning."
+    ],
+    "revision": "722fda5"
+  },
+  {
+    "version": "2.5.2",
+    "date": "2026-11-24",
+    "title": "Photo previews in Wagtail",
+    "changes": [
+      "Displayed thumbnails of selected photos on Wagtail editing screens."
+    ],
+    "revision": "704fdcf"
+  },
+  {
+    "version": "2.5.1",
+    "date": "2026-11-24",
+    "title": "Shared Wagtail photo library",
+    "changes": [
+      "Made the EA600 photo library available in Wagtail for browsing and uploads."
+    ],
+    "revision": "91638e8"
+  },
+  {
+    "version": "2.5.0",
+    "date": "2026-11-24",
+    "title": "Site content and tour publishing controls",
+    "changes": [
+      "Added Wagtail controls for the homepage, branding, planning tips, stories, FAQs and contact details.",
+      "Added controls for unpublishing and deleting tours in Tour Builder."
+    ],
+    "revision": "d4112ff"
+  },
+  {
+    "version": "2.4.0",
+    "date": "2026-11-24",
+    "title": "Tour Builder",
+    "changes": [
+      "Added an editor for creating, previewing and publishing tours with ordered stops, itinerary days and photographs."
+    ],
+    "revision": "b728807"
+  },
+  {
+    "version": "2.3.0",
+    "date": "2026-11-24",
+    "title": "Editable homepage destinations",
+    "changes": [
+      "Added Wagtail editing for destination cards, photos and links on the homepage."
+    ],
+    "revision": "fb7d4d1"
+  },
+  {
+    "version": "2.2.1",
+    "date": "2026-11-24",
+    "title": "Wagtail 8.1",
+    "changes": [
+      "Upgraded the content management system to Wagtail 8.1."
+    ],
+    "revision": "ce860a2"
+  },
+  {
+    "version": "2.2.0",
+    "date": "2026-11-24",
+    "title": "Wagtail destination guides",
+    "changes": [
+      "Added public guides and editable layouts for text, photos and featured tours."
+    ],
+    "revision": "23af47d"
+  },
+  {
+    "version": "2.1.0",
+    "date": "2026-11-24",
+    "title": "Editable tours and site content",
+    "changes": [
+      "Imported the original route and homepage copy into Django so staff could edit stops, itinerary days and photos."
+    ],
+    "revision": "eba8438"
+  },
+  {
+    "version": "2.0.1",
+    "date": "2026-11-24",
+    "title": "Railway Django preview",
+    "changes": [
+      "Configured the Django app to run on Railway and serve its static assets."
+    ],
+    "revision": "da3e342"
+  },
+  {
+    "version": "2.0.0",
+    "date": "2026-10-23",
+    "title": "Django application foundation",
+    "changes": [
+      "Converted the existing EA600 landing page to a Django project with its original content and assets."
+    ],
+    "revision": "aa2f7ad"
+  },
+  {
+    "version": "1.0.2",
+    "date": "2026-10-23",
+    "title": "Retired the original server script",
+    "changes": [
+      "Removed the Node server script from the static site."
+    ],
+    "revision": "2a8716d"
+  },
+  {
+    "version": "1.0.1",
+    "date": "2026-10-23",
+    "title": "Retired the original package configuration",
+    "changes": [
+      "Removed the Node package configuration from the static site."
+    ],
+    "revision": "78c20f7"
+  },
+  {
+    "version": "1.0",
+    "date": "2026-10-21",
+    "title": "Original tagged EA600 website",
+    "changes": [
+      "Added the full static site design with route information, destinations, itinerary, planning sections and photography."
+    ],
+    "revision": "7636c61"
+  },
+  {
+    "version": "0.2.0",
+    "date": "2026-09-30",
+    "title": "First EA600 website",
+    "changes": [
+      "Added the first static landing page and a simple web server for Railway."
+    ],
+    "revision": "8fd6ac5"
+  },
+  {
+    "version": "0.1.0",
+    "date": "2026-09-30",
+    "title": "EA600 repository created",
+    "changes": [
+      "Added the initial project README."
+    ],
+    "revision": "3dada66"
+  }
+]

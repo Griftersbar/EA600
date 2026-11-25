@@ -28,6 +28,12 @@ Django admin and Wagtail share a 15-minute password cooldown after five failures
 
 If you lose access to your authenticator, choose **Use a recovery code** after entering your password. A site superuser can reset MFA for an editor by removing that user's TOTP and static devices in Django admin after verifying their identity. At the next sign-in the editor can enrol a new authenticator and save a new set of codes.
 
+## Release notes
+
+Django superusers can open **Release notes** from the admin header or at `/admin/release-notes/`. The screen shows the running version, the build revision on Railway, and the history of app changes.
+
+Prepend a dated entry to `siteapp/release_notes.json` in the same change as each app release. Use the next patch number for fixes and refinements or the next minor number for new functionality. Keep earlier entries so the history ships with each release.
+
 ## Manage content
 
 - Use **Homepage** in Wagtail at `/cms/homepage/` to edit copy and images or feature a published tour.

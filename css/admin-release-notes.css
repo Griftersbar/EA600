@@ -1,0 +1,53 @@
+.release-notes {
+  max-width: 54rem;
+}
+
+.release-notes__current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--hairline-color);
+  border-radius: 0.375rem;
+  background: var(--darkened-bg);
+  font-size: 1rem;
+}
+
+.release-notes__current strong {
+  font-size: 1.15em;
+}
+
+.release-notes__current span,
+.release-notes__date span {
+  color: var(--body-quiet-color);
+}
+
+.release-notes__current span {
+  margin-inline-start: auto;
+}
+
+.release-notes__entry {
+  overflow: hidden;
+  border: 1px solid var(--hairline-color);
+  border-radius: 0.375rem;
+}
+
+.release-notes__entry h2 {
+  text-transform: none;
+}
+
+.release-notes__details {
+  padding: 0.6rem 1rem 0.75rem;
+}
+
+.release-notes__date {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.4rem;
+}
+
+.release-notes__details ul {
+  margin-block: 0;
+}

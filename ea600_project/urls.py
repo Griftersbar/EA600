@@ -4,7 +4,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from siteapp import builder_views, editor_auth, views
+from siteapp import builder_views, editor_auth, release_history, views
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -29,6 +29,7 @@ urlpatterns = [
     path("cms/login/", editor_auth.editor_login, {"entry": "wagtail"}, name="editor_wagtail_login"),
     path("editor/verify/", editor_auth.editor_verify, name="editor_verify"),
     path("editor/recovery-codes/", editor_auth.editor_recovery_codes, name="editor_recovery_codes"),
+    path("admin/release-notes/", admin.site.admin_view(release_history.release_notes), name="admin_release_notes"),
     path("admin/", admin.site.urls),
     path("cms/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
