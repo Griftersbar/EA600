@@ -36,10 +36,20 @@ class PhotoPicker(forms.Widget):
 
 
 class TourBuilderForm(forms.ModelForm):
+    def clean_route_track(self):
+        if self.add_prefix("route_track") not in self.data:
+            return self.instance.route_track
+        track = self.cleaned_data["route_track"]
+        if track is None:
+            return []
+        if not isinstance(track, list):
+            raise forms.ValidationError("Import a GPX route to set the map track.")
+        return track
+
     class Meta:
         model = Tour
         fields = (
-            "title", "slug", "summary", "description", "region", "cover", "map_image", "gallery",
+            "title", "slug", "summary", "description", "region", "cover", "map_image", "route_track", "gallery",
             "distance_miles", "duration_days", "counties", "start_finish", "best_season", "road_types", "position",
         )
         labels = {"slug": "URL slug", "position": "Catalogue order", "gallery": "Gallery photos"}
@@ -48,6 +58,7 @@ class TourBuilderForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"rows": 5}),
             "cover": PhotoPicker(),
             "map_image": PhotoPicker(),
+            "route_track": forms.HiddenInput(),
             "gallery": PhotoPicker(multiple=True),
         }
 
@@ -55,7 +66,10 @@ class TourBuilderForm(forms.ModelForm):
 class StopBuilderForm(forms.ModelForm):
     class Meta:
         model = TourStop
-        fields = ("title", "region", "description", "day_number", "onward_journey", "map_x", "map_y")
+        fields = (
+            "title", "region", "description", "day_number", "onward_journey",
+            "latitude", "longitude", "map_x", "map_y",
+        )
         widgets = {"description": forms.Textarea(attrs={"rows": 2})}
 
 

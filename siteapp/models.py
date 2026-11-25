@@ -7,6 +7,8 @@ from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
 
+from .route_tracks import validate_route_track
+
 
 IMAGE_TYPES = {
     "jpg": ("JPEG", "image/jpeg"),
@@ -69,6 +71,7 @@ class Tour(OrderedContent):
     region = models.CharField(max_length=120, blank=True, help_text="Shown on route cards.")
     cover = models.ForeignKey(Photo, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     map_image = models.ForeignKey(Photo, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    route_track = models.JSONField(default=list, blank=True, validators=[validate_route_track])
     gallery = models.ManyToManyField(Photo, blank=True, related_name="+")
     distance_miles = models.PositiveIntegerField(null=True, blank=True)
     duration_days = models.PositiveIntegerField(null=True, blank=True)
@@ -102,16 +105,30 @@ class TourStop(OrderedContent):
         validators=[MinValueValidator(0), MaxValueValidator(100)],
         help_text="Percentage down the map from the top.",
     )
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        validators=[MinValueValidator(-90), MaxValueValidator(90)],
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        validators=[MinValueValidator(-180), MaxValueValidator(180)],
+    )
     guide_points = models.JSONField(default=list, editable=False, blank=True)
 
     def clean(self):
         super().clean()
         if (self.map_x is None) != (self.map_y is None):
             raise ValidationError("Enter both map positions or leave both blank.")
+        if (self.latitude is None) != (self.longitude is None):
+            raise ValidationError("Enter both latitude and longitude or leave both blank.")
 
     @property
     def has_map_position(self):
         return self.map_x is not None and self.map_y is not None
+
+    @property
+    def has_geographic_position(self):
+        return self.latitude is not None and self.longitude is not None
 
     def __str__(self):
         return self.title

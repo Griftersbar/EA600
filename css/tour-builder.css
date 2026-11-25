@@ -181,8 +181,8 @@
 .builder-options > summary, .builder-upload > summary { cursor: pointer; font-weight: 650; }
 .builder-options > .builder-field-grid, .builder-upload > form { margin-top: .8rem; }
 .builder-editor__sidebar { display: grid; gap: 1rem; position: sticky; top: 1.25rem; }
-.builder-publish { display: grid; gap: .6rem; }
-.builder-publish h2 { margin-bottom: .2rem; font-size: 1.25rem; }
+.builder-publish, .builder-manage { display: grid; gap: .6rem; }
+.builder-publish h2, .builder-manage h2 { margin-bottom: .2rem; font-size: 1.25rem; }
 .builder-editor-nav { display: grid; gap: .35rem; padding-inline: .35rem; }
 .builder-editor-nav a { padding: .35rem .55rem; font-size: .92rem; text-decoration: none; }
 .builder-editor-nav a:hover { text-decoration: underline; }

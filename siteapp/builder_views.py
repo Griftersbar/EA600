@@ -2,7 +2,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError, OperationalError, transaction
@@ -12,11 +12,12 @@ from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import constant_time_compare, salted_hmac
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_http_methods, require_safe
+from django.views.decorators.http import require_http_methods, require_POST, require_safe
 
 from .builder_forms import DayFormSet, StopFormSet, TourBuilderForm
 from .forms import PhotoForm
 from .models import ItineraryDay, Photo, Tour
+from .route_tracks import read_gpx
 from .views import render_tour_detail
 
 
@@ -24,6 +25,22 @@ def can_use_builder(user):
     return user.is_active and user.is_staff and (
         user.has_perm("siteapp.add_tour") or user.has_perm("siteapp.change_tour")
     )
+
+
+@staff_member_required
+@require_POST
+@never_cache
+def builder_import_gpx(request):
+    if not can_use_builder(request.user):
+        raise PermissionDenied
+    file = request.FILES.get("gpx")
+    if not file:
+        return JsonResponse({"error": "Choose a GPX file to import."}, status=400)
+    try:
+        track = read_gpx(file)
+    except ValidationError as error:
+        return JsonResponse({"error": error.messages[0]}, status=400)
+    return JsonResponse({"track": track})
 
 
 @staff_member_required

@@ -30,9 +30,16 @@ def route_content(tour, *, stops=None, days=None):
         stops = list(tour.stops.all()) if tour else []
     if days is None:
         days = tour.days.select_related("photo") if tour else []
+    track = tour.route_track if tour else []
+    geographic_stops = [
+        {"number": number, "title": stop.title, "position": [float(stop.latitude), float(stop.longitude)]}
+        for number, stop in enumerate(stops, start=1) if stop.has_geographic_position
+    ]
+    geographic_map = {"track": track, "stops": geographic_stops} if track or geographic_stops else None
     return {
         "tour": tour,
         "stops": stops,
+        "geographic_map": geographic_map,
         "show_map": bool(tour and tour.map_image and any(stop.has_map_position for stop in stops)),
         "days": days,
     }

@@ -9,6 +9,7 @@
         <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" sizes="any">
         <link rel="stylesheet" href="{% static 'css/design-tokens.css' %}">
         <link rel="stylesheet" href="{% static 'css/tour-builder.css' %}">
+        {% block extra_head %}{% endblock %}
     </head>
     <body class="builder">
         <header class="builder-topbar">

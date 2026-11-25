@@ -1,6 +1,12 @@
 {% load l10n %}
-<div class="route-layout{% if not show_map %} route-layout--no-map{% endif %}">
-    {% if show_map %}
+<div class="route-layout{% if not show_map and not geographic_map %} route-layout--no-map{% endif %}{% if not stops %} route-layout--map-only{% endif %}">
+    {% if geographic_map %}
+        <div class="route-map-stage" data-geographic-route>
+            <div class="geographic-map" data-map-canvas role="region" aria-label="{{ tour.title }} route map"></div>
+            {{ geographic_map|json_script }}
+            <noscript><p>Enable JavaScript to view the interactive route map.</p></noscript>
+        </div>
+    {% elif show_map %}
         <div class="route-map-stage">
             <div class="map-block map-block--route route-map-frame">
                 <img class="map-block__img route-map-frame__img" src="{{ tour.map_image.url }}"
@@ -47,7 +53,7 @@
             </aside>
         </div>
     {% endif %}
-    <div class="stop-list stop-list--scroll-sync" data-card-slider>
+    {% if stops %}<div class="stop-list stop-list--scroll-sync" data-card-slider>
         {% for stop in stops %}
             <article class="stop-card{% if forloop.first %} stop-card--active{% endif %}"
                      data-stop-index="{{ forloop.counter }}" data-place="{{ stop.title }}">
@@ -70,5 +76,5 @@
                 </div>
             </article>
         {% endfor %}
-    </div>
+    </div>{% endif %}
 </div>

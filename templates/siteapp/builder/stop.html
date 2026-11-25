@@ -10,8 +10,19 @@
             {% include "siteapp/builder/field.html" with field=stop.description full=True %}
             {% include "siteapp/builder/field.html" with field=stop.day_number %}
             {% include "siteapp/builder/field.html" with field=stop.onward_journey %}
+            <div class="builder-field--full route-map-actions">
+                <button type="button" class="builder-button" data-place-stop>Place on map</button>
+                <button type="button" class="builder-button builder-button--quiet" data-clear-stop hidden>Clear pin</button>
+            </div>
+            <details class="builder-field--full builder-options"{% if stop.latitude.errors or stop.longitude.errors %} open{% endif %}>
+                <summary>Latitude and longitude</summary>
+                <div class="builder-field-grid">
+                    {% include "siteapp/builder/field.html" with field=stop.latitude %}
+                    {% include "siteapp/builder/field.html" with field=stop.longitude %}
+                </div>
+            </details>
             <details class="builder-field--full builder-options"{% if stop.map_x.errors or stop.map_y.errors %} open{% endif %}>
-                <summary>Map pin position</summary>
+                <summary>Illustrated map pin</summary>
                 <div class="builder-field-grid">
                     {% include "siteapp/builder/field.html" with field=stop.map_x %}
                     {% include "siteapp/builder/field.html" with field=stop.map_y %}

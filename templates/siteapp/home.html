@@ -139,7 +139,7 @@
                     <p class="text-script-accent">{{ homepage.route_subtitle }}</p>
                     <p class="text-lead text-lead--center">{{ homepage.route_description|linebreaksbr }}</p>
                 </header>
-                {% if stops %}{% include "siteapp/includes/route.html" %}{% endif %}
+                {% if stops or geographic_map %}{% include "siteapp/includes/route.html" %}{% endif %}
             </div>
         </section>
         <section class="page-section" id="destinations" aria-labelledby="destinations-title">

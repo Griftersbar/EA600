@@ -35,6 +35,14 @@ If you lose access to your authenticator, choose **Use a recovery code** after e
 - Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
 - Under **Manage tour**, use **Unpublish tour** to take a published tour offline and keep it as a draft. **Delete tour** opens a confirmation page for permanent deletion. Photos stay in the shared library.
 
+## Edit a tour map
+
+In Tour Builder, choose a GPX file under **Route map** and select **Import GPX**. The map follows the points and segments in the file, including its start and finish. GPX files can contain up to 25,000 points and be up to 2 MB.
+
+In a route stop, select **Place on map**, then click or tap its location. You can also enter latitude and longitude in the stop form. Use **Preview** to check the route in the public tour layout, then save or publish it. Tours with an illustrated map can use their existing image and illustrated pins.
+
+Interactive maps use Leaflet and display OpenStreetMap tiles with attribution.
+
 ## Create a destination guide
 
 Use the same Django superuser to sign in to Wagtail at `/cms/`. Under **Pages**, open **Guides** and add a **Destination guide**. Add a cover and reorder the heading, text, photo and featured-tour blocks. Photos chosen or uploaded in a guide are available in the EA600 photo library. A featured-tour block links to a published tour in the catalogue.

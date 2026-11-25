@@ -22,6 +22,7 @@ urlpatterns = [
         {"action": "delete"}, name="builder_delete",
     ),
     path("builder/photos/", builder_views.builder_photos, name="builder_photos"),
+    path("builder/route-track/", builder_views.builder_import_gpx, name="builder_import_gpx"),
     path("stories/<slug:slug>/", views.story_detail, name="story_detail"),
     path("admin/login/", editor_auth.editor_login, {"entry": "django"}, name="editor_admin_login"),
     path("cms/login/", editor_auth.editor_login, {"entry": "wagtail"}, name="editor_wagtail_login"),

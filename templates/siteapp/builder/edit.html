@@ -1,5 +1,6 @@
 {% extends "siteapp/builder/base.html" %}
 {% load static %}
+{% block extra_head %}{% include "siteapp/includes/route_map_assets.html" %}{% endblock %}
 {% block content %}
     <a class="builder-back" href="{% url 'builder_index' %}">← All tours</a>
     <div class="builder-heading builder-heading--editor">
@@ -53,6 +54,8 @@
                 </div>
             </section>
 
+            {% include "siteapp/builder/route_map.html" %}
+
             <section class="builder-panel" id="stops" data-editor-group="stops" aria-labelledby="builder-stops">
                 <div class="builder-panel__heading">
                     <h2 id="builder-stops">Route stops</h2>
@@ -93,11 +96,12 @@
             <nav class="builder-editor-nav" aria-label="Editor sections">
                 <a href="#details">Details</a>
                 <a href="#photos">Photos</a>
+                <a href="#route-map">Route map</a>
                 <a href="#stops">Route stops</a>
                 <a href="#days">Itinerary</a>
             </nav>
             {% if published or editing and perms.siteapp.delete_tour %}
-                <div class="builder-panel builder-publish">
+                <div class="builder-panel builder-manage">
                     <h2>Manage tour</h2>
                     {% if published %}
                         <a class="builder-button" href="{% url 'builder_unpublish' pk=form.instance.pk %}">Unpublish tour</a>
@@ -111,4 +115,7 @@
     </form>
     {% include "siteapp/builder/photo_library.html" %}
 {% endblock %}
-{% block scripts %}<script src="{% static 'js/tour-builder.js' %}" defer></script>{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/tour-builder.js' %}" defer></script>
+    <script src="{% static 'js/tour-map-editor.js' %}" defer></script>
+{% endblock %}

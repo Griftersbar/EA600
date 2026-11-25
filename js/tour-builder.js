@@ -18,6 +18,7 @@ function bindRows(group) {
       row.querySelector('[data-move="-1"]').disabled = index === 0;
       row.querySelector('[data-move="1"]').disabled = index === rows.length - 1;
     });
+    group.dispatchEvent(new Event("builder:rows-changed"));
   }
 
   const sortByOrder = () => {

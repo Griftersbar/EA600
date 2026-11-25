@@ -1,0 +1,28 @@
+.geographic-map {
+  width: 100%;
+  height: clamp(18rem, 47vw, 31rem);
+  background: #e5eae2;
+  border: 1px solid #bfcec0;
+  border-radius: .7rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.geographic-map--placing { cursor: crosshair; }
+
+.geographic-map__pin {
+  display: grid;
+  place-items: center;
+  background: #185a47;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px #243c35aa;
+  font: 700 .75rem/1 sans-serif;
+}
+
+.route-layout--map-only { grid-template-columns: minmax(0, 1fr); }
+.builder-route-panel { display: grid; gap: .75rem; }
+.builder-route-panel > h2 { margin-bottom: 0; }
+.builder-route-panel > p:empty, .route-map-actions:not(:has(> :not([hidden]))) { display: none; }
+.route-map-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }

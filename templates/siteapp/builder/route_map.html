@@ -1,0 +1,22 @@
+<section class="builder-panel builder-route-panel" id="route-map" data-route-editor
+         data-import-url="{% url 'builder_import_gpx' %}" aria-labelledby="builder-route-map">
+    <h2 id="builder-route-map">Route map</h2>
+    {{ form.route_track }}
+    {{ form.route_track.errors }}
+    <label class="builder-field">
+        <span>GPX file</span>
+        <input type="file" accept=".gpx,application/gpx+xml" data-gpx-file>
+        <small class="builder-help">Import a GPX track or route up to 2 MB.</small>
+    </label>
+    <div class="route-map-actions">
+        <button type="button" class="builder-button" data-gpx-import>Import GPX</button>
+        <button type="button" class="builder-button builder-button--quiet" data-gpx-clear hidden>Remove GPX track</button>
+    </div>
+    <p class="builder-help" data-track-summary></p>
+    <div class="geographic-map" data-map-canvas role="region" aria-label="Route map editor"></div>
+    <p class="builder-help" role="status" data-map-status></p>
+    <div class="route-map-actions">
+        <button type="button" class="builder-button builder-button--quiet" data-cancel-placement hidden>Cancel placement</button>
+        <button type="button" class="builder-button builder-button--quiet" data-return-to-stop hidden>Back to stop</button>
+    </div>
+</section>

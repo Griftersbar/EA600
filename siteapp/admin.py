@@ -44,6 +44,7 @@ class ItineraryDayInline(admin.StackedInline):
 
 @admin.register(Tour)
 class TourAdmin(admin.ModelAdmin):
+    exclude = ("route_track",)
     change_list_template = "admin/siteapp/tour/change_list.html"
     list_display = ("title", "is_published", "position", "duration_days", "distance_miles")
     list_filter = ("is_published",)
