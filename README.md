@@ -47,6 +47,8 @@ Wagtail group permissions control who can add, change and publish business listi
 
 Visitors can submit a question on **Advertise** at `/advertise/#advertising-enquiry`. Submissions go to **Advertising enquiries** in Wagtail. Open an enquiry, use the email address to reply in your mail app, then mark it **Replied**. Wagtail group permissions control who can see or manage enquiries. The form works whenever the site is available, including while online listing applications are closed.
 
+Open **Settings → Advertise page** in Wagtail to change the page copy and buttons or show and hide the advertised plan prices. On the **Enquiry form** tab, edit field labels and help text, change required fields, and add, remove or reorder questions. Keep one reply email field so staff can respond. New answers appear in **Advertising enquiries**, with custom questions saved under the labels used at submission. Saving the settings updates the public page immediately. Displayed plan prices come from the billing configuration.
+
 ## Test business applications and billing
 
 Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can choose £12 monthly or £120 annually from **My business listings**. Verified payment makes the approved listing public on the preview. Wagtail-managed listings created by staff can still go live without billing.

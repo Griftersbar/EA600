@@ -3,10 +3,11 @@ from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from wagtail.test.utils.form_data import nested_form_data, streamfield
 
 from siteapp.test_support import sign_in_verified
 
-from .models import AdvertisingEnquiry, PartnerAccount
+from .models import AdvertisePageSettings, AdvertisingEnquiry, PartnerAccount
 
 
 @override_settings(PARTNER_APPLICATIONS_ENABLED=False)
@@ -74,3 +75,73 @@ class AdvertisingEnquiryTests(TestCase):
         enquiry.refresh_from_db()
         self.assertEqual(enquiry.status, AdvertisingEnquiry.Status.REPLIED)
         self.assertEqual(enquiry.business_name, self.details["business_name"])
+
+    def edit_advertise_settings(self, fields, **copy):
+        settings_url = reverse("wagtailsettings:edit", args=["partners", "advertisepagesettings", AdvertisePageSettings.load().pk])
+        field_form = self.client.get(settings_url).context["form"]
+        values = {name: field_form[name].value() for name in field_form.fields if name != "enquiry_fields"}
+        data = {**values, **copy, "enquiry_fields": streamfield(fields)}
+        return self.client.post(settings_url, nested_form_data(data))
+
+    def test_wagtail_settings_control_page_form_and_saved_answers(self):
+        editor = get_user_model().objects.create_superuser(username="advertise-editor")
+        sign_in_verified(self.client, editor)
+        fields = [
+            ("reply_email", {"label": "Your reply address"}),
+            ("standard", {"field": "contact_name", "label": "Contact person"}),
+            ("dropdown", {
+                "label": "Listing interest", "required": True, "help_text": "<b>Choose a type</b>",
+                "options": {
+                    "count": "2",
+                    "0": {"value": "Food and drink", "order": "0", "deleted": ""},
+                    "1": {"value": "Accommodation", "order": "1", "deleted": ""},
+                },
+            }),
+        ]
+        saved = self.edit_advertise_settings(
+            fields, title="Advertise your business", enquiry_submit_label="Ask about a listing",
+            enquiry_confirmation="Thank you. We’ll be in touch.", show_plan_prices=False,
+        )
+        self.assertEqual(saved.status_code, 302)
+        visitor = Client()
+        page = visitor.get(self.advertise)
+        self.assertContains(page, "Advertise your business")
+        self.assertContains(page, "Ask about a listing")
+        self.assertContains(page, "&lt;b&gt;Choose a type&lt;/b&gt;")
+        self.assertNotContains(page, "£12 a month")
+        form = page.context["enquiry_form"]
+        extra_name = form.extra_fields[0]
+        self.assertEqual(list(form.fields), ["email", "contact_name", extra_name])
+        self.assertFalse(form.fields["contact_name"].required)
+        self.assertTrue(form.fields["email"].required)
+
+        reply = {"enquiry-email": "new-business@example.test"}
+        self.assertEqual(visitor.post(self.enquire, reply).status_code, 400)
+        self.assertEqual(visitor.post(self.enquire, {**reply, f"enquiry-{extra_name}": "Invalid"}).status_code, 400)
+        response = visitor.post(self.enquire, {**reply, f"enquiry-{extra_name}": "Food and drink"})
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(visitor.get(self.advertise), "Thank you. We’ll be in touch.")
+        enquiry = AdvertisingEnquiry.objects.get()
+        self.assertEqual(enquiry.contact_name, "")
+        self.assertEqual(enquiry.additional_answers, [{"label": "Listing interest", "value": "Food and drink"}])
+
+        edit_url = reverse("ea600_advertising_enquiries:edit", args=[enquiry.pk])
+        detail = self.client.get(edit_url)
+        self.assertContains(detail, "Listing interest")
+        self.assertContains(detail, "Food and drink")
+        self.assertContains(self.client.get(reverse("ea600_advertising_enquiries:index")), enquiry.email)
+        self.assertEqual(self.edit_advertise_settings([fields[0]]).status_code, 302)
+        self.assertContains(self.client.get(edit_url), "Listing interest")
+
+    def test_wagtail_requires_exactly_one_reply_address_and_unique_standard_fields(self):
+        editor = get_user_model().objects.create_superuser(username="enquiry-settings-editor")
+        sign_in_verified(self.client, editor)
+        standard = ("standard", {"field": "location", "label": "Location"})
+        reply = ("reply_email", {"label": "Reply email"})
+        for fields in ([standard], [reply, reply]):
+            with self.subTest(fields=fields):
+                response = self.edit_advertise_settings(fields, title="Invalid version")
+                self.assertEqual(response.status_code, 200)
+                self.assertIn("enquiry_fields", response.context["form"].errors)
+                self.assertEqual(AdvertisePageSettings.load().title, "Advertise on EA600")
+        self.assertContains(self.edit_advertise_settings([reply, standard, standard]), "Use each standard enquiry field once")

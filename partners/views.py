@@ -23,7 +23,7 @@ from . import billing
 from .activity import record_click, with_recent_activity
 from .forms import AdvertisingEnquiryForm, OwnerEmailForm, PartnerApplicationForm
 from .mail import email_ready, send_partner_mail
-from .models import BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
+from .models import AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
 
 
 logger = logging.getLogger(__name__)
@@ -59,9 +59,12 @@ def allow_partner_request(request, purpose, limit):
 
 
 def show_advertise(request, *, form=None, enquiry_form=None, sent=False, status=200):
+    page = AdvertisePageSettings.load(request)
+    prices = {plan: f"£{amount / 100:.2f}".removesuffix(".00") for plan, (_, amount) in billing.PLANS.items()}
     return show(
-        request, "advertise", status=status, form=form if form is not None else OwnerEmailForm(),
-        enquiry_form=enquiry_form if enquiry_form is not None else AdvertisingEnquiryForm(prefix="enquiry"),
+        request, "advertise", status=status, page_title=page.title, advertise_page=page, prices=prices,
+        form=form if form is not None else OwnerEmailForm(),
+        enquiry_form=enquiry_form if enquiry_form is not None else AdvertisingEnquiryForm(page, prefix="enquiry"),
         enquiry_received=request.session.pop("partner_enquiry_received", False),
         enabled=applications_enabled(), signed_in=bool(owner(request)), sent=sent,
         pilot_preview=settings.PARTNER_PILOT_PREVIEW,
@@ -111,7 +114,7 @@ def enquire(request):
     if request.method == "GET":
         return redirect(advertise_section)
 
-    form = AdvertisingEnquiryForm(request.POST, prefix="enquiry")
+    form = AdvertisingEnquiryForm(AdvertisePageSettings.load(request), request.POST, prefix="enquiry")
     if not form.is_valid():
         return show_advertise(request, enquiry_form=form, status=400)
     if not allow_partner_request(request, "enquiry", 5):

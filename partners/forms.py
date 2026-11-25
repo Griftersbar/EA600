@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import URLValidator
+from django.utils.html import escape
 
 from siteapp.forms import PhotoForm
 from siteapp.models import TourStop
@@ -13,20 +15,49 @@ class OwnerEmailForm(forms.Form):
         return self.cleaned_data["email"].casefold()
 
 
-class AdvertisingEnquiryForm(forms.ModelForm):
-    class Meta:
-        model = AdvertisingEnquiry
-        fields = ("business_name", "contact_name", "email", "location", "message")
-        labels = {
-            "contact_name": "Your name", "email": "Email for replies",
-            "location": "Town or nearest route stop", "message": "What would you like to know?",
-        }
+class AdvertisingEnquiryForm(forms.Form):
+    def __init__(self, page, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.extra_fields = []
         widgets = {
             "business_name": forms.TextInput(attrs={"autocomplete": "organization"}),
             "contact_name": forms.TextInput(attrs={"autocomplete": "name"}),
             "email": forms.EmailInput(attrs={"autocomplete": "email"}),
             "message": forms.Textarea(attrs={"rows": 4}),
         }
+        for block in page.enquiry_fields:
+            kind, value = block.block_type, block.value
+            options = {
+                "label": value["label"],
+                "help_text": escape(value.get("help_text", "")),
+                "required": kind == "reply_email" or bool(value.get("required")),
+            }
+            if kind in ("standard", "reply_email"):
+                name = "email" if kind == "reply_email" else value["field"]
+                self.fields[name] = AdvertisingEnquiry._meta.get_field(name).formfield(widget=widgets.get(name), **options)
+            else:
+                name = f"extra_{block.id}"
+                self.fields[name] = self.make_extra_field(kind, value, options)
+                self.extra_fields.append(name)
+
+    @staticmethod
+    def make_extra_field(kind, value, options):
+        if kind == "dropdown":
+            choices = [("", "Choose an option")] + [(option, option) for option in value["options"]]
+            return forms.ChoiceField(choices=choices, **options)
+        if kind == "website":
+            return forms.URLField(max_length=500, assume_scheme="https", validators=[URLValidator(schemes=["http", "https"])], **options)
+        if kind == "long_text":
+            return forms.CharField(max_length=2000, widget=forms.Textarea(attrs={"rows": 4}), **options)
+        return forms.CharField(max_length=240, **options)
+
+    def save(self):
+        answers = self.cleaned_data.copy()
+        additional_answers = [
+            {"label": self.fields[name].label, "value": answers.pop(name)}
+            for name in self.extra_fields
+        ]
+        return AdvertisingEnquiry.objects.create(additional_answers=additional_answers, **answers)
 
 
 class PublishedStopField(forms.ModelChoiceField):

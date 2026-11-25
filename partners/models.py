@@ -9,7 +9,11 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from modelcluster.fields import ParentalManyToManyField
 from modelcluster.models import ClusterableModel
+from wagtail.contrib.settings.models import BaseGenericSetting
+from wagtail.fields import StreamField
 from wagtail.models import DraftStateMixin, LockableMixin, PreviewableMixin, RevisionMixin, WorkflowMixin
+
+from .blocks import EnquiryFieldsBlock, default_enquiry_fields
 
 
 class BusinessListing(WorkflowMixin, LockableMixin, DraftStateMixin, RevisionMixin, PreviewableMixin, ClusterableModel):
@@ -85,16 +89,48 @@ class PartnerAccount(models.Model):
     access_expires = models.DateTimeField(null=True, blank=True)
 
 
+class AdvertisePageSettings(BaseGenericSetting):
+    title = models.CharField(max_length=160, default="Advertise on EA600")
+    introduction = models.TextField(
+        default="Help road-trippers find your restaurant, tea room, accommodation, shop or workshop as they plan their route.",
+    )
+    enquiry_link_label = models.CharField(max_length=80, default="Make an enquiry")
+    package_heading = models.CharField(max_length=160, default="One business location on one route")
+    package_description = models.TextField(default=(
+        "Your listing can include a photo, directions, and a link to your website or booking page. "
+        "Tell us which stop you’re near. We’ll review your listing before you choose a payment plan."
+    ))
+    show_plan_prices = models.BooleanField(default=True, help_text="Show the monthly and annual prices used by checkout.")
+    enquiry_heading = models.CharField(max_length=160, default="Advertising enquiry")
+    enquiry_description = models.TextField(default=(
+        "Ask about advertising options or where your business could appear. We’ll use your contact details to reply."
+    ))
+    enquiry_submit_label = models.CharField(max_length=80, default="Send enquiry")
+    enquiry_confirmation = models.TextField(default=(
+        "Thanks for getting in touch. We’ve received your enquiry and will reply by email."
+    ))
+    enquiry_fields = StreamField(EnquiryFieldsBlock(), default=default_enquiry_fields, use_json_field=True)
+    sign_in_label = models.CharField(max_length=80, default="Email me a sign-in link")
+    sign_in_confirmation = models.CharField(max_length=240, default="Check your inbox for a sign-in link. The link is valid for 20 minutes.")
+    owner_listings_label = models.CharField(max_length=80, default="Open my listings")
+    applications_closed_message = models.CharField(max_length=240, default="Online listing applications are currently closed.")
+    pilot_activity_label = models.CharField(max_length=80, default="View pilot test activity")
+
+    class Meta:
+        verbose_name = "Advertise page"
+
+
 class AdvertisingEnquiry(models.Model):
     class Status(models.TextChoices):
         NEW = "new", "New"
         REPLIED = "replied", "Replied"
 
-    business_name = models.CharField(max_length=140)
-    contact_name = models.CharField(max_length=100)
+    business_name = models.CharField(max_length=140, blank=True)
+    contact_name = models.CharField(max_length=100, blank=True)
     email = models.EmailField()
-    location = models.CharField(max_length=120)
-    message = models.TextField(max_length=2000)
+    location = models.CharField(max_length=120, blank=True)
+    message = models.TextField(max_length=2000, blank=True)
+    additional_answers = models.JSONField(default=list, blank=True, editable=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=Status, default=Status.NEW)
 
@@ -104,7 +140,11 @@ class AdvertisingEnquiry(models.Model):
         verbose_name_plural = "advertising enquiries"
 
     def __str__(self):
-        return self.business_name
+        return self.business_name or self.contact_name or self.email
+
+    @property
+    def subject(self):
+        return str(self)
 
 
 class PartnerApplication(models.Model):

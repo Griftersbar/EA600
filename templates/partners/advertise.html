@@ -2,41 +2,41 @@
 {% block content %}
     <section class="page-section" aria-labelledby="advertise-title">
         <div class="container partner-panel">
-            <h1 class="heading-section" id="advertise-title">Advertise on EA600</h1>
-            <p class="text-lead">Help road-trippers find your restaurant, tea room, accommodation, shop or workshop as they plan their route.</p>
-            <p><a class="btn btn--primary" href="#advertising-enquiry">Make an enquiry</a></p>
+            <h1 class="heading-section" id="advertise-title">{{ advertise_page.title }}</h1>
+            <p class="text-lead">{{ advertise_page.introduction|linebreaksbr }}</p>
+            <p><a class="btn btn--primary" href="#advertising-enquiry">{{ advertise_page.enquiry_link_label }}</a></p>
             <div class="partner-panel__card">
-                <h2>One business location on one route</h2>
-                <p><strong>£12 a month</strong> or <strong>£120 a year</strong></p>
-                <p>Your listing can include a photo, directions, and a link to your website or booking page. Tell us which stop you’re near. We’ll review your listing before you choose a payment plan.</p>
+                <h2>{{ advertise_page.package_heading }}</h2>
+                {% if advertise_page.show_plan_prices %}<p><strong>{{ prices.monthly }} a month</strong> or <strong>{{ prices.annual }} a year</strong></p>{% endif %}
+                <p>{{ advertise_page.package_description|linebreaksbr }}</p>
             </div>
             <section class="partner-panel__card partner-enquiry" id="advertising-enquiry" aria-labelledby="enquiry-title">
-                <h2 id="enquiry-title">Advertising enquiry</h2>
+                <h2 id="enquiry-title">{{ advertise_page.enquiry_heading }}</h2>
                 {% if enquiry_received %}
-                    <p role="status">Thanks for getting in touch. We’ve received your enquiry and will reply by email.</p>
+                    <p role="status">{{ advertise_page.enquiry_confirmation|linebreaksbr }}</p>
                 {% else %}
-                    <p>Ask about advertising options or where your business could appear. We’ll use your contact details to reply.</p>
+                    <p>{{ advertise_page.enquiry_description|linebreaksbr }}</p>
                     <form method="post" action="{% url 'partners:enquire' %}#advertising-enquiry" class="partner-form">
                         {% csrf_token %}
                         {{ enquiry_form.as_div }}
-                        <button type="submit" class="btn btn--primary">Send enquiry</button>
+                        <button type="submit" class="btn btn--primary">{{ advertise_page.enquiry_submit_label }}</button>
                     </form>
                 {% endif %}
             </section>
             {% if sent %}
-                <p role="status">Check your inbox for a sign-in link. The link is valid for 20 minutes.</p>
+                <p role="status">{{ advertise_page.sign_in_confirmation }}</p>
             {% elif signed_in %}
-                <p><a class="btn btn--primary" href="{% url 'partners:dashboard' %}">Open my listings</a></p>
+                <p><a class="btn btn--primary" href="{% url 'partners:dashboard' %}">{{ advertise_page.owner_listings_label }}</a></p>
             {% elif enabled %}
                 <form method="post" class="partner-form">
                     {% csrf_token %}
                     {{ form.as_div }}
-                    <button type="submit" class="btn btn--primary">Email me a sign-in link</button>
+                    <button type="submit" class="btn btn--primary">{{ advertise_page.sign_in_label }}</button>
                 </form>
             {% else %}
-                <p>Online listing applications are currently closed.</p>
+                <p>{{ advertise_page.applications_closed_message }}</p>
             {% endif %}
-            {% if pilot_preview %}<p><a href="{% url 'partners:pilot' %}">View pilot test activity</a></p>{% endif %}
+            {% if pilot_preview %}<p><a href="{% url 'partners:pilot' %}">{{ advertise_page.pilot_activity_label }}</a></p>{% endif %}
         </div>
     </section>
 {% endblock %}

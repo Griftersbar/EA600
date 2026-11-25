@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_otp.plugins.otp_static",
     "wagtail.sites",
+    "wagtail.contrib.settings",
     "wagtail.users",
     "wagtail.snippets",
     "wagtail.documents",
