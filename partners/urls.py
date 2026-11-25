@@ -6,6 +6,8 @@ from . import views
 app_name = "partners"
 urlpatterns = [
     path("", views.advertise, name="advertise"),
+    path("go/<int:pk>/<slug:action>/", views.listing_click, name="listing_click"),
+    path("pilot/", views.pilot, name="pilot"),
     path("access/<slug:token>/", views.access, name="access"),
     path("listings/", views.dashboard, name="dashboard"),
     path("sign-out/", views.sign_out, name="sign_out"),

@@ -234,6 +234,30 @@
   text-decoration: underline;
 }
 
+.partner-clicks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  margin-top: var(--space-2);
+}
+
+.partner-clicks__title,
+.partner-clicks dd {
+  font-weight: var(--font-weight-bold);
+}
+
+.partner-clicks dd {
+  margin: 0;
+}
+
+.pilot-listing {
+  scroll-margin-top: 5rem;
+}
+
+.pilot-listing:target {
+  border-color: var(--color-primary-green);
+}
+
 .tour-pages,
 .itinerary-links {
   display: flex;

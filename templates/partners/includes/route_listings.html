@@ -7,7 +7,7 @@
                 <h3 id="near-stop-{{ group.grouper.pk }}">Near {{ group.grouper.title }}</h3>
                 <div class="tour-grid">
                     {% for placement in group.list %}
-                        {% include "partners/includes/listing_card.html" with listing=placement.listing only %}
+                        {% include "partners/includes/listing_card.html" with listing=placement.listing placement=placement only %}
                     {% endfor %}
                 </div>
             </section>

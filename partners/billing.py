@@ -3,6 +3,7 @@ from uuid import UUID, uuid4
 
 from django.conf import settings
 from django.db.models import Q
+from django.db.models.functions import Coalesce, Greatest
 from django.utils import timezone
 from stripe import StripeClient
 
@@ -112,6 +113,18 @@ def confirm_checkout(session):
             sync_subscription(application, session["subscription"])
 
 
+def paid_invoice_end(invoice, item_id):
+    if invoice.get("status") != "paid":
+        return None
+    ends = []
+    for line in (invoice.get("lines") or {}).get("data", []):
+        details = (line.get("parent") or {}).get("subscription_item_details") or {}
+        end = (line.get("period") or {}).get("end")
+        if details.get("subscription_item") == item_id and not details.get("proration") and end:
+            ends.append(end)
+    return datetime.fromtimestamp(max(ends), tz=utc.utc) if ends else None
+
+
 def sync_subscription(application, subscription_id):
     observed_at = timezone.now()
     subscription = stripe_client().v1.subscriptions.retrieve(subscription_id, {"expand": ["latest_invoice"]})
@@ -130,9 +143,11 @@ def sync_subscription(application, subscription_id):
         "billing_status": status if correct_price else "invalid_price",
         "synced_at": observed_at,
     }
-    # Failed renewals preserve only the already-paid time. An active subscription alone doesn't prove payment.
-    if correct_price and status in application.BILLABLE_STATUSES and invoice.get("status") == "paid":
-        updates["paid_until"] = datetime.fromtimestamp(items[0]["current_period_end"], tz=utc.utc)
+    # Stripe's current subscription period can advance before the invoice is paid.
+    if correct_price and status in application.BILLABLE_STATUSES:
+        paid_end = paid_invoice_end(invoice, items[0]["id"])
+        if paid_end:
+            updates["paid_until"] = Greatest(Coalesce("paid_until", paid_end), paid_end)
     PartnerApplication.objects.filter(
         Q(synced_at__lt=observed_at) | Q(synced_at__isnull=True),
         Q(stripe_subscription_id=subscription_id) | Q(stripe_subscription_id__isnull=True),

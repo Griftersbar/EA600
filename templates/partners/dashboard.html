@@ -22,6 +22,7 @@
                     {% if application.billing_status == "past_due" %}
                         <p>Your latest payment failed. Update your payment details in Manage billing.</p>
                     {% endif %}
+                    {% include "partners/includes/click_totals.html" with activity=application only %}
                     {% if billing_ready %}
                         {% if application.can_checkout %}
                             <form method="post" action="{% url 'partners:checkout' application.pk %}" class="partner-form">

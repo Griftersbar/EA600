@@ -22,6 +22,7 @@
             {% else %}
                 <p>Business applications are currently closed.</p>
             {% endif %}
+            {% if pilot_preview %}<p><a href="{% url 'partners:pilot' %}">View pilot test activity</a></p>{% endif %}
         </div>
     </section>
 {% endblock %}

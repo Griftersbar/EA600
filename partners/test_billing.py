@@ -104,10 +104,12 @@ class PartnerBillingTests(TestCase):
         self.assertFalse(published_placements(self.tour).exists())
 
         end = int((timezone.now() + timedelta(days=365)).timestamp())
+        invoice_line = {"parent": {"subscription_item_details": {"subscription_item": "si_test", "proration": False}},
+                        "period": {"end": end}}
         subscription = {
             "livemode": False, "metadata": params["metadata"], "customer": "cus_test",
-            "status": "active", "latest_invoice": {"status": "paid"},
-            "items": {"data": [{"price": {"id": "price_year_fixture"}, "quantity": 1, "current_period_end": end}]},
+            "status": "active", "latest_invoice": {"status": "paid", "lines": {"data": [invoice_line]}},
+            "items": {"data": [{"id": "si_test", "price": {"id": "price_year_fixture"}, "quantity": 1, "current_period_end": end + 1000000}]},
         }
         self.stripe.subscriptions.retrieve.return_value = subscription
         completed = {"id": "cs_test_123", "livemode": False, "mode": "subscription", "subscription": "sub_test",
@@ -122,7 +124,6 @@ class PartnerBillingTests(TestCase):
         invoice = {"parent": {"subscription_details": {"subscription": "sub_test"}}}
         subscription["status"] = "past_due"
         subscription["latest_invoice"]["status"] = "open"
-        subscription["items"]["data"][0]["current_period_end"] = end + 1000000
         self.assertEqual(self.signed_event("invoice.payment_failed", invoice).status_code, 204)
         application.refresh_from_db()
         self.assertEqual(application.paid_until, paid_until)
@@ -132,9 +133,12 @@ class PartnerBillingTests(TestCase):
 
         subscription["status"] = "active"
         subscription["latest_invoice"]["status"] = "paid"
+        invoice_line["period"]["end"] = end + 1000000
         subscription["cancel_at_period_end"] = True
         self.assertEqual(self.signed_event("invoice.paid", invoice).status_code, 204)
         self.assertTrue(published_placements(self.tour).exists())
+        application.refresh_from_db()
+        self.assertEqual(int(application.paid_until.timestamp()), end + 1000000)
         subscription["status"] = "canceled"
         self.assertEqual(self.signed_event("customer.subscription.deleted", {"id": "sub_test"}).status_code, 204)
         self.assertFalse(published_placements(self.tour).exists())

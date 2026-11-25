@@ -1,5 +1,7 @@
+from urllib.parse import urlencode
 from uuid import uuid4
 
+from django.conf import settings
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
 from django.db.models import Q
@@ -34,6 +36,7 @@ class BusinessListing(WorkflowMixin, LockableMixin, DraftStateMixin, RevisionMix
     stops = ParentalManyToManyField("siteapp.TourStop", through="RoutePlacement", related_name="business_listings")
     live = models.BooleanField(default=False, editable=False)
     requires_subscription = models.BooleanField(default=False, editable=False)
+    demo_key = models.SlugField(max_length=64, unique=True, null=True, editable=False)
 
     class Meta:
         ordering = ["name", "pk"]
@@ -44,6 +47,14 @@ class BusinessListing(WorkflowMixin, LockableMixin, DraftStateMixin, RevisionMix
     def get_preview_template(self, request, mode_name):
         return "partners/preview.html"
 
+    @property
+    def link_action(self):
+        return ListingClick.Action.BOOKING if self.link_label == self.LinkLabel.BOOKING else ListingClick.Action.WEBSITE
+
+    @property
+    def directions_url(self):
+        return "https://www.google.com/maps/search/?" + urlencode({"api": 1, "query": f"{self.name}, {self.address}"})
+
 
 class RoutePlacement(models.Model):
     listing = models.ForeignKey(BusinessListing, on_delete=models.CASCADE, related_name="placements")
@@ -51,6 +62,21 @@ class RoutePlacement(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["listing", "stop"], name="unique_business_listing_stop")]
+
+
+class ListingClick(models.Model):
+    class Action(models.TextChoices):
+        WEBSITE = "website", "Website"
+        BOOKING = "booking", "Booking"
+        DIRECTIONS = "directions", "Directions"
+
+    listing = models.ForeignKey(BusinessListing, on_delete=models.CASCADE, related_name="click_days")
+    day = models.DateField()
+    action = models.CharField(max_length=12, choices=Action)
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["listing", "day", "action"], name="unique_listing_click_day_action")]
 
 
 class PartnerAccount(models.Model):
@@ -92,11 +118,16 @@ class PartnerApplication(models.Model):
         return self.approved and (not self.stripe_subscription_id or self.billing_status in self.ENDED_STATUSES)
 
 
-def published_placements(tour):
-    return RoutePlacement.objects.filter(
+def published_placements(tour=None):
+    placements = RoutePlacement.objects.filter(
         Q(listing__requires_subscription=False) | Q(
             listing__application__billing_status__in=PartnerApplication.BILLABLE_STATUSES,
             listing__application__paid_until__gt=timezone.now(),
         ),
-        stop__tour=tour, stop__tour__is_published=True, listing__live=True,
+        stop__tour__is_published=True, listing__live=True,
     ).select_related("stop", "listing__photo").order_by("stop__position", "stop_id", "listing__name", "listing_id")
+    if tour is not None:
+        placements = placements.filter(stop__tour=tour)
+    if not settings.PARTNER_PILOT_PREVIEW:
+        placements = placements.filter(listing__demo_key__isnull=True)
+    return placements

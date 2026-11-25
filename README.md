@@ -53,6 +53,14 @@ For a hosted checkout test, use a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` a
 
 Register `/advertise/stripe/webhook/` on the preview domain as a test webhook endpoint and set its signing secret as `STRIPE_TEST_WEBHOOK_SECRET`. Subscribe to `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated` and `customer.subscription.deleted`. Keep the key and signing secret in environment variables. This stage accepts test Stripe keys and events. Listings stop appearing when their paid period ends, even if a renewal fails or an expiry event arrives late.
 
+## Run the business listing pilot
+
+Set `PARTNER_PILOT_PREVIEW=1` on a preview service and run `python manage.py seed_partner_pilot` after migrations against that service’s database. The command adds ten fictional businesses on the published EA600 route. Running it again preserves existing demo edits, publication states and counts. Turning the flag off hides the demo cards and activity page.
+
+Open **Places along the route** on `/tours/ea600/` and try a test business’s website, booking or directions link. It returns you to the matching test report at `/advertise/pilot/`. In Wagtail, **Business listings** shows the same 30-day totals. Signed-in owners see totals for listings they own in **My business listings**.
+
+For real listings the links continue to the current website, booking page or directions. The report counts outbound clicks per listing and action over the latest 30 UK calendar days. A click measures interest in a link. It cannot confirm an enquiry, booking or unique visitor. The counters store daily totals.
+
 ## Edit a tour map
 
 In Tour Builder, choose a GPX file under **Route map** and select **Import GPX**. The map follows the points and segments in the file, including its start and finish. GPX files can contain up to 25,000 points and be up to 2 MB.

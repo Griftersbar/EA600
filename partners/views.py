@@ -2,26 +2,28 @@ import hashlib
 import logging
 import secrets
 from datetime import timedelta
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.core.cache import cache
-from django.db import transaction
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.db import DatabaseError, transaction
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_safe
 from stripe import SignatureVerificationError, StripeError, Webhook
 
 from siteapp.editor_auth import editor_client_ip
 from siteapp.views import homepage_content
 
 from . import billing
+from .activity import record_click, with_recent_activity
 from .forms import OwnerEmailForm, PartnerApplicationForm
 from .mail import email_ready, send_partner_mail
-from .models import PartnerAccount, PartnerApplication
+from .models import BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
 
 
 logger = logging.getLogger(__name__)
@@ -87,7 +89,7 @@ def advertise(request):
                 form.add_error(None, "Email is temporarily unavailable. Please try again shortly.")
                 return show(request, "advertise", form=form, enabled=enabled, signed_in=bool(owner(request)))
         return show(request, "advertise", sent=True, enabled=enabled)
-    return show(request, "advertise", form=form, enabled=enabled, signed_in=bool(owner(request)))
+    return show(request, "advertise", form=form, enabled=enabled, signed_in=bool(owner(request)), pilot_preview=settings.PARTNER_PILOT_PREVIEW)
 
 
 @never_cache
@@ -137,9 +139,51 @@ def dashboard(request):
         return redirect("partners:dashboard")
     return show(
         request, "dashboard", form=form, account=account, enabled=applications_enabled(),
-        applications=account.applications.select_related("listing").order_by("listing__name"),
+        applications=with_recent_activity(account.applications.select_related("listing"), "listing__click_days").order_by("listing__name"),
         billing_ready=billing.billing_ready(),
     )
+
+
+@never_cache
+@require_safe
+def listing_click(request, pk, action):
+    placement = get_object_or_404(published_placements(), pk=pk)
+    listing = placement.listing
+    if action not in (listing.link_action, ListingClick.Action.DIRECTIONS):
+        raise Http404
+
+    if listing.demo_key:
+        destination = reverse("partners:pilot") + f"#listing-{listing.pk}"
+    else:
+        destination = listing.directions_url if action == ListingClick.Action.DIRECTIONS else listing.link
+        try:
+            target = urlsplit(destination)
+            if target.scheme not in ("http", "https") or not target.hostname:
+                raise Http404
+        except ValueError as error:
+            raise Http404 from error
+
+    purpose = request.headers.get("Sec-Purpose", request.headers.get("Purpose", "")).lower()
+    if request.method == "GET" and "prefetch" not in purpose and "prerender" not in purpose:
+        try:
+            record_click(listing.pk, action)
+        except DatabaseError:
+            logger.warning("Could not count a business listing click")
+    response = redirect(destination)
+    response["X-Robots-Tag"] = "noindex, nofollow"
+    return response
+
+
+@never_cache
+@require_safe
+def pilot(request):
+    if not settings.PARTNER_PILOT_PREVIEW:
+        raise Http404
+    demo_ids = published_placements().filter(listing__demo_key__isnull=False).values("listing_id")
+    listings = with_recent_activity(BusinessListing.objects.filter(pk__in=demo_ids))
+    response = show(request, "pilot", listings=listings)
+    response["X-Robots-Tag"] = "noindex"
+    return response
 
 
 @never_cache
