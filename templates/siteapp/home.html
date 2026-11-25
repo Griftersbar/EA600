@@ -160,6 +160,7 @@
                         </div>
                         <button class="btn btn--primary" type="submit">Show route</button>
                         <a class="route-picker__link" href="{{ tour.get_absolute_url }}">View full route</a>
+                        {% if has_route_listings %}<a class="route-picker__link" href="{{ tour.get_absolute_url }}#places-along-the-route">Places along the route</a>{% endif %}
                     </form>
                     {% if stops or geographic_map %}
                         {% include "siteapp/includes/route.html" %}

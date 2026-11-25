@@ -35,6 +35,14 @@ If you lose access to your authenticator, choose **Use a recovery code** after e
 - Open **Tour Builder** at `/builder/tours/` or from the Wagtail sidebar. Create a tour, choose or upload photos, and use the arrows to rearrange stops and itinerary days. **Preview** opens the current form in the public tour layout. Use **Save draft** for a new tour or **Publish changes** to update a live one.
 - Under **Manage tour**, use **Unpublish tour** to take a published tour offline and keep it as a draft. **Delete tour** opens a confirmation page for permanent deletion. Photos stay in the shared library.
 
+## Publish a business listing
+
+In Wagtail, open **Business listings** and select **Add business listing**. Enter the business name, category, address, description and website or booking link. Choose an existing photo or upload one from the photo chooser. Under **Route stops**, choose the nearest stop on each relevant route.
+
+Save a draft and use **Preview** to review the card and its placements. Select **Publish** when it’s ready. Published cards appear under **Places along the route**, grouped by stop. Use **Unpublish** to take a listing offline and keep its draft. A route must be published for its placements to appear.
+
+Wagtail group permissions control who can add, change and publish business listings. To require sign-off for editors, assign a moderation workflow to **Business listing** under **Settings → Workflows** and reserve direct publish permission for reviewers.
+
 ## Edit a tour map
 
 In Tour Builder, choose a GPX file under **Route map** and select **Import GPX**. The map follows the points and segments in the file, including its start and finish. GPX files can contain up to 25,000 points and be up to 2 MB.

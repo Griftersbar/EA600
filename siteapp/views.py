@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.views.decorators.http import require_safe
 
+from partners.models import published_placements
+
 from .models import IMAGE_TYPES, Destination, FAQ, FooterPhoto, Highlight, HomeContent, PlanningTip, Story, Tour
 
 
@@ -60,6 +62,7 @@ def home(request):
         "homepage": homepage,
         "is_home": True,
         **route_content(tour),
+        "has_route_listings": bool(tour and published_placements(tour).exists()),
         "route_choices": tours.values_list("slug", "title"),
         "use_tour_copy": tour is not None and tour != featured_tour,
         "tours": tours[:3],
@@ -90,6 +93,7 @@ def render_tour_detail(request, tour, *, stops=None, days=None, photos=None, bui
         "page_title": f"{tour.title} · EA600",
         "photos": tour.gallery.all() if photos is None else photos,
         "builder_preview": builder_preview,
+        "placements": () if builder_preview else published_placements(tour),
         **route_content(tour, stops=stops, days=days),
     })
     if builder_preview:

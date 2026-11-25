@@ -1,0 +1,16 @@
+<article class="tour-card business-card">
+    {% if listing.photo %}
+        <img class="tour-card__image" src="{{ listing.photo.url }}" alt="{{ listing.photo.alt_text }}" loading="lazy" decoding="async">
+    {% endif %}
+    <div class="tour-card__body business-card__body">
+        <p class="business-card__category"><span class="business-card__ad">Ad</span> {{ listing.get_category_display }}</p>
+        <h4>{{ listing.name }}</h4>
+        <p>{{ listing.description }}</p>
+        <p>{{ listing.address }}</p>
+        <ul class="business-card__links">
+            <li><a href="{{ listing.link }}" rel="sponsored">{{ listing.get_link_label_display }}</a></li>
+            <li><a href="https://www.google.com/maps/search/?api=1&amp;query={{ listing.name|urlencode }},%20{{ listing.address|urlencode }}">Directions</a></li>
+            {% if listing.phone %}<li><a href="tel:{{ listing.phone }}">Call</a></li>{% endif %}
+        </ul>
+    </div>
+</article>

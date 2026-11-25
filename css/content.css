@@ -135,6 +135,54 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.route-listings {
+  scroll-margin-top: 5rem;
+}
+
+.route-listings__stop {
+  margin-top: var(--space-6);
+}
+
+.route-listings__stop h3,
+.business-card h4 {
+  color: var(--color-brand-dark);
+  font: var(--font-weight-bold) var(--font-size-xl) / 1.2 var(--font-family-display);
+}
+
+.route-listings__stop h3 {
+  margin-bottom: var(--space-3);
+}
+
+.business-card__body {
+  display: grid;
+  gap: var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.business-card__category {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.business-card__ad {
+  padding: 0 var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  color: var(--color-brand-dark);
+  font-size: var(--font-size-sm);
+}
+
+.business-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+  font-weight: var(--font-weight-semibold);
+}
+
 .tour-pages,
 .itinerary-links {
   display: flex;

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "taggit",
     "siteapp",
     "guides",
+    "partners",
 ]
 
 MIDDLEWARE = [

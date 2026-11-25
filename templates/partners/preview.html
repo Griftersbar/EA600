@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "siteapp/includes/site_head.html" with page_title="Business listing preview" %}
+    </head>
+    <body>
+        <main class="page-section page-section--muted">
+            <div class="container">
+                <h1 class="heading-section content-page__title">Business listing preview</h1>
+                {% for stop in object.stops.all %}
+                    <p>{{ stop.tour.title }} · Near {{ stop.title }}</p>
+                {% endfor %}
+                <div class="route-listings__stop">
+                    <div class="tour-grid">
+                        {% include "partners/includes/listing_card.html" with listing=object only %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

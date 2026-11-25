@@ -1,0 +1,16 @@
+<section class="page-section page-section--muted route-listings" id="places-along-the-route" aria-labelledby="route-listings-title">
+    <div class="container">
+        <h2 class="heading-section content-page__title" id="route-listings-title">Places along the route</h2>
+        {% regroup placements by stop as listings_by_stop %}
+        {% for group in listings_by_stop %}
+            <section class="route-listings__stop" aria-labelledby="near-stop-{{ group.grouper.pk }}">
+                <h3 id="near-stop-{{ group.grouper.pk }}">Near {{ group.grouper.title }}</h3>
+                <div class="tour-grid">
+                    {% for placement in group.list %}
+                        {% include "partners/includes/listing_card.html" with listing=placement.listing only %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+</section>
