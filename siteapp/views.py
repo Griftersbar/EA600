@@ -67,7 +67,7 @@ def home(request):
         "use_tour_copy": tour is not None and tour != featured_tour,
         "tours": tours[:3],
         "highlights": Highlight.objects.select_related("icon"),
-        "destinations": Destination.objects.select_related("photo"),
+        "destinations": Destination.objects.filter(show_on_homepage=True).select_related("photo"),
         "planning_tips": PlanningTip.objects.select_related("photo", "icon"),
         "stories": Story.objects.filter(is_published=True).select_related("cover", "author_photo"),
         "questions": FAQ.objects.all(),
@@ -88,6 +88,15 @@ def tour_detail(request, slug):
 
 
 @require_safe
+def destination_list(request):
+    destinations = Destination.objects.select_related("photo").order_by("title", "pk")
+    page = Paginator(destinations, 12).get_page(request.GET.get("page"))
+    return render(request, "siteapp/destination_list.html", {
+        "homepage": homepage_content(), "page": page, "page_title": "All destinations · EA600",
+    })
+
+
+@require_safe
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination.objects.select_related("photo"), slug=slug)
     placements = {}
@@ -104,6 +113,7 @@ def destination_detail(request, slug):
         "placements": list(placements.values()),
         "tours": published_tours().filter(stops__destination=destination).distinct(),
     })
+
 
 def render_tour_detail(request, tour, *, stops=None, days=None, photos=None, builder_preview=False):
     response = render(request, "siteapp/tour_detail.html", {

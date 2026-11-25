@@ -173,9 +173,14 @@
                 </header>
                 <div class="card-grid">
                     {% for destination in destinations %}
-                        {% include "siteapp/includes/destination_card.html" with featured=forloop.first %}
+                        {% if forloop.first and destination.photo %}
+                            {% include "siteapp/includes/destination_card.html" with featured=True %}
+                        {% else %}
+                            {% include "siteapp/includes/destination_card.html" %}
+                        {% endif %}
                     {% endfor %}
                 </div>
+                <p class="tour-pages"><a class="btn btn--secondary" href="{% url 'destination_list' %}">All destinations</a></p>
             </div>
         </section>
         <section class="page-section page-section--cream itinerary-section" id="itinerary" aria-labelledby="itinerary-title">

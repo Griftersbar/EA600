@@ -1,0 +1,24 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    {% include "siteapp/includes/page_intro.html" with title="All destinations" only %}
+    <section class="page-section">
+        <div class="container">
+            {% if page.object_list %}
+                <div class="card-grid">
+                    {% for destination in page %}
+                        {% include "siteapp/includes/destination_card.html" with destination=destination heading_tag="h2" only %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No destinations are available yet.</p>
+            {% endif %}
+            {% if page.has_other_pages %}
+                <nav class="tour-pages" aria-label="Destination pages">
+                    {% if page.has_previous %}<a class="btn btn--secondary" href="?page={{ page.previous_page_number }}">Previous</a>{% endif %}
+                    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                    {% if page.has_next %}<a class="btn btn--secondary" href="?page={{ page.next_page_number }}">Next</a>{% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

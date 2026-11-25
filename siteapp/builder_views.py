@@ -15,8 +15,9 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
 
 from .builder_forms import DayFormSet, StopFormSet, TourBuilderForm
+from .destination_links import link_missing_destinations
 from .forms import PhotoForm
-from .models import ItineraryDay, Photo, Tour
+from .models import Destination, ItineraryDay, Photo, Tour, TourStop
 from .route_tracks import read_gpx
 from .views import render_tour_detail
 
@@ -185,6 +186,11 @@ def builder_edit(request, pk=None):
                         form.save()
                         save_ordered_stops(stops)
                         save_ordered_days(days)
+                        if tour.is_published:
+                            link_missing_destinations(
+                                Destination.objects.all(), TourStop.objects.filter(tour__is_published=True),
+                                tour_id=tour.pk,
+                            )
                 except IntegrityError:
                     form.add_error(None, "This tour could not be saved. Check the URL slug and day numbers.")
                     response_status = 409

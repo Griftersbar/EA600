@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("tours/", views.tour_list, name="tour_list"),
     path("tours/<slug:slug>/", views.tour_detail, name="tour_detail"),
+    path("destinations/", views.destination_list, name="destination_list"),
     path("destinations/<slug:slug>/", views.destination_detail, name="destination_detail"),
     path("advertise/", include("partners.urls")),
     path("builder/tours/", builder_views.builder_index, name="builder_index"),

@@ -94,8 +94,8 @@ class Tour(OrderedContent):
 class TourStop(OrderedContent):
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="stops")
     destination = models.ForeignKey(
-        "Destination", on_delete=models.SET_NULL, null=True, blank=True, related_name="route_stops",
-        help_text="Link to the public destination page and show this stop’s eligible business listings there.",
+        "Destination", on_delete=models.PROTECT, null=True, blank=True, related_name="route_stops",
+        help_text="Choose an existing place or leave blank to find or create its destination page on publish.",
     )
     title = models.CharField(max_length=140)
     region = models.CharField(max_length=100, blank=True)
@@ -235,10 +235,11 @@ class Highlight(OrderedContent):
 class Destination(OrderedContent, ClusterableModel):
     title = models.CharField(max_length=140)
     slug = models.SlugField(max_length=160, unique=True, help_text="Keep this part of the public URL stable.")
-    region = models.CharField(max_length=100)
-    description = models.TextField()
-    photo = models.ForeignKey(Photo, on_delete=models.PROTECT, related_name="+")
+    region = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
+    photo = models.ForeignKey(Photo, on_delete=models.PROTECT, null=True, blank=True, related_name="+")
     link = models.URLField(blank=True)
+    show_on_homepage = models.BooleanField(default=True, help_text="Include this destination in the homepage selection.")
 
     def __str__(self):
         return self.title

@@ -140,7 +140,7 @@
 }
 
 @media (min-width: 48rem) {
-  .destination-overview {
+  .destination-overview:has(> img + div) {
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     gap: clamp(1.5rem, 4vw, 3.5rem);
   }

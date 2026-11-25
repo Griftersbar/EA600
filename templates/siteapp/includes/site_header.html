@@ -18,7 +18,7 @@
             <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#top"{% if is_home %} data-nav-sections="top" aria-current="page"{% endif %}>Home</a>
             <a class="nav__link" href="{% url 'tour_list' %}"{% if is_home %} data-nav-sections="tours routes"{% elif route_name == 'tour_list' %} aria-current="page"{% elif route_name == 'tour_detail' %} aria-current="location"{% endif %}>Explore routes</a>
             <a class="nav__link" href="{{ guides_url }}"{% if route_name == 'wagtail_serve' %} aria-current="{% if request.path == guides_url %}page{% else %}location{% endif %}"{% endif %}>Guides</a>
-            <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#destinations"{% if is_home %} data-nav-sections="destinations"{% elif route_name == 'destination_detail' %} aria-current="location"{% endif %}>Destination</a>
+            <a class="nav__link" href="{% url 'destination_list' %}"{% if route_name == 'destination_list' %} aria-current="page"{% elif route_name == 'destination_detail' %} aria-current="location"{% endif %}>Destinations</a>
             <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#itinerary"{% if is_home %} data-nav-sections="itinerary"{% endif %}>Itinerary</a>
             <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#planning"{% if is_home %} data-nav-sections="planning"{% endif %}>Planning</a>
             <a class="nav__link" href="{% url 'partners:advertise' %}"{% if request.resolver_match.namespace == 'partners' %} aria-current="{% if route_name == 'advertise' %}page{% else %}location{% endif %}"{% endif %}>Advertise</a>

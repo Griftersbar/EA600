@@ -34,7 +34,8 @@ class TourBuilderTests(TestCase):
             "position": 0, "cover": photo.pk, "gallery": [photo.pk],
             "stops-TOTAL_FORMS": 2, "stops-INITIAL_FORMS": 0,
             "stops-0-title": "Wroxham", "stops-0-destination": destination.pk, "stops-0-ORDER": 2,
-            "stops-1-title": "Horning", "stops-1-ORDER": 1,
+            "stops-1-title": "Horning", "stops-1-region": "Norfolk", "stops-1-ORDER": 1,
+            "stops-1-description": "Visit the village on the River Bure.",
             "days-TOTAL_FORMS": 1, "days-INITIAL_FORMS": 0,
             "days-0-number": 1, "days-0-title": "The Broads", "days-0-photo": photo.pk,
             "days-0-description": "Follow the river from Horning to Wroxham.",
@@ -46,11 +47,13 @@ class TourBuilderTests(TestCase):
         self.assertContains(preview, data["days-0-description"])
         self.assertLess(preview.content.index(b"Horning"), preview.content.index(b"Wroxham"))
         self.assertFalse(Tour.objects.filter(slug="broads-loop").exists())
+        self.assertFalse(Destination.objects.filter(slug="horning").exists())
 
         result = self.client.post(url, {**data, "action": "draft"})
         self.assertEqual(result.status_code, 302)
         tour = Tour.objects.get(slug="broads-loop")
         self.assertFalse(tour.is_published)
+        self.assertFalse(Destination.objects.filter(slug="horning").exists())
         self.assertEqual(list(tour.stops.values_list("title", flat=True)), ["Horning", "Wroxham"])
         self.assertEqual(tour.days.get().photo, photo)
         self.assertEqual(self.client.get(tour.get_absolute_url()).status_code, 404)
@@ -64,12 +67,17 @@ class TourBuilderTests(TestCase):
         for index, stop in enumerate(tour.stops.all()):
             data.update({
                 f"stops-{index}-id": stop.pk, f"stops-{index}-title": stop.title,
+                f"stops-{index}-region": stop.region, f"stops-{index}-description": stop.description,
                 f"stops-{index}-destination": stop.destination_id or "", f"stops-{index}-ORDER": index + 1,
             })
         self.assertRedirects(self.client.post(edit, data), edit, fetch_redirect_response=False)
         self.assertContains(self.client.get(tour.get_absolute_url()), "Broads Loop")
         self.assertContains(self.client.get(tour.get_absolute_url()), data["days-0-description"])
         self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{destination.get_absolute_url()}"')
+        horning = tour.stops.get(title="Horning").destination
+        self.assertEqual(horning.region, "Norfolk")
+        self.assertEqual(horning.description, "Visit the village on the River Bure.")
+        self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{horning.get_absolute_url()}"')
         catalogue = self.client.get(reverse("tour_list"))
         self.assertContains(catalogue, "Broads Loop")
         self.assertContains(catalogue, "Norfolk Broads")

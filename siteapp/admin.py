@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
+from .destination_links import link_missing_destinations
 from .forms import PhotoForm
 from .models import (
     Destination, FAQ, FooterPhoto, Highlight, HomeContent, ItineraryDay,
@@ -53,6 +54,16 @@ class TourAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     autocomplete_fields = ("cover", "map_image", "gallery")
     inlines = (TourStopInline, ItineraryDayInline)
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        tour = form.instance
+        if tour.is_published:
+            link_missing_destinations(
+                Destination.objects.using(tour._state.db),
+                TourStop.objects.using(tour._state.db).filter(tour__is_published=True),
+                tour_id=tour.pk,
+            )
 
 
 @admin.register(HomeContent)

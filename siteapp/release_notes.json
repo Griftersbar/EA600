@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.22.0",
+    "date": "2026-11-25",
+    "title": "Destination pages for every published route stop",
+    "changes": [
+      "Filled missing destination links across published routes and reused pages for places shared by more than one route.",
+      "Publishing a route now fills in any missing destination links. Editors can review the pages and add photos in Wagtail.",
+      "Added a public directory for all destinations and a homepage setting to choose which ones to feature."
+    ]
+  },
+  {
     "version": "2.21.0",
     "date": "2026-11-25",
     "title": "Public pages for destinations",

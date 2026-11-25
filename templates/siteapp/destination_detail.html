@@ -1,17 +1,20 @@
 {% extends "siteapp/content_page.html" %}
 {% block content %}
-    {% url 'home' as home_url %}
-    {% with destinations_url=home_url|add:'#destinations' %}
-        {% include "siteapp/includes/page_intro.html" with title=destination.title intro=destination.region back_url=destinations_url back_label="All destinations" only %}
-    {% endwith %}
+    {% url 'destination_list' as destinations_url %}
+    {% include "siteapp/includes/page_intro.html" with title=destination.title intro=destination.region back_url=destinations_url back_label="All destinations" only %}
+    {% if destination.photo or destination.description or destination.link or gallery %}
     <article class="page-section">
         <div class="container">
             <div class="destination-overview">
-                <img class="content-page__cover" src="{{ destination.photo.url }}" alt="{{ destination.photo.alt_text }}" decoding="async">
-                <div>
-                    <div class="content-page__text">{{ destination.description|linebreaks }}</div>
-                    {% if destination.link %}<p><a class="page-intro__back" href="{{ destination.link }}">Visitor information</a></p>{% endif %}
-                </div>
+                {% if destination.photo %}
+                    <img class="content-page__cover" src="{{ destination.photo.url }}" alt="{{ destination.photo.alt_text }}" decoding="async">
+                {% endif %}
+                {% if destination.description or destination.link %}
+                    <div>
+                        {% if destination.description %}<div class="content-page__text">{{ destination.description|linebreaks }}</div>{% endif %}
+                        {% if destination.link %}<p><a class="page-intro__back" href="{{ destination.link }}">Visitor information</a></p>{% endif %}
+                    </div>
+                {% endif %}
             </div>
             {% if gallery %}
                 <section class="destination-gallery" aria-labelledby="destination-gallery-title">
@@ -25,6 +28,7 @@
             {% endif %}
         </div>
     </article>
+    {% endif %}
     {% if placements %}
         <section class="page-section page-section--muted" aria-labelledby="destination-businesses-title">
             <div class="container">

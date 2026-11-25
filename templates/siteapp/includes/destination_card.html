@@ -1,12 +1,12 @@
 <article class="card card--linked">
     {% if featured %}<div class="card__feature">{% endif %}
-    {% include "siteapp/includes/card_photo.html" with photo=destination.photo only %}
+    {% if destination.photo %}{% include "siteapp/includes/card_photo.html" with photo=destination.photo only %}{% endif %}
     {% if featured %}<div class="card__feature-title">{% else %}<div class="card__body">{% endif %}
-        <h3 class="card__title">
+        <{{ heading_tag|default:"h3" }} class="card__title">
             <a href="{{ destination.get_absolute_url }}">{{ destination.title }}</a>
-        </h3>
-        <p class="card__meta">{{ destination.region }}</p>
+        </{{ heading_tag|default:"h3" }}>
+        {% if destination.region %}<p class="card__meta">{{ destination.region }}</p>{% endif %}
     {% if featured %}</div></div><div class="card__body">{% endif %}
-        <p class="card__text">{{ destination.description|linebreaksbr }}</p>
+        {% if destination.description %}<p class="card__text">{{ destination.description|linebreaksbr }}</p>{% endif %}
     </div>
 </article>

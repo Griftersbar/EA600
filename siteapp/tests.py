@@ -8,6 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import escape
 
 from partners.models import BusinessListing, PartnerAccount, PartnerApplication, RoutePlacement
 
@@ -60,6 +61,7 @@ class ContentTests(TestCase):
             "photo": destination.photo_id,
             "link": "https://example.test/norwich",
             "position": destination.position,
+            "show_on_homepage": "on",
             "gallery-TOTAL_FORMS": 1,
             "gallery-INITIAL_FORMS": 0,
             "gallery-0-photo": gallery_photo.pk,
@@ -83,6 +85,35 @@ class ContentTests(TestCase):
             self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{destination.get_absolute_url()}"')
             self.assertContains(self.client.get(destination.get_absolute_url()), f'href="{tour.get_absolute_url()}"')
         self.assertEqual(self.client.get("/destinations/unknown/").status_code, 404)
+
+    def test_published_stop_destinations_are_linked_and_in_the_directory(self):
+        expected = set()
+        for tour in Tour.objects.filter(is_published=True):
+            page = self.client.get(tour.get_absolute_url())
+            for stop in tour.stops.select_related("destination"):
+                self.assertIsNotNone(stop.destination, stop.title)
+                self.assertContains(page, f'href="{stop.destination.get_absolute_url()}"')
+                self.assertTrue(stop.destination.description, stop.title)
+                expected.add(stop.destination_id)
+        self.assertEqual(len(expected), 35)
+
+        kings_lynn = Destination.objects.get(slug="kings-lynn")
+        self.assertEqual(set(kings_lynn.route_stops.values_list("title", flat=True)), {"King's Lynn", "King’s Lynn"})
+        ely = Destination.objects.get(slug="ely")
+        self.assertFalse(ely.show_on_homepage)
+        self.assertIsNone(ely.photo_id)
+        ely_page = self.client.get(ely.get_absolute_url())
+        self.assertContains(ely_page, escape(ely.description))
+        self.assertNotContains(ely_page, 'class="content-page__cover"')
+
+        catalogue_url = reverse("destination_list")
+        first = self.client.get(catalogue_url).context["page"]
+        self.assertEqual(first.paginator.count, len(expected))
+        found = {destination.pk for destination in first}
+        for number in range(2, first.paginator.num_pages + 1):
+            found.update(destination.pk for destination in self.client.get(catalogue_url, {"page": number}).context["page"])
+        self.assertEqual(found, expected)
+        self.assertEqual(self.client.get(reverse("home")).context["destinations"].count(), 5)
 
     @override_settings(PARTNER_BILLING_MODE="live", PARTNER_PILOT_PREVIEW=False)
     def test_destination_only_lists_eligible_local_advertisers_once(self):

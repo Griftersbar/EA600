@@ -56,7 +56,8 @@ class DestinationViewSet(EditorialSnippetViewSet):
     menu_label = "Destinations"
     url_namespace = "ea600_destinations"
     url_prefix = "destinations"
-    list_display = ("title", "region", "position")
+    list_display = ("title", "region", "show_on_homepage", "position")
+    list_filter = ("show_on_homepage",)
     search_fields = ("title", "region", "slug")
     panels = [
         TitleFieldPanel("title", targets=["slug"]),
@@ -66,6 +67,7 @@ class DestinationViewSet(EditorialSnippetViewSet):
         FieldPanel("photo", heading="Cover photo"),
         InlinePanel("gallery", heading="Photo gallery", label="Gallery photo"),
         FieldPanel("link", heading="Visitor information link"),
+        FieldPanel("show_on_homepage"),
         FieldPanel("position"),
     ]
 
