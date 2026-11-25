@@ -1,0 +1,8 @@
+{% extends "admin/base_site.html" %}
+
+{% block userlinks %}
+    {% if perms.wagtailadmin.access_admin %}
+        <a href="{% url 'wagtailadmin_home' %}">Wagtail</a> /
+    {% endif %}
+    {{ block.super }}
+{% endblock %}
