@@ -12,6 +12,21 @@ from .test_support import sign_in_verified
 
 
 class ContentTests(TestCase):
+    def test_public_navigation_marks_the_current_page_or_section(self):
+        for path, href, label, current in (
+            ("/", "#top", "Home", "page"),
+            ("/tours/", "/tours/", "Explore routes", "page"),
+            ("/tours/ea600-14-day/", "/tours/", "Explore routes", "location"),
+            ("/advertise/", "/advertise/", "Advertise", "page"),
+        ):
+            with self.subTest(path=path):
+                extra = ' data-nav-sections="top"' if path == "/" else ""
+                self.assertContains(
+                    self.client.get(path),
+                    f'<a class="nav__link" href="{href}"{extra} aria-current="{current}">{label}</a>',
+                    html=True,
+                )
+
     def test_wagtail_destination_editor_updates_the_homepage_card(self):
         editor = get_user_model().objects.create_superuser(username="destination-editor")
         sign_in_verified(self.client, editor)

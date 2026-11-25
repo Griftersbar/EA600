@@ -26,8 +26,14 @@ class GuideTests(TestCase):
         self.assertEqual(GuideIndexPage.objects.count(), 1)
         self.assertEqual(DestinationGuidePage.objects.count(), 1)
         self.assertContains(self.client.get("/"), 'href="/guides/"')
-        self.assertContains(self.client.get("/guides/"), 'href="/guides/norwich/"')
-        self.assertContains(self.client.get("/guides/norwich/"), 'href="/tours/ea600/"')
+        guide_index = self.client.get("/guides/")
+        guide_detail = self.client.get("/guides/norwich/")
+        self.assertContains(guide_index, 'href="/guides/norwich/"')
+        self.assertContains(guide_detail, 'href="/tours/ea600/"')
+        for response, current in ((guide_index, "page"), (guide_detail, "location")):
+            self.assertContains(
+                response, f'<a class="nav__link" href="/guides/" aria-current="{current}">Guides</a>', html=True,
+            )
         self.assertContains(self.client.get("/tours/ea600/"), "Cambridge")
         self.assertContains(self.client.get("/cms/", follow=True), "Sign in - Wagtail")
 

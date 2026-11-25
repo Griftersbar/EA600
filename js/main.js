@@ -1,61 +1,68 @@
-function initMobileNav(root = document) {
-  const toggle = root.querySelector("[data-nav-toggle]");
-  const nav = root.querySelector("#primary-nav");
-  if (!toggle || !nav) return;
+function initSiteHeader() {
+  const header = document.querySelector("[data-site-header]");
+  if (!header) return;
 
-  toggle.addEventListener("click", () => {
-    const open = nav.classList.toggle("is-open");
+  const toggle = header.querySelector("[data-nav-toggle]");
+  const nav = header.querySelector("#primary-nav");
+  const setMenuOpen = (open) => {
+    nav.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  });
-
-  nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      nav.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
-    });
-  });
-}
-
-function initNavScrollSpy() {
-  const links = [...document.querySelectorAll("[data-nav-link]")];
-  if (!links.length) return;
-
-  const sections = links
-    .map((link) => {
-      const id = link.getAttribute("href").slice(1);
-      const el =
-        id === "top" ? document.querySelector(".hero") : document.getElementById(id);
-      return el ? { id, el, link } : null;
-    })
-    .filter(Boolean);
-
-  const setActive = (id) => {
-    links.forEach((link) => {
-      const href = link.getAttribute("href");
-      const active = href === `#${id}`;
-      link.classList.toggle("is-active", active);
-      if (active) link.setAttribute("aria-current", "page");
-      else link.removeAttribute("aria-current");
-    });
   };
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (!visible.length) return;
-      const match = sections.find((section) => section.el === visible[0].target);
-      if (match) setActive(match.id);
-    },
-    { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.15, 0.35] }
+  toggle.addEventListener("click", () => setMenuOpen(!nav.classList.contains("is-open")));
+  nav.addEventListener("click", (event) => {
+    if (event.target.closest("a")) setMenuOpen(false);
+  });
+  header.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && nav.classList.contains("is-open")) {
+      setMenuOpen(false);
+      toggle.focus({ preventScroll: true });
+    }
+  });
+
+  const root = document.documentElement;
+  const updateHeight = () => root.style.setProperty("--site-header-height", `${header.offsetHeight}px`);
+  updateHeight();
+  new ResizeObserver(updateHeight).observe(header);
+  initNavScrollSpy(header, nav);
+}
+
+function initNavScrollSpy(header, nav) {
+  const home = nav.querySelector('[data-nav-sections="top"]');
+  if (!home) return;
+
+  const sections = [...nav.querySelectorAll("[data-nav-sections]")].flatMap((link) =>
+    link === home ? [] : link.dataset.navSections.split(" ").map((id) => ({
+      link, section: document.getElementById(id),
+    })).filter(({ section }) => section)
   );
+  let current = home;
+  let frame = 0;
 
-  sections.forEach((section) => observer.observe(section.el));
+  function update() {
+    frame = 0;
+    const offset = header.offsetHeight;
+    const visible = sections.find(({ section }) => {
+      const { top, bottom } = section.getBoundingClientRect();
+      return top <= offset && bottom > offset;
+    });
+    const link = visible?.link ?? home;
+    if (link === current) return;
 
-  if (window.scrollY < 80) setActive("top");
+    current.removeAttribute("aria-current");
+    link.setAttribute("aria-current", link === home ? "page" : "location");
+    current = link;
+  }
+
+  function scheduleUpdate() {
+    if (!frame) frame = requestAnimationFrame(update);
+  }
+
+  update();
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("resize", scheduleUpdate);
+  window.addEventListener("hashchange", scheduleUpdate);
 }
 
 function faqPrefersReducedMotion() {
@@ -220,43 +227,6 @@ function initFooterLinkHover(root = document) {
     link.addEventListener("focus", () => setHover(true), true);
     link.addEventListener("blur", () => setHover(false), true);
   });
-}
-
-// Adds the scrolled style to the sticky header after it passes its sentinel.
-function initHeaderScroll() {
-  const header = document.querySelector("[data-site-header]");
-  if (!header) return;
-
-  const scrollOffset = 48;
-  const setScrolled = (scrolled) => header.classList.toggle("is-scrolled", scrolled);
-  const readScrollTop = () =>
-    window.scrollY ||
-    window.pageYOffset ||
-    document.documentElement.scrollTop ||
-    document.body.scrollTop ||
-    0;
-  const syncFromScroll = () => setScrolled(readScrollTop() > scrollOffset);
-
-  let sentinel = document.querySelector("[data-header-scroll-sentinel]");
-  if (!sentinel) {
-    sentinel = document.createElement("div");
-    sentinel.className = "site-header__scroll-sentinel";
-    sentinel.setAttribute("data-header-scroll-sentinel", "");
-    sentinel.setAttribute("aria-hidden", "true");
-    header.insertAdjacentElement("afterend", sentinel);
-  }
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry) setScrolled(!entry.isIntersecting);
-    });
-    observer.observe(sentinel);
-  }
-
-  syncFromScroll();
-  window.addEventListener("scroll", syncFromScroll, { passive: true });
-  window.addEventListener("resize", syncFromScroll, { passive: true });
-  window.addEventListener("load", syncFromScroll, { passive: true });
 }
 
 // Adds responsive card-slider controls and optional autoplay for marked tracks.
@@ -658,11 +628,9 @@ function initRouteMapScroll(root = document) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initNavScrollSpy();
-  initMobileNav();
+  initSiteHeader();
   initFaqAccordion();
   initFooterLinkHover();
-  initHeaderScroll();
   initCardSliders();
   initRouteMapScroll();
 });

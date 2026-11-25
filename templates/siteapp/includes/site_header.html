@@ -1,49 +1,29 @@
-<header class="site-header site-header--dock" data-site-header>
-            <div class="site-header__bar container">
-                <a href="{% if not is_home %}{% url 'home' %}{% endif %}#top" class="logo" aria-label="{{ homepage.site_title }}">
-                    <span class="logo__primary" aria-hidden="true">
-                        <span class="logo__layer logo__layer--vector">
-                            {% if homepage.logo %}<img decoding="async" fetchpriority="high" loading="eager"
-                                src="{{ homepage.logo.url }}"
-                                alt=""
-                                width="90"
-                                height="90"
-                            >{% endif %}
-                        </span>
-                    </span>
-                    <span class="logo__badge" aria-hidden="true">
-                        {% if homepage.badge_logo %}<img
-                            decoding="async"
-                            loading="eager"
-                            src="{{ homepage.badge_logo.url }}"
-                            alt=""
-                            width="52"
-                            height="52"
-                        >{% endif %}
-                    </span>
-                </a>
-                <button
-                    type="button"
-                    class="site-header__toggle"
-                    aria-expanded="false"
-                    aria-controls="primary-nav"
-                    aria-label="Open menu"
-                    data-nav-toggle
-                >
-                    <span class="site-header__burger" aria-hidden="true"></span>
-                </button>
-                <nav id="primary-nav" class="nav" aria-label="Primary">
-                    <a class="nav__link{% if is_home %} is-active{% endif %}" href="{% if not is_home %}{% url 'home' %}{% endif %}#top"{% if is_home %} data-nav-link{% endif %}>Home</a>
-                    <a class="nav__link" href="{% url 'tour_list' %}"{% if request.resolver_match.url_name == 'tour_list' %} aria-current="page"{% endif %}>Explore routes</a>
-                    <a class="nav__link" href="{% url 'wagtail_serve' '' %}">Guides</a>
-                    <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#destinations"{% if is_home %} data-nav-link{% endif %}>Destination</a>
-                    <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#itinerary"{% if is_home %} data-nav-link{% endif %}>Itinerary</a>
-                    <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning"{% if is_home %} data-nav-link{% endif %}>Planning</a>
-                    <a class="nav__link{% if request.resolver_match.namespace == 'partners' %} is-active{% endif %}" href="{% url 'partners:advertise' %}"{% if request.resolver_match.url_name == 'advertise' %} aria-current="page"{% endif %}>Advertise</a>
-                    <a class="btn btn--primary site-header__nav-cta" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning">{{ homepage.cta_button }}</a>
-                </nav>
-                <div class="site-header__actions">
-                    <a class="btn btn--primary" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning">{{ homepage.cta_button }}</a>
-                </div>
-            </div>
-        </header>
+{% url 'home' as home_url %}
+{% url 'wagtail_serve' '' as guides_url %}
+{% with route_name=request.resolver_match.url_name %}
+<header class="site-header" data-site-header>
+    <div class="site-header__bar container">
+        <a href="{% if not is_home %}{{ home_url }}{% endif %}#top" class="site-header__logo" aria-label="{{ homepage.site_title|default:'EA600' }} home">
+            {% with logo=homepage.badge_logo|default:homepage.logo %}
+                {% if logo %}
+                    <img src="{{ logo.url }}" alt="" width="52" height="52" decoding="async">
+                {% endif %}
+            {% endwith %}
+        </a>
+        <button type="button" class="site-header__toggle" aria-expanded="false"
+                aria-controls="primary-nav" aria-label="Open menu" data-nav-toggle>
+            <span class="site-header__burger" aria-hidden="true"></span>
+        </button>
+        <nav id="primary-nav" class="nav" aria-label="Primary">
+            <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#top"{% if is_home %} data-nav-sections="top" aria-current="page"{% endif %}>Home</a>
+            <a class="nav__link" href="{% url 'tour_list' %}"{% if is_home %} data-nav-sections="tours routes"{% elif route_name == 'tour_list' %} aria-current="page"{% elif route_name == 'tour_detail' %} aria-current="location"{% endif %}>Explore routes</a>
+            <a class="nav__link" href="{{ guides_url }}"{% if route_name == 'wagtail_serve' %} aria-current="{% if request.path == guides_url %}page{% else %}location{% endif %}"{% endif %}>Guides</a>
+            <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#destinations"{% if is_home %} data-nav-sections="destinations"{% endif %}>Destination</a>
+            <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#itinerary"{% if is_home %} data-nav-sections="itinerary"{% endif %}>Itinerary</a>
+            <a class="nav__link" href="{% if not is_home %}{{ home_url }}{% endif %}#planning"{% if is_home %} data-nav-sections="planning"{% endif %}>Planning</a>
+            <a class="nav__link" href="{% url 'partners:advertise' %}"{% if request.resolver_match.namespace == 'partners' %} aria-current="{% if route_name == 'advertise' %}page{% else %}location{% endif %}"{% endif %}>Advertise</a>
+            <a class="btn btn--primary site-header__cta" href="{% if not is_home %}{{ home_url }}{% endif %}#planning">{{ homepage.cta_button }}</a>
+        </nav>
+    </div>
+</header>
+{% endwith %}

@@ -118,9 +118,8 @@
   /* ——— Component sizes ——— */
   --btn-height: 2.75rem; /* 44 */
   --btn-padding-x: var(--space-5);
-  --logo-size: 5.875rem; /* 94 */
-  --logo-size-scrolled: 3rem; /* 48 — compact header mark */
-  --header-bg-scrolled: var(--color-cream);
-  --header-border-scrolled: var(--color-border-brand);
+  --site-header-logo-size: 3.25rem;
+  --site-header-height: calc(var(--site-header-logo-size) + 2 * var(--space-2) + 1px);
+  --site-anchor-offset: calc(var(--site-header-height) + var(--space-4));
   --icon-feature-size: 3.0625rem; /* 49 */
 }

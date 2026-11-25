@@ -8,8 +8,6 @@
   --partner-ochre: #795511;
   --partner-line: #dbe4e1;
   --partner-shadow: 0 8px 28px rgba(7, 59, 53, 0.09);
-  --logo-size: 3.25rem;
-  --logo-size-scrolled: 3.25rem;
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -23,35 +21,16 @@
   overflow-wrap: anywhere;
 }
 
-.partner-site .site-header--dock {
-  position: sticky;
-  background: var(--color-white);
-  border-bottom: 1px solid var(--partner-line);
-}
-
-.partner-site .site-header--dock .site-header__bar {
-  padding-block: var(--space-2);
-  background: var(--color-white);
-}
-
-.partner-site .site-header--dock .nav {
-  gap: clamp(0.75rem, 2vw, 2rem);
-}
-
-.partner-site .site-header--dock .nav__link.is-active {
-  color: var(--partner-forest);
-}
-
 .partner-site .content-page__footer,
-.partner-site .btn--primary {
+.partner-main .btn--primary {
   background: var(--partner-green);
 }
 
-.partner-site .btn--primary:hover {
+.partner-main .btn--primary:hover {
   background: var(--partner-forest);
 }
 
-.partner-site .btn {
+.partner-main .btn {
   white-space: normal;
 }
 
@@ -209,10 +188,6 @@
 .partner-callout h2 {
   margin-bottom: var(--space-2);
   font-size: var(--font-size-lg);
-}
-
-.partner-site .partner-enquiry {
-  scroll-margin-top: 6rem;
 }
 
 .partner-enquiry__form {
