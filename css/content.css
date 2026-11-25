@@ -55,6 +55,47 @@
   gap: var(--space-6);
 }
 
+.homepage-routes {
+  scroll-margin-top: 4rem;
+}
+
+.route-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.route-picker__field {
+  display: grid;
+  flex: 1 1 17rem;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 27rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.route-picker select {
+  width: 100%;
+  min-height: var(--btn-height);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-text-brand-muted);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-brand-dark);
+  font: inherit;
+  font-weight: var(--font-weight-normal);
+}
+
+.route-picker__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--btn-height);
+  color: var(--color-primary-green);
+  font-weight: var(--font-weight-bold);
+}
+
 .tour-card {
   overflow: hidden;
   border-radius: var(--radius-md);

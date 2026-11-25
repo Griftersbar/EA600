@@ -47,15 +47,21 @@ def route_content(tour, *, stops=None, days=None):
 
 def home(request):
     homepage = homepage_content()
-    tour = homepage.featured_tour if homepage else None
+    featured_tour = homepage.featured_tour if homepage else None
+    if featured_tour and not featured_tour.is_published:
+        featured_tour = None
+
     tours = published_tours()
-    if not tour or not tour.is_published:
-        tour = tours.first()
+    route_slug = request.GET.get("route")
+    selected_tour = tours.filter(slug=route_slug).first() if route_slug else None
+    tour = selected_tour or featured_tour or tours.first()
 
     return render(request, "siteapp/home.html", {
         "homepage": homepage,
         "is_home": True,
         **route_content(tour),
+        "route_choices": tours.values_list("slug", "title"),
+        "use_tour_copy": tour is not None and tour != featured_tour,
         "tours": tours[:3],
         "highlights": Highlight.objects.select_related("icon"),
         "destinations": Destination.objects.select_related("photo"),

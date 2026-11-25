@@ -88,7 +88,7 @@
                     <div class="intro-section__copy">
                         <h2 class="intro-section__title" id="about-title">{{ homepage.intro_title }}</h2>
                         <p class="intro-section__lead">{{ homepage.intro_description|linebreaksbr }}</p>
-                        {% if tour %}{% include "siteapp/includes/tour_stats.html" %}{% endif %}
+                        {% if tour and not use_tour_copy %}{% include "siteapp/includes/tour_stats.html" %}{% endif %}
                     </div>
                     <div class="intro-section__media">
                         <div class="intro-section__rail" aria-hidden="true"></div>
@@ -128,18 +128,45 @@
             </div>
         </section>
         <section
-            class="page-section page-section--cream route-section"
+            class="page-section page-section--cream route-section homepage-routes"
             id="routes"
             data-route-section
             aria-labelledby="routes-title"
         >
             <div class="container">
                 <header class="section-heading section-heading--center">
-                    <h2 class="heading-section heading-section--center" id="routes-title">{{ homepage.route_title }}</h2>
-                    <p class="text-script-accent">{{ homepage.route_subtitle }}</p>
-                    <p class="text-lead text-lead--center">{{ homepage.route_description|linebreaksbr }}</p>
+                    {% if use_tour_copy %}
+                        <h2 class="heading-section heading-section--center" id="routes-title">{{ tour.title }}</h2>
+                        {% if tour.region %}<p class="text-script-accent">{{ tour.region }}</p>{% endif %}
+                        <p class="text-lead text-lead--center">{{ tour.summary|linebreaksbr }}</p>
+                        {% if tour.distance_miles or tour.duration_days or stops or tour.counties %}
+                            {% include "siteapp/includes/tour_stats.html" %}
+                        {% endif %}
+                    {% else %}
+                        <h2 class="heading-section heading-section--center" id="routes-title">{{ homepage.route_title }}</h2>
+                        {% if homepage.route_subtitle %}<p class="text-script-accent">{{ homepage.route_subtitle }}</p>{% endif %}
+                        {% if homepage.route_description %}<p class="text-lead text-lead--center">{{ homepage.route_description|linebreaksbr }}</p>{% endif %}
+                    {% endif %}
                 </header>
-                {% if stops or geographic_map %}{% include "siteapp/includes/route.html" %}{% endif %}
+                {% if tour %}
+                    <form class="route-picker" method="get" action="{% url 'home' %}#routes">
+                        <div class="route-picker__field">
+                            <label for="homepage-route">Choose a route</label>
+                            <select id="homepage-route" name="route">
+                                {% for slug, title in route_choices %}
+                                    <option value="{{ slug }}"{% if slug == tour.slug %} selected{% endif %}>{{ title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button class="btn btn--primary" type="submit">Show route</button>
+                        <a class="route-picker__link" href="{{ tour.get_absolute_url }}">View full route</a>
+                    </form>
+                    {% if stops or geographic_map %}
+                        {% include "siteapp/includes/route.html" %}
+                    {% else %}
+                        <p class="text-lead text-lead--center">Map and stops haven’t been added for this route yet.</p>
+                    {% endif %}
+                {% endif %}
             </div>
         </section>
         <section class="page-section" id="destinations" aria-labelledby="destinations-title">
@@ -170,13 +197,22 @@
             <div class="container">
                 <header class="itinerary-header">
                     <div class="itinerary-header__copy">
-                        <h2 class="heading-section" id="itinerary-title">{{ homepage.itinerary_title }}</h2>
-                        <p class="text-script-accent">{{ homepage.itinerary_subtitle }}</p>
-                        <p class="text-lead itinerary-header__lead">{{ homepage.itinerary_description|linebreaksbr }}</p>
+                        {% if use_tour_copy %}
+                            <h2 class="heading-section" id="itinerary-title">Itinerary</h2>
+                            <p class="text-script-accent">{{ tour.title }}</p>
+                        {% else %}
+                            <h2 class="heading-section" id="itinerary-title">{{ homepage.itinerary_title }}</h2>
+                            {% if homepage.itinerary_subtitle %}<p class="text-script-accent">{{ homepage.itinerary_subtitle }}</p>{% endif %}
+                            {% if homepage.itinerary_description %}<p class="text-lead itinerary-header__lead">{{ homepage.itinerary_description|linebreaksbr }}</p>{% endif %}
+                        {% endif %}
                     </div>
-                    {% if tour and days %}<a class="btn btn--primary itinerary-header__cta" href="{{ tour.get_absolute_url }}#itinerary">View all Days</a>{% endif %}
+                    {% if days %}<a class="btn btn--primary itinerary-header__cta" href="{{ tour.get_absolute_url }}#itinerary">View full itinerary</a>{% endif %}
                 </header>
-                {% if days %}{% include "siteapp/includes/itinerary_day.html" with day=days.0 %}{% endif %}
+                {% if days %}
+                    {% include "siteapp/includes/itinerary_day.html" with day=days.0 %}
+                {% elif tour %}
+                    <p class="text-lead">An itinerary hasn’t been added for this route yet.</p>
+                {% endif %}
             </div>
         </section>
         <section class="page-section page-section--muted" id="planning" aria-labelledby="planning-title">
