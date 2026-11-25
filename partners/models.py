@@ -85,6 +85,28 @@ class PartnerAccount(models.Model):
     access_expires = models.DateTimeField(null=True, blank=True)
 
 
+class AdvertisingEnquiry(models.Model):
+    class Status(models.TextChoices):
+        NEW = "new", "New"
+        REPLIED = "replied", "Replied"
+
+    business_name = models.CharField(max_length=140)
+    contact_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    location = models.CharField(max_length=120)
+    message = models.TextField(max_length=2000)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=Status, default=Status.NEW)
+
+    class Meta:
+        ordering = ["-submitted_at", "-pk"]
+        default_permissions = ("view", "change", "delete")
+        verbose_name_plural = "advertising enquiries"
+
+    def __str__(self):
+        return self.business_name
+
+
 class PartnerApplication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     owner = models.ForeignKey(PartnerAccount, on_delete=models.PROTECT, related_name="applications")

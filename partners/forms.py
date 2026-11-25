@@ -3,7 +3,7 @@ from django import forms
 from siteapp.forms import PhotoForm
 from siteapp.models import TourStop
 
-from .models import BusinessListing
+from .models import AdvertisingEnquiry, BusinessListing
 
 
 class OwnerEmailForm(forms.Form):
@@ -11,6 +11,22 @@ class OwnerEmailForm(forms.Form):
 
     def clean_email(self):
         return self.cleaned_data["email"].casefold()
+
+
+class AdvertisingEnquiryForm(forms.ModelForm):
+    class Meta:
+        model = AdvertisingEnquiry
+        fields = ("business_name", "contact_name", "email", "location", "message")
+        labels = {
+            "contact_name": "Your name", "email": "Email for replies",
+            "location": "Town or nearest route stop", "message": "What would you like to know?",
+        }
+        widgets = {
+            "business_name": forms.TextInput(attrs={"autocomplete": "organization"}),
+            "contact_name": forms.TextInput(attrs={"autocomplete": "name"}),
+            "email": forms.EmailInput(attrs={"autocomplete": "email"}),
+            "message": forms.Textarea(attrs={"rows": 4}),
+        }
 
 
 class PublishedStopField(forms.ModelChoiceField):

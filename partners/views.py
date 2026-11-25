@@ -21,7 +21,7 @@ from siteapp.views import homepage_content
 
 from . import billing
 from .activity import record_click, with_recent_activity
-from .forms import OwnerEmailForm, PartnerApplicationForm
+from .forms import AdvertisingEnquiryForm, OwnerEmailForm, PartnerApplicationForm
 from .mail import email_ready, send_partner_mail
 from .models import BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
 
@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 OWNER_SESSION = "ea600_partner_owner"
 
 
-def show(request, template, **context):
-    response = render(request, f"partners/{template}.html", {"homepage": homepage_content(), **context})
+def show(request, template, *, status=200, **context):
+    response = render(request, f"partners/{template}.html", {"homepage": homepage_content(), **context}, status=status)
     response["Referrer-Policy"] = "same-origin"
     return response
 
@@ -48,6 +48,26 @@ def applications_enabled():
     return settings.PARTNER_APPLICATIONS_ENABLED and email_ready()
 
 
+def allow_partner_request(request, purpose, limit):
+    ip = editor_client_ip(request) or "unknown"
+    key = f"partner-{purpose}-ip:{ip}"
+    cache.add(key, 0, timeout=900)
+    try:
+        return cache.incr(key) <= limit
+    except ValueError:
+        return False
+
+
+def show_advertise(request, *, form=None, enquiry_form=None, sent=False, status=200):
+    return show(
+        request, "advertise", status=status, form=form if form is not None else OwnerEmailForm(),
+        enquiry_form=enquiry_form if enquiry_form is not None else AdvertisingEnquiryForm(prefix="enquiry"),
+        enquiry_received=request.session.pop("partner_enquiry_received", False),
+        enabled=applications_enabled(), signed_in=bool(owner(request)), sent=sent,
+        pilot_preview=settings.PARTNER_PILOT_PREVIEW,
+    )
+
+
 def authenticated_application(request, pk):
     return get_object_or_404(
         PartnerApplication.objects.select_related("owner", "listing"), pk=pk,
@@ -59,17 +79,9 @@ def authenticated_application(request, pk):
 @require_http_methods(["GET", "POST"])
 def advertise(request):
     form = OwnerEmailForm(request.POST if request.method == "POST" else None)
-    enabled = applications_enabled()
-    if enabled and request.method == "POST" and form.is_valid():
+    if applications_enabled() and request.method == "POST" and form.is_valid():
         email = form.cleaned_data["email"]
-        ip = editor_client_ip(request) or "unknown"
-        ip_key = f"partner-email-ip:{ip}"
-        cache.add(ip_key, 0, timeout=900)
-        try:
-            allowed = cache.incr(ip_key) <= 10
-        except ValueError:
-            allowed = False
-        if allowed and cache.add(f"partner-email:{digest(email)}", True, timeout=60):
+        if allow_partner_request(request, "email", 10) and cache.add(f"partner-email:{digest(email)}", True, timeout=60):
             account, _ = PartnerAccount.objects.get_or_create(email=email)
             token = secrets.token_urlsafe(32)
             token_digest = digest(token)
@@ -87,9 +99,29 @@ def advertise(request):
                 PartnerAccount.objects.filter(pk=account.pk, access_digest=token_digest).update(access_digest="", access_expires=None)
                 logger.warning("Could not send EA600 business sign-in email")
                 form.add_error(None, "Email is temporarily unavailable. Please try again shortly.")
-                return show(request, "advertise", form=form, enabled=enabled, signed_in=bool(owner(request)))
-        return show(request, "advertise", sent=True, enabled=enabled)
-    return show(request, "advertise", form=form, enabled=enabled, signed_in=bool(owner(request)), pilot_preview=settings.PARTNER_PILOT_PREVIEW)
+                return show_advertise(request, form=form)
+        return show_advertise(request, sent=True)
+    return show_advertise(request, form=form)
+
+
+@never_cache
+@require_http_methods(["GET", "POST"])
+def enquire(request):
+    advertise_section = reverse("partners:advertise") + "#advertising-enquiry"
+    if request.method == "GET":
+        return redirect(advertise_section)
+
+    form = AdvertisingEnquiryForm(request.POST, prefix="enquiry")
+    if not form.is_valid():
+        return show_advertise(request, enquiry_form=form, status=400)
+    if not allow_partner_request(request, "enquiry", 5):
+        form.add_error(None, "Too many enquiries were submitted. Please try again in 15 minutes.")
+        response = show_advertise(request, enquiry_form=form, status=429)
+        response["Retry-After"] = "900"
+        return response
+    form.save()
+    request.session["partner_enquiry_received"] = True
+    return redirect(advertise_section)
 
 
 @never_cache

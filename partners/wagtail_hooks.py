@@ -1,14 +1,19 @@
+from urllib.parse import quote
+
 from django import forms
+from django.utils.html import format_html
+from wagtail import hooks
 from wagtail.admin.forms import WagtailAdminModelForm
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, ObjectList
 from wagtail.admin.ui.tables import Column, LiveStatusTagColumn
+from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
 
 from siteapp.models import TourStop
 
 from .activity import with_recent_activity
-from .models import BusinessListing
+from .models import AdvertisingEnquiry, BusinessListing
 
 
 class RouteStopChoiceField(forms.ModelMultipleChoiceField):
@@ -69,3 +74,45 @@ class BusinessListingViewSet(SnippetViewSet):
 
 
 register_snippet(BusinessListingViewSet)
+
+
+class EnquiryEmailPanel(FieldPanel):
+    def format_value_for_display(self, value):
+        return format_html('<a href="mailto:{}">{}</a>', quote(value, safe="@"), value)
+
+
+class AdvertisingEnquiryViewSet(ModelViewSet):
+    model = AdvertisingEnquiry
+    name = "ea600_advertising_enquiries"
+    url_prefix = "advertising-enquiries"
+    menu_label = "Advertising enquiries"
+    menu_order = 236
+    add_to_admin_menu = True
+    icon = "mail"
+    copy_view_enabled = False
+    inspect_view_enabled = True
+    inspect_view_fields = ("business_name", "contact_name", "email", "location", "message", "submitted_at", "status")
+    list_display = ("business_name", "location", "status", "submitted_at")
+    list_filter = ("status",)
+    search_fields = ("business_name", "location", "email")
+    search_backend_name = None
+    panels = [
+        FieldPanel("business_name", read_only=True),
+        FieldPanel("contact_name", read_only=True),
+        EnquiryEmailPanel("email", read_only=True, heading="Reply by email"),
+        FieldPanel("location", read_only=True),
+        FieldPanel("message", read_only=True),
+        FieldPanel("submitted_at", read_only=True),
+        FieldPanel("status"),
+    ]
+
+    def get_common_view_kwargs(self, **kwargs):
+        return super().get_common_view_kwargs(add_url_name=None, **kwargs)
+
+    def get_urlpatterns(self):
+        return [pattern for pattern in super().get_urlpatterns() if pattern.name != "add"]
+
+
+@hooks.register("register_admin_viewset")
+def register_advertising_enquiries():
+    return AdvertisingEnquiryViewSet()

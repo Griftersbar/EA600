@@ -194,6 +194,10 @@
   max-width: 48rem;
 }
 
+.partner-enquiry {
+  scroll-margin-top: 5rem;
+}
+
 .partner-panel__card {
   padding: var(--space-5);
   border: 1px solid var(--color-border-brand);

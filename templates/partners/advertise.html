@@ -4,11 +4,25 @@
         <div class="container partner-panel">
             <h1 class="heading-section" id="advertise-title">Advertise on EA600</h1>
             <p class="text-lead">Help road-trippers find your restaurant, tea room, accommodation, shop or workshop as they plan their route.</p>
+            <p><a class="btn btn--primary" href="#advertising-enquiry">Make an enquiry</a></p>
             <div class="partner-panel__card">
                 <h2>One business location on one route</h2>
                 <p><strong>£12 a month</strong> or <strong>£120 a year</strong></p>
                 <p>Your listing can include a photo, directions, and a link to your website or booking page. Tell us which stop you’re near. We’ll review your listing before you choose a payment plan.</p>
             </div>
+            <section class="partner-panel__card partner-enquiry" id="advertising-enquiry" aria-labelledby="enquiry-title">
+                <h2 id="enquiry-title">Advertising enquiry</h2>
+                {% if enquiry_received %}
+                    <p role="status">Thanks for getting in touch. We’ve received your enquiry and will reply by email.</p>
+                {% else %}
+                    <p>Ask about advertising options or where your business could appear. We’ll use your contact details to reply.</p>
+                    <form method="post" action="{% url 'partners:enquire' %}#advertising-enquiry" class="partner-form">
+                        {% csrf_token %}
+                        {{ enquiry_form.as_div }}
+                        <button type="submit" class="btn btn--primary">Send enquiry</button>
+                    </form>
+                {% endif %}
+            </section>
             {% if sent %}
                 <p role="status">Check your inbox for a sign-in link. The link is valid for 20 minutes.</p>
             {% elif signed_in %}
@@ -20,7 +34,7 @@
                     <button type="submit" class="btn btn--primary">Email me a sign-in link</button>
                 </form>
             {% else %}
-                <p>Business applications are currently closed.</p>
+                <p>Online listing applications are currently closed.</p>
             {% endif %}
             {% if pilot_preview %}<p><a href="{% url 'partners:pilot' %}">View pilot test activity</a></p>{% endif %}
         </div>

@@ -43,6 +43,10 @@ Save a draft and use **Preview** to review the card and its placements. Select *
 
 Wagtail group permissions control who can add, change and publish business listings. To require sign-off for editors, assign a moderation workflow to **Business listing** under **Settings → Workflows** and reserve direct publish permission for reviewers.
 
+## Review advertising enquiries
+
+Visitors can submit a question on **Advertise** at `/advertise/#advertising-enquiry`. Submissions go to **Advertising enquiries** in Wagtail. Open an enquiry, use the email address to reply in your mail app, then mark it **Replied**. Wagtail group permissions control who can see or manage enquiries. The form works whenever the site is available, including while online listing applications are closed.
+
 ## Test business applications and billing
 
 Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can choose £12 monthly or £120 annually from **My business listings**. Verified payment makes the approved listing public on the preview. Wagtail-managed listings created by staff can still go live without billing.
