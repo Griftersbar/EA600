@@ -1,0 +1,43 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block titletag %}Advertiser payments{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title="Advertiser payments" subtitle=listing.name icon="tag" %}
+    <div class="nice-padding">
+        <p><a href="{{ listing_url }}">Return to the listing</a></p>
+        {% if listing.demo_key %}
+            <p>This pilot business has a complimentary listing.</p>
+        {% elif not application %}
+            <p>This listing has no linked advertiser. To set up a paid listing, use <strong>Create business listing</strong> from the business’s enquiry.</p>
+            {% if perms.partners.change_advertisingenquiry %}
+                <p><a href="{% url 'ea600_advertising_enquiries:index' %}">Open Advertising enquiries</a></p>
+            {% endif %}
+        {% elif not application.approved %}
+            <p>Publish this listing with a stop on a published route to make it available for payment.</p>
+        {% elif ready %}
+            <p>The listing is approved for payment.</p>
+        {% else %}
+            <p>This listing already has a subscription or is awaiting payment confirmation.</p>
+        {% endif %}
+
+        {% if advertiser_email %}
+            <p>The listing is linked to <strong>{{ advertiser_email }}</strong>.</p>
+        {% endif %}
+
+        {% if sandbox_enabled %}
+            <p>Current plans are <strong>{{ prices.monthly }} monthly</strong> and <strong>{{ prices.annual }} annually</strong>.</p>
+            {% if ready and can_open_sandbox %}
+                <p>Open the advertiser’s dashboard for this listing for up to 20 minutes. Payments use Stripe test mode.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="button">Open My business listings</button>
+                </form>
+            {% elif ready %}
+                <p>A Wagtail superuser can open the sandbox dashboard for this listing.</p>
+            {% endif %}
+        {% elif ready %}
+            <p>The advertiser can choose a payment plan from their dashboard after signing in.</p>
+        {% endif %}
+    </div>
+{% endblock %}

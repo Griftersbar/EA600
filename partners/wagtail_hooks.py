@@ -12,14 +12,14 @@ from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.snippets.models import register_snippet
-from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
+from wagtail.snippets.views.snippets import EditView, IndexView, SnippetViewSet
 
 from siteapp.models import TourStop
 
 from .activity import with_recent_activity
 from .enquiry_conversion import convert_enquiry, enquiry_listing_action
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
-from .sandbox import open_sandbox, sandbox_allowed
+from .sandbox import advertiser_payments
 
 
 AdvertisePageSettings.edit_handler = TabbedInterface([
@@ -74,23 +74,13 @@ class BusinessListingIndexView(IndexView):
         return with_recent_activity(super().get_queryset())
 
 
-class AdvertiserPaymentPanel(Panel):
-    class BoundPanel(Panel.BoundPanel):
-        template_name = "partners/admin/advertiser_payment_panel.html"
-
-        def is_shown(self):
-            return bool(
-                self.instance.pk and not self.instance.demo_key
-                and self.request.user.is_superuser and super().is_shown()
-            )
-
-        def get_context_data(self, parent_context=None):
-            context = super().get_context_data(parent_context)
-            application = getattr(self.instance, "application", None)
-            sandbox_url = None
-            if application and application.can_checkout and sandbox_allowed(self.request):
-                sandbox_url = reverse("ea600_business_listings:sandbox_payment", args=[self.instance.pk])
-            return {**context, "application": application, "sandbox_url": sandbox_url}
+class BusinessListingEditView(EditView):
+    def get_header_buttons(self):
+        buttons = super().get_header_buttons()
+        if self.request.user.has_perm("partners.change_businesslisting"):
+            url = reverse("ea600_business_listings:sandbox_payment", args=[self.object.pk])
+            buttons.insert(0, HeaderButton("Advertiser payments", url=url, icon_name="tag"))
+        return buttons
 
 
 class BusinessListingViewSet(SnippetViewSet):
@@ -102,6 +92,7 @@ class BusinessListingViewSet(SnippetViewSet):
     url_namespace = "ea600_business_listings"
     url_prefix = "business-listings"
     index_view_class = BusinessListingIndexView
+    edit_view_class = BusinessListingEditView
     list_display = (
         "name", "category", LiveStatusTagColumn(),
         Column("website_clicks", label="Website clicks · 30 days"),
@@ -112,7 +103,6 @@ class BusinessListingViewSet(SnippetViewSet):
     search_fields = ("name", "address")
     search_backend_name = None
     edit_handler = ObjectList([
-        AdvertiserPaymentPanel(heading="Advertiser payments"),
         FieldPanel("name"),
         FieldPanel("category"),
         FieldPanel("description", widget=forms.Textarea(attrs={"rows": 3})),
@@ -127,7 +117,7 @@ class BusinessListingViewSet(SnippetViewSet):
     def get_urlpatterns(self):
         return [
             *super().get_urlpatterns(),
-            path("sandbox-payment/<int:pk>/", open_sandbox, name="sandbox_payment"),
+            path("sandbox-payment/<int:pk>/", advertiser_payments, name="sandbox_payment"),
         ]
 
 

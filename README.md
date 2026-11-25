@@ -71,7 +71,7 @@ Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development
 
 The default `PARTNER_BILLING_MODE=test` uses a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` and create one active monthly and one active annual Stripe price in GBP. Set their IDs as `STRIPE_TEST_MONTHLY_PRICE` and `STRIPE_TEST_ANNUAL_PRICE`. Checkout uses these products and intervals with the current prices from Wagtail.
 
-With `PARTNER_PILOT_PREVIEW=1` and `PARTNER_APPLICATIONS_ENABLED=1` in test mode, a superuser signed in with two-factor authentication can open an approved listing in Wagtail and select **Open sandbox payment view**. This opens **My business listings** for that listing for up to 20 minutes without sending a sign-in email. Select **Choose a payment plan** to review prices and test checkout when Stripe credentials are configured.
+Select **Advertiser payments** in the header of a saved business listing in Wagtail to see its payment status. With `PARTNER_PILOT_PREVIEW=1` in test mode, a superuser signed in with two-factor authentication can select **Open My business listings** for an approved listing. The sandbox session lasts up to 20 minutes and opens without a sign-in email. Select **Choose a payment plan** to review prices and test checkout when Stripe credentials are configured.
 
 ### Live Stripe checkout
 

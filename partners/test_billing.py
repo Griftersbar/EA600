@@ -178,8 +178,10 @@ class PartnerBillingTests(TestCase):
         dashboard = reverse("partners:dashboard")
         checkout = reverse("partners:checkout", args=[application.pk])
 
-        self.assertContains(editor.get(edit_url), "Publish this listing with a stop on a published route")
-        self.assertNotContains(editor.get(edit_url), "Open sandbox payment view")
+        self.assertContains(editor.get(edit_url), "Advertiser payments")
+        draft_payments = editor.get(sandbox_url)
+        self.assertContains(draft_payments, "Publish this listing with a stop on a published route")
+        self.assertNotContains(draft_payments, "Open My business listings")
         self.approve(application)
         with self.settings(EMAIL_HOST="", PARTNER_RESEND_API_KEY="", STRIPE_TEST_SECRET_KEY=""):
             self.assertContains(editor.get(edit_url), sandbox_url)
@@ -213,12 +215,19 @@ class PartnerBillingTests(TestCase):
         staff.user_permissions.add(*Permission.objects.filter(codename__in=("access_admin", "change_businesslisting")))
         editor = Client()
         sign_in_verified(editor, staff)
+        self.assertContains(editor.get(reverse("ea600_business_listings:edit", args=[application.listing_id])), sandbox_url)
+        payments = editor.get(sandbox_url)
+        self.assertContains(payments, "The listing is approved for payment.")
+        self.assertNotContains(payments, "Open My business listings")
+        self.assertNotContains(payments, application.owner.email)
         self.assertEqual(editor.post(sandbox_url).status_code, 302)
         self.assertEqual(editor.get(checkout).status_code, 404)
 
         sign_in_verified(editor, self.editor)
         self.assertRedirects(editor.post(sandbox_url), reverse("partners:dashboard"))
         self.assertContains(editor.get(checkout), "Test checkout")
+        with self.settings(PARTNER_APPLICATIONS_ENABLED=False):
+            self.assertContains(editor.get(checkout), "Test checkout")
         with self.settings(PARTNER_BILLING_MODE="live"):
             self.assertEqual(editor.get(checkout).status_code, 404)
         with self.settings(PARTNER_PILOT_PREVIEW=False):
@@ -230,6 +239,29 @@ class PartnerBillingTests(TestCase):
         del session[DEVICE_ID_SESSION_KEY]
         session.save()
         self.assertEqual(editor.get(checkout).status_code, 404)
+
+    @override_settings(PARTNER_PILOT_PREVIEW=True)
+    def test_listing_created_in_wagtail_has_payment_status_without_an_advertiser(self):
+        sign_in_verified(self.client, self.editor)
+        self.assertEqual(self.client.post(reverse("ea600_business_listings:add"), {
+            "name": "Complimentary Tea Room",
+            "category": "food",
+            "description": "Tea and cake",
+            "address": "Norwich NR1",
+            "link": "https://example.com/tea",
+            "link_label": "website",
+            "stops": [self.stop.pk],
+            "action-publish": "1",
+        }).status_code, 302)
+        listing = BusinessListing.objects.get(name="Complimentary Tea Room")
+        edit = reverse("ea600_business_listings:edit", args=[listing.pk])
+        payments = reverse("ea600_business_listings:sandbox_payment", args=[listing.pk])
+        self.assertContains(self.client.get(edit), payments)
+        status = self.client.get(payments)
+        self.assertContains(status, "This listing has no linked advertiser.")
+        self.assertContains(status, reverse("ea600_advertising_enquiries:index"))
+        self.assertNotContains(status, "Open My business listings")
+        self.assertTrue(published_placements(self.tour).filter(listing=listing).exists())
 
     def test_open_checkout_is_requoted_when_an_owner_returns_after_price_change(self):
         application = self.apply_as_owner()

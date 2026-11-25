@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.20.2",
+    "date": "2026-11-25",
+    "title": "Make advertiser payments easier to find",
+    "changes": [
+      "Added an Advertiser payments link in the header of every saved business listing, available to listing editors.",
+      "The payments screen shows whether the listing needs an advertiser, publication or an approved route stop. Approved listings can still be opened in the sandbox by a superuser."
+    ]
+  },
+  {
     "version": "2.20.1",
     "date": "2026-11-25",
     "title": "Find and preview advertiser payment plans",
