@@ -62,7 +62,7 @@ def home(request):
 def tour_list(request):
     page = Paginator(published_tours(), 12).get_page(request.GET.get("page"))
     return render(request, "siteapp/tour_list.html", {
-        "homepage": homepage_content(), "page": page, "page_title": "Tours · EA600",
+        "homepage": homepage_content(), "page": page, "page_title": "Explore routes · EA600",
     })
 
 

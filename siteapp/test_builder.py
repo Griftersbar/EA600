@@ -27,6 +27,7 @@ class TourBuilderTests(TestCase):
         photo = Photo.objects.get(bundled_path="assets/images/norwich.webp")
         data = {
             "title": "Broads Loop", "slug": "broads-loop", "summary": "A weekend by the water.",
+            "region": "Norfolk Broads", "distance_miles": 90, "duration_days": 2,
             "position": 0, "cover": photo.pk, "gallery": [photo.pk],
             "stops-TOTAL_FORMS": 2, "stops-INITIAL_FORMS": 0,
             "stops-0-title": "Wroxham", "stops-0-ORDER": 2,
@@ -48,6 +49,7 @@ class TourBuilderTests(TestCase):
         self.assertEqual(list(tour.stops.values_list("title", flat=True)), ["Horning", "Wroxham"])
         self.assertEqual(tour.days.get().photo, photo)
         self.assertEqual(self.client.get(tour.get_absolute_url()).status_code, 404)
+        self.assertNotContains(self.client.get(reverse("tour_list")), tour.title)
 
         edit = reverse("builder_edit", args=[tour.pk])
         data.update({
@@ -58,6 +60,15 @@ class TourBuilderTests(TestCase):
             data.update({f"stops-{index}-id": stop.pk, f"stops-{index}-title": stop.title, f"stops-{index}-ORDER": index + 1})
         self.assertRedirects(self.client.post(edit, data), edit, fetch_redirect_response=False)
         self.assertContains(self.client.get(tour.get_absolute_url()), "Broads Loop")
+        catalogue = self.client.get(reverse("tour_list"))
+        self.assertContains(catalogue, "Broads Loop")
+        self.assertContains(catalogue, "Norfolk Broads")
+        self.assertContains(catalogue, "90 miles")
+        self.assertContains(catalogue, "2 days")
+        home = self.client.get(reverse("home"))
+        self.assertContains(home, 'href="/tours/broads-loop/"')
+        self.assertEqual(home.context["tour"].slug, "ea600")
+        self.assertLess(home.content.index(b'id="tours"'), home.content.index(b'id="routes"'))
 
     def test_swapping_day_numbers_preserves_both_rows(self):
         tour = Tour.objects.create(title="Two days", slug="two-days", summary="Two days", is_published=True)

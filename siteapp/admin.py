@@ -48,7 +48,7 @@ class TourAdmin(admin.ModelAdmin):
     list_display = ("title", "is_published", "position", "duration_days", "distance_miles")
     list_filter = ("is_published",)
     list_editable = ("is_published", "position")
-    search_fields = ("title", "summary", "slug")
+    search_fields = ("title", "region", "summary", "slug")
     prepopulated_fields = {"slug": ("title",)}
     autocomplete_fields = ("cover", "map_image", "gallery")
     inlines = (TourStopInline, ItineraryDayInline)

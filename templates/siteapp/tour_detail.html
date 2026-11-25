@@ -5,7 +5,7 @@
     {% endif %}
     <section class="page-section">
         <div class="container">
-            <a class="content-page__back" href="{% url 'tour_list' %}">All tours</a>
+            <a class="content-page__back" href="{% url 'tour_list' %}">All routes</a>
             <h1 class="heading-section content-page__title">{{ tour.title }}</h1>
             <p class="text-lead">{{ tour.summary|linebreaksbr }}</p>
             {% if tour.cover %}

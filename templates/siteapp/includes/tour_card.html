@@ -7,8 +7,9 @@
     {% endif %}
     <div class="tour-card__body">
         <h3><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
-        {% if entry.distance_miles or entry.duration_days %}
+        {% if entry.region or entry.distance_miles or entry.duration_days %}
             <p class="tour-card__meta">
+                {% if entry.region %}{{ entry.region }}{% if entry.distance_miles or entry.duration_days %} · {% endif %}{% endif %}
                 {% if entry.distance_miles %}{{ entry.distance_miles }} miles{% endif %}
                 {% if entry.distance_miles and entry.duration_days %} · {% endif %}
                 {% if entry.duration_days %}{{ entry.duration_days }} day{{ entry.duration_days|pluralize }}{% endif %}

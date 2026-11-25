@@ -71,6 +71,7 @@
                 </aside>
             </div>
         </section>
+        {% if tours %}{% include "siteapp/includes/home_tours.html" %}{% endif %}
         <section class="page-section page-section--muted intro-section" id="about" aria-labelledby="about-title">
             <div class="container intro-section__inner">
                 <div class="intro-section__map-wrap" aria-hidden="true">
@@ -141,7 +142,6 @@
                 {% if stops %}{% include "siteapp/includes/route.html" %}{% endif %}
             </div>
         </section>
-        {% if tours %}{% include "siteapp/includes/home_tours.html" %}{% endif %}
         <section class="page-section" id="destinations" aria-labelledby="destinations-title">
             <div class="container">
                 <div class="destinations-section__row destinations-section__row--top">

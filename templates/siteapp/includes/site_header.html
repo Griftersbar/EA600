@@ -34,9 +34,8 @@
                 </button>
                 <nav id="primary-nav" class="nav" aria-label="Primary">
                     <a class="nav__link{% if is_home %} is-active{% endif %}" href="{% if not is_home %}{% url 'home' %}{% endif %}#top"{% if is_home %} data-nav-link{% endif %}>Home</a>
-                    <a class="nav__link" href="{% url 'tour_list' %}">Tours</a>
+                    <a class="nav__link" href="{% url 'tour_list' %}"{% if request.resolver_match.url_name == 'tour_list' %} aria-current="page"{% endif %}>Explore routes</a>
                     <a class="nav__link" href="{% url 'wagtail_serve' '' %}">Guides</a>
-                    <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#routes"{% if is_home %} data-nav-link{% endif %}>Route</a>
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#destinations"{% if is_home %} data-nav-link{% endif %}>Destination</a>
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#itinerary"{% if is_home %} data-nav-link{% endif %}>Itinerary</a>
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning"{% if is_home %} data-nav-link{% endif %}>Planning</a>

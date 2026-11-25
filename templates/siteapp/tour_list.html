@@ -2,16 +2,16 @@
 {% block content %}
     <section class="page-section">
         <div class="container">
-            <h1 class="heading-section content-page__title">Tours</h1>
+            <h1 class="heading-section content-page__title">Explore routes</h1>
             {% if page.object_list %}
                 <div class="tour-grid">
                     {% for entry in page %}{% include "siteapp/includes/tour_card.html" %}{% endfor %}
                 </div>
             {% else %}
-                <p>No tours are available yet.</p>
+                <p>No routes are available yet.</p>
             {% endif %}
             {% if page.has_other_pages %}
-                <nav class="tour-pages" aria-label="Tour pages">
+                <nav class="tour-pages" aria-label="Route pages">
                     {% if page.has_previous %}<a class="btn btn--secondary" href="?page={{ page.previous_page_number }}">Previous</a>{% endif %}
                     <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
                     {% if page.has_next %}<a class="btn btn--secondary" href="?page={{ page.next_page_number }}">Next</a>{% endif %}

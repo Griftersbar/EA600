@@ -66,6 +66,7 @@ class Tour(OrderedContent):
     slug = models.SlugField(max_length=160, unique=True, help_text="Part of the public URL. Keep it stable once published.")
     summary = models.TextField(help_text="Short introduction for the tour list.")
     description = models.TextField(blank=True)
+    region = models.CharField(max_length=120, blank=True, help_text="Shown on route cards.")
     cover = models.ForeignKey(Photo, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     map_image = models.ForeignKey(Photo, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     gallery = models.ManyToManyField(Photo, blank=True, related_name="+")

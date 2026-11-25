@@ -39,7 +39,7 @@ class TourBuilderForm(forms.ModelForm):
     class Meta:
         model = Tour
         fields = (
-            "title", "slug", "summary", "description", "cover", "map_image", "gallery",
+            "title", "slug", "summary", "description", "region", "cover", "map_image", "gallery",
             "distance_miles", "duration_days", "counties", "start_finish", "best_season", "road_types", "position",
         )
         labels = {"slug": "URL slug", "position": "Catalogue order", "gallery": "Gallery photos"}
