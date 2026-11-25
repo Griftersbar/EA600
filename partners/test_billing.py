@@ -8,11 +8,13 @@ from unittest.mock import patch
 from urllib.parse import urlsplit
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core import mail
 from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
+from django_otp import DEVICE_ID_SESSION_KEY
 
 from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
@@ -161,6 +163,73 @@ class PartnerBillingTests(TestCase):
         self.assertFalse(published_placements(self.tour).exists())
         self.assertEqual(self.signed_event("invoice.paid", invoice).status_code, 204)
         self.assertFalse(published_placements(self.tour).exists())
+
+    @override_settings(PARTNER_PILOT_PREVIEW=True)
+    def test_superuser_can_preview_payment_without_advertiser_email_or_stripe_key(self):
+        application = self.apply_as_owner()
+        another = PartnerApplication.objects.create(
+            owner=application.owner,
+            listing=BusinessListing.objects.create(name="Other business on this account"),
+        )
+        editor = Client(enforce_csrf_checks=True)
+        sign_in_verified(editor, self.editor)
+        edit_url = reverse("ea600_business_listings:edit", args=[application.listing_id])
+        sandbox_url = reverse("ea600_business_listings:sandbox_payment", args=[application.listing_id])
+        dashboard = reverse("partners:dashboard")
+        checkout = reverse("partners:checkout", args=[application.pk])
+
+        self.assertContains(editor.get(edit_url), "Publish this listing with a stop on a published route")
+        self.assertNotContains(editor.get(edit_url), "Open sandbox payment view")
+        self.approve(application)
+        with self.settings(EMAIL_HOST="", PARTNER_RESEND_API_KEY="", STRIPE_TEST_SECRET_KEY=""):
+            self.assertContains(editor.get(edit_url), sandbox_url)
+            self.assertContains(editor.get(sandbox_url), "Open My business listings")
+            self.assertRedirects(editor.get(dashboard), reverse("partners:advertise"), fetch_redirect_response=False)
+            self.assertEqual(editor.post(sandbox_url).status_code, 403)
+            csrf = {"csrfmiddlewaretoken": editor.cookies["csrftoken"].value}
+            self.assertRedirects(editor.post(sandbox_url, csrf), dashboard)
+            page = editor.get(dashboard)
+            self.assertContains(page, "Sandbox view for this listing")
+            self.assertContains(page, "Choose a payment plan")
+            self.assertContains(page, checkout)
+            self.assertNotContains(page, another.listing.name)
+            self.assertNotContains(page, "Apply for a listing")
+            payment = editor.get(checkout)
+            self.assertContains(payment, "Checkout is currently unavailable")
+            self.assertContains(payment, "Choose monthly")
+            self.assertContains(payment, "Choose annual")
+            self.assertEqual(editor.get(reverse("partners:checkout", args=[another.pk])).status_code, 404)
+            self.assertRedirects(editor.post(reverse("partners:sign_out"), csrf), edit_url)
+            self.assertEqual(editor.get(checkout).status_code, 404)
+            self.stripe.checkout.sessions.create.assert_not_called()
+
+    @override_settings(PARTNER_PILOT_PREVIEW=True)
+    def test_sandbox_scope_requires_verified_superuser_and_test_mode(self):
+        application = self.apply_as_owner()
+        self.approve(application)
+        sandbox_url = reverse("ea600_business_listings:sandbox_payment", args=[application.listing_id])
+        checkout = reverse("partners:checkout", args=[application.pk])
+        staff = get_user_model().objects.create_user(username="sandbox-editor", is_staff=True)
+        staff.user_permissions.add(*Permission.objects.filter(codename__in=("access_admin", "change_businesslisting")))
+        editor = Client()
+        sign_in_verified(editor, staff)
+        self.assertEqual(editor.post(sandbox_url).status_code, 302)
+        self.assertEqual(editor.get(checkout).status_code, 404)
+
+        sign_in_verified(editor, self.editor)
+        self.assertRedirects(editor.post(sandbox_url), reverse("partners:dashboard"))
+        self.assertContains(editor.get(checkout), "Test checkout")
+        with self.settings(PARTNER_BILLING_MODE="live"):
+            self.assertEqual(editor.get(checkout).status_code, 404)
+        with self.settings(PARTNER_PILOT_PREVIEW=False):
+            self.assertEqual(editor.get(checkout).status_code, 404)
+        with patch("partners.sandbox.timezone.now", return_value=timezone.now() + timedelta(minutes=21)):
+            self.assertEqual(editor.get(checkout).status_code, 404)
+
+        session = editor.session
+        del session[DEVICE_ID_SESSION_KEY]
+        session.save()
+        self.assertEqual(editor.get(checkout).status_code, 404)
 
     def test_open_checkout_is_requoted_when_an_owner_returns_after_price_change(self):
         application = self.apply_as_owner()

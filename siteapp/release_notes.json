@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.20.1",
+    "date": "2026-11-25",
+    "title": "Find and preview advertiser payment plans",
+    "changes": [
+      "Added advertiser payment status to Wagtail business listings, including guidance on how to approve a listing for payment.",
+      "Superusers can open the advertiser dashboard for an approved listing on the sandbox preview and review the payment plans without a sign-in email."
+    ]
+  },
+  {
     "version": "2.20.0",
     "date": "2026-11-25",
     "title": "Create listings from advertising enquiries",

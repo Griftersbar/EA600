@@ -1,7 +1,7 @@
 from urllib.parse import quote
 
 from django import forms
-from django.urls import path
+from django.urls import path, reverse
 from django.utils.html import format_html, format_html_join
 from wagtail import hooks
 from wagtail.admin.forms import WagtailAdminModelForm
@@ -19,6 +19,7 @@ from siteapp.models import TourStop
 from .activity import with_recent_activity
 from .enquiry_conversion import convert_enquiry, enquiry_listing_action
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
+from .sandbox import open_sandbox, sandbox_allowed
 
 
 AdvertisePageSettings.edit_handler = TabbedInterface([
@@ -73,6 +74,25 @@ class BusinessListingIndexView(IndexView):
         return with_recent_activity(super().get_queryset())
 
 
+class AdvertiserPaymentPanel(Panel):
+    class BoundPanel(Panel.BoundPanel):
+        template_name = "partners/admin/advertiser_payment_panel.html"
+
+        def is_shown(self):
+            return bool(
+                self.instance.pk and not self.instance.demo_key
+                and self.request.user.is_superuser and super().is_shown()
+            )
+
+        def get_context_data(self, parent_context=None):
+            context = super().get_context_data(parent_context)
+            application = getattr(self.instance, "application", None)
+            sandbox_url = None
+            if application and application.can_checkout and sandbox_allowed(self.request):
+                sandbox_url = reverse("ea600_business_listings:sandbox_payment", args=[self.instance.pk])
+            return {**context, "application": application, "sandbox_url": sandbox_url}
+
+
 class BusinessListingViewSet(SnippetViewSet):
     model = BusinessListing
     menu_label = "Business listings"
@@ -92,6 +112,7 @@ class BusinessListingViewSet(SnippetViewSet):
     search_fields = ("name", "address")
     search_backend_name = None
     edit_handler = ObjectList([
+        AdvertiserPaymentPanel(heading="Advertiser payments"),
         FieldPanel("name"),
         FieldPanel("category"),
         FieldPanel("description", widget=forms.Textarea(attrs={"rows": 3})),
@@ -102,6 +123,12 @@ class BusinessListingViewSet(SnippetViewSet):
         FieldPanel("requires_subscription", read_only=True, heading="Requires subscription"),
         FieldPanel("demo_key", read_only=True, heading="Pilot test business"),
     ], base_form_class=BusinessListingForm)
+
+    def get_urlpatterns(self):
+        return [
+            *super().get_urlpatterns(),
+            path("sandbox-payment/<int:pk>/", open_sandbox, name="sandbox_payment"),
+        ]
 
 
 register_snippet(BusinessListingViewSet)

@@ -3,6 +3,9 @@
     {% include "siteapp/includes/page_intro.html" with title="My business listings" intro=account.email only %}
     <section class="page-section">
         <div class="container partner-panel">
+            {% if sandbox %}
+                <p class="partner-callout">Sandbox view for this listing. Payments use Stripe test mode.</p>
+            {% endif %}
             {% if request.GET.checkout == "returned" %}
                 <p class="partner-callout" role="status">The listing status updates when Stripe confirms payment. Refresh this page to check.</p>
             {% endif %}
@@ -14,9 +17,9 @@
                     {% elif application.approved %}
                         <p>Approved · Payment required</p>
                     {% elif application.listing.first_published_at %}
-                        <p>Listing unavailable</p>
+                        <p>Listing unavailable. To take payment, publish the listing with a stop on a published route.</p>
                     {% else %}
-                        <p>Awaiting review</p>
+                        <p>Awaiting review. You can select a plan once your listing is approved.</p>
                     {% endif %}
                     {% if application.billing_status == "past_due" and application.has_current_billing_mode %}
                         <p>Your latest payment failed. Update your payment details in Manage billing.</p>
@@ -32,6 +35,8 @@
                         </form>
                     {% endif %}
                 </article>
+            {% empty %}
+                <p>No listings are linked to this email address. Sign in with the email used for your listing or contact EA600 for help.</p>
             {% endfor %}
             {% if enabled %}
                 <div class="card partner-panel__card">
@@ -46,7 +51,7 @@
             {% endif %}
             <form method="post" action="{% url 'partners:sign_out' %}">
                 {% csrf_token %}
-                <button type="submit" class="partner-link">Sign out</button>
+                <button type="submit" class="partner-link">{% if sandbox %}Exit sandbox view{% else %}Sign out{% endif %}</button>
             </form>
         </div>
     </section>

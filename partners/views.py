@@ -24,6 +24,7 @@ from .activity import record_click, with_recent_activity
 from .forms import AdvertisingEnquiryForm, OwnerEmailForm, PartnerApplicationForm
 from .mail import email_ready, send_partner_mail
 from .models import AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
+from .sandbox import SANDBOX_SESSION, sandbox_application
 
 
 logger = logging.getLogger(__name__)
@@ -71,6 +72,11 @@ def show_advertise(request, *, form=None, enquiry_form=None, sent=False, status=
 
 
 def authenticated_application(request, pk):
+    preview = sandbox_application(request)
+    if preview:
+        if preview.pk != pk:
+            raise Http404
+        return preview
     return get_object_or_404(
         PartnerApplication.objects.select_related("owner", "listing"), pk=pk,
         owner_id=request.session.get(OWNER_SESSION),
@@ -136,6 +142,7 @@ def access(request, token):
     if account_id and request.method == "POST":
         if accounts.filter(pk=account_id).update(access_digest="", access_expires=None):
             request.session.cycle_key()
+            request.session.pop(SANDBOX_SESSION, None)
             request.session[OWNER_SESSION] = account_id
             return redirect("partners:dashboard")
         account_id = None
@@ -145,6 +152,10 @@ def access(request, token):
 @never_cache
 @require_POST
 def sign_out(request):
+    preview = sandbox_application(request)
+    request.session.pop(SANDBOX_SESSION, None)
+    if preview:
+        return redirect("ea600_business_listings:edit", preview.listing_id)
     request.session.pop(OWNER_SESSION, None)
     request.session.cycle_key()
     return redirect("partners:advertise")
@@ -153,16 +164,21 @@ def sign_out(request):
 @never_cache
 @require_http_methods(["GET", "POST"])
 def dashboard(request):
-    account = owner(request)
+    preview = sandbox_application(request)
+    account = preview.owner if preview else owner(request)
     if not account:
         return redirect("partners:advertise")
+    enabled = not preview and applications_enabled()
     form = PartnerApplicationForm(request.POST or None, request.FILES or None)
-    if request.method == "POST" and applications_enabled() and form.is_valid():
+    if request.method == "POST" and enabled and form.is_valid():
         form.create_application(account)
         return redirect("partners:dashboard")
+    applications = account.applications.select_related("listing")
+    if preview:
+        applications = applications.filter(pk=preview.pk)
     return show(
-        request, "dashboard", form=form, account=account, enabled=applications_enabled(),
-        applications=with_recent_activity(account.applications.select_related("listing"), "listing__click_days").order_by("listing__name"),
+        request, "dashboard", form=form, account=account, enabled=enabled, sandbox=bool(preview),
+        applications=with_recent_activity(applications, "listing__click_days").order_by("listing__name"),
         billing_ready=billing.billing_ready(),
     )
 
