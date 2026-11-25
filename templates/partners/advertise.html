@@ -7,7 +7,10 @@
             <h1 class="heading-section" id="advertise-title">{{ advertise_page.title }}</h1>
             {% if advertise_page.hero_subtitle %}<p class="partner-hero__subtitle">{{ advertise_page.hero_subtitle }}</p>{% endif %}
             <p class="text-lead">{{ advertise_page.introduction|linebreaksbr }}</p>
-            <p><a class="btn btn--primary" href="#advertising-enquiry">{{ advertise_page.enquiry_link_label }}</a></p>
+            <div class="btn-group">
+                {% if enabled or signed_in %}<a class="btn btn--primary" href="#business-listing-access">{% if signed_in %}{{ advertise_page.owner_listings_label }}{% else %}Apply for a listing{% endif %}</a>{% endif %}
+                <a class="btn {% if enabled or signed_in %}btn--secondary{% else %}btn--primary{% endif %}" href="#advertising-enquiry">{{ advertise_page.enquiry_link_label }}</a>
+            </div>
         </div>
     </section>
     <div class="container partner-landing">
@@ -60,7 +63,7 @@
                     </form>
                 {% endif %}
             </section>
-            <div class="card partner-panel__card partner-account-entry">
+            <div class="card partner-panel__card partner-account-entry" id="business-listing-access">
                 {% if sent %}
                     <p role="status">{{ advertise_page.sign_in_confirmation }}</p>
                 {% elif signed_in %}

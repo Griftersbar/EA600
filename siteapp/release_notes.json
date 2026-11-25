@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.19.0",
+    "date": "2026-11-25",
+    "title": "Advertiser payment page and live Stripe support",
+    "changes": [
+      "Added a dedicated monthly and annual payment page for approved advertisers, using the prices in Wagtail.",
+      "Added live Stripe support. Public paid listings require payment confirmation in the configured billing mode."
+    ]
+  },
+  {
     "version": "2.18.0",
     "date": "2026-11-25",
     "title": "Release notes in Django admin",

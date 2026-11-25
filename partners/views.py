@@ -174,7 +174,7 @@ def dashboard(request):
     return show(
         request, "dashboard", form=form, account=account, enabled=applications_enabled(),
         applications=with_recent_activity(account.applications.select_related("listing"), "listing__click_days").order_by("listing__name"),
-        billing_ready=billing.billing_ready(), prices=billing.display_prices(AdvertisePageSettings.load(request)),
+        billing_ready=billing.billing_ready(),
     )
 
 
@@ -221,22 +221,32 @@ def pilot(request):
 
 
 @never_cache
-@require_POST
+@require_http_methods(["GET", "POST"])
 def start_checkout(request, pk):
     application = authenticated_application(request, pk)
+    if not application.approved:
+        return show(request, "billing_error", status=409, error="Checkout is unavailable for this listing.")
+    if not application.can_checkout:
+        return redirect("partners:dashboard")
+    if request.method == "GET":
+        return show(
+            request, "payment", page_title="Choose a listing subscription · EA600", application=application,
+            prices=billing.display_prices(AdvertisePageSettings.load(request)), test_mode=not billing.live_billing(),
+            billing_ready=billing.billing_ready(),
+        )
+    if not billing.billing_ready():
+        return show(request, "billing_error", status=409, error="Checkout is unavailable for this listing.")
     plan = request.POST.get("plan")
     if plan not in billing.PLANS:
         return HttpResponseBadRequest("Choose a monthly or annual plan.")
-    if not billing.billing_ready() or not application.approved:
-        return HttpResponse("Checkout is unavailable for this listing.", status=409)
     return_url = request.build_absolute_uri(reverse("partners:dashboard"))
     try:
-        url = billing.checkout(application, plan, return_url)
+        url = billing.checkout(application, plan, return_url, request.build_absolute_uri(request.path))
     except billing.BillingUnavailable as error:
         return show(request, "billing_error", error=str(error))
     except StripeError:
-        logger.warning("Stripe test checkout request failed")
-        return show(request, "billing_error", error="Checkout is temporarily unavailable. Please try again.")
+        logger.warning("Stripe checkout request failed")
+        return show(request, "billing_error", status=503, error="Checkout is temporarily unavailable. Please try again.")
     return redirect(url or "partners:dashboard")
 
 
@@ -244,7 +254,7 @@ def start_checkout(request, pk):
 @require_POST
 def portal(request, pk):
     application = authenticated_application(request, pk)
-    if not billing.billing_ready() or not application.stripe_customer_id:
+    if not billing.billing_ready() or not application.has_current_billing_mode or not application.stripe_customer_id:
         return HttpResponse("Billing is unavailable for this listing.", status=409)
     try:
         session = billing.stripe_client().v1.billing_portal.sessions.create({
@@ -252,7 +262,7 @@ def portal(request, pk):
             "return_url": request.build_absolute_uri(reverse("partners:dashboard")),
         })
     except StripeError:
-        logger.warning("Stripe test billing portal request failed")
+        logger.warning("Stripe billing portal request failed")
         return show(request, "billing_error", error="Billing is temporarily unavailable. Please try again.")
     return redirect(session.url)
 
@@ -263,14 +273,14 @@ def stripe_webhook(request):
     if not billing.billing_ready():
         return HttpResponseNotFound()
     try:
-        event = Webhook.construct_event(request.body, request.headers.get("Stripe-Signature", ""), settings.STRIPE_TEST_WEBHOOK_SECRET)
+        event = Webhook.construct_event(request.body, request.headers.get("Stripe-Signature", ""), billing.webhook_secret())
     except (ValueError, SignatureVerificationError):
         return HttpResponseBadRequest("Invalid Stripe event.")
-    if event.get("livemode") is not False:
-        return HttpResponseBadRequest("Send a Stripe test event.")
+    if event.get("livemode") is not billing.live_billing():
+        return HttpResponseBadRequest("The Stripe event does not match the billing mode.")
     try:
         billing.apply_event(event)
     except StripeError:
-        logger.warning("Stripe test webhook synchronization failed")
+        logger.warning("Stripe webhook synchronization failed")
         return HttpResponse(status=503)
     return HttpResponse(status=204)

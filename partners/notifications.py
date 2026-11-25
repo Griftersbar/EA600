@@ -28,7 +28,8 @@ def notify_first_approval(sender, instance, **kwargs):
         try:
             send_partner_mail(
                 "Your EA600 business listing is approved",
-                f"Your listing for {name} is approved. Sign in with this email to choose a plan.\n\n{url}",
+                f"Your listing for {name} is approved. Sign in with this email to choose a payment plan. "
+                f"Your listing will appear on the route once Stripe confirms payment.\n\n{url}",
                 application.owner.email,
             )
         except OSError:

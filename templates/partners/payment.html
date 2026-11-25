@@ -1,0 +1,26 @@
+{% extends "partners/page.html" %}
+{% block content %}
+    {% url 'partners:dashboard' as dashboard_url %}
+    {% include "siteapp/includes/page_intro.html" with title="Choose a listing subscription" intro=application.listing.name back_url=dashboard_url back_label="My business listings" only %}
+    <section class="page-section" aria-label="Payment options">
+        <div class="container partner-panel">
+            {% if not billing_ready %}
+                <p class="partner-callout" role="status">Checkout is currently unavailable. You can return to this page to pay when it opens.</p>
+            {% elif test_mode %}
+                <p class="partner-callout">Test checkout. Use Stripe test card details.</p>
+            {% endif %}
+            <p>Your listing will appear on the route once Stripe confirms payment. The subscription renews automatically until you cancel in Manage billing.</p>
+            <form method="post" class="partner-prices">
+                {% csrf_token %}
+                {% for plan, amount in prices.items %}
+                    <div class="card partner-panel__card">
+                        <h2>{{ plan|capfirst }}</h2>
+                        <p><strong>{{ amount }}</strong> per {% if plan == "monthly" %}month{% else %}year{% endif %}</p>
+                        <button type="submit" class="btn btn--primary" name="plan" value="{{ plan }}"{% if not billing_ready %} disabled{% endif %}>Choose {{ plan }}</button>
+                    </div>
+                {% endfor %}
+            </form>
+            <p>Stripe handles your card payment on its secure checkout page.</p>
+        </div>
+    </section>
+{% endblock %}

@@ -70,18 +70,18 @@ class PartnerBillingTests(TestCase):
         self.assertEqual(mail.outbox[-1].subject, "Your EA600 business listing is approved")
         self.assertEqual(mail.outbox[-1].to, [application.owner.email])
 
-    def configure_price(self, interval, amount):
+    def configure_price(self, interval, amount, *, live=False):
         self.stripe.prices.retrieve.return_value = {
-            "livemode": False, "active": True, "currency": "gbp", "unit_amount": amount,
+            "livemode": live, "active": True, "currency": "gbp", "unit_amount": amount,
             "product": "prod_listing_fixture",
             "recurring": {"interval": interval, "interval_count": 1, "usage_type": "licensed"},
         }
         self.stripe.checkout.sessions.create.return_value = SimpleNamespace(id="cs_test_123", url="https://checkout.stripe.com/test")
 
-    def signed_event(self, event_type, data, *, live=False):
+    def signed_event(self, event_type, data, *, live=False, secret=b"whsec_fixture"):
         payload = json.dumps({"object": "event", "id": "evt_test", "type": event_type, "livemode": live, "data": {"object": data}})
         timestamp = int(time.time())
-        signature = hmac.new(b"whsec_fixture", f"{timestamp}.{payload}".encode(), hashlib.sha256).hexdigest()
+        signature = hmac.new(secret, f"{timestamp}.{payload}".encode(), hashlib.sha256).hexdigest()
         return self.client.post(reverse("partners:webhook"), payload, content_type="application/json",
                                 headers={"Stripe-Signature": f"t={timestamp},v1={signature}"})
 
@@ -92,20 +92,28 @@ class PartnerBillingTests(TestCase):
         self.assertTrue(listing.requires_subscription)
         self.assertFalse(listing.live)
         checkout = reverse("partners:checkout", args=[application.pk])
+        self.assertEqual(self.client.get(checkout).status_code, 409)
         self.assertEqual(self.client.post(checkout, {"plan": "annual"}).status_code, 409)
+        self.assertEqual(Client().get(checkout).status_code, 404)
         self.assertEqual(Client().post(checkout, {"plan": "annual"}).status_code, 404)
 
         self.approve(application)
         self.assertFalse(published_placements(self.tour).exists())
         self.configure_price("year", 12000)
         AdvertisePageSettings.objects.update(annual_price="145.25")
-        self.assertContains(self.client.get(reverse("partners:dashboard")), "£145.25 annually")
+        self.assertContains(self.client.get(reverse("partners:dashboard")), "Choose a payment plan")
+        payment = self.client.get(checkout)
+        self.assertContains(payment, "Choose a listing subscription")
+        self.assertContains(payment, "<strong>£145.25</strong> per year")
+        self.assertContains(payment, "Test checkout")
+        self.stripe.checkout.sessions.create.assert_not_called()
         self.assertRedirects(self.client.post(checkout, {"plan": "annual"}), "https://checkout.stripe.com/test", fetch_redirect_response=False)
         params = self.stripe.checkout.sessions.create.call_args.args[0]
         self.assertEqual(params["line_items"], [{"price_data": {
             "currency": "gbp", "product": "prod_listing_fixture", "unit_amount": 14525, "recurring": {"interval": "year"},
         }, "quantity": 1}])
         self.assertEqual(params["customer_email"], application.owner.email)
+        self.assertEqual(urlsplit(params["cancel_url"]).path, checkout)
         self.assertFalse(published_placements(self.tour).exists())
 
         end = int((timezone.now() + timedelta(days=365)).timestamp())
@@ -122,6 +130,7 @@ class PartnerBillingTests(TestCase):
                      "metadata": params["metadata"], "client_reference_id": str(application.pk)}
         self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
         self.assertContains(Client().get(self.tour.get_absolute_url()), listing.name)
+        self.assertRedirects(self.client.get(checkout), reverse("partners:dashboard"))
         self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
         application.refresh_from_db()
         paid_until = application.paid_until
@@ -201,6 +210,70 @@ class PartnerBillingTests(TestCase):
         self.assertEqual(self.client.post(reverse("partners:webhook"), "{}", content_type="application/json").status_code, 400)
         self.assertEqual(self.signed_event("checkout.session.completed", {}, live=True).status_code, 400)
         self.assertFalse(BusinessListing.objects.filter(requires_subscription=True).exists())
+
+    @override_settings(
+        PARTNER_BILLING_MODE="live",
+        STRIPE_LIVE_SECRET_KEY="sk_live_fixture", STRIPE_LIVE_WEBHOOK_SECRET="whsec_live_fixture",
+        STRIPE_LIVE_MONTHLY_PRICE="price_live_month_fixture", STRIPE_LIVE_ANNUAL_PRICE="price_live_year_fixture",
+    )
+    def test_live_checkout_requires_a_live_payment_even_after_a_test_subscription(self):
+        application = self.apply_as_owner()
+        self.approve(application)
+        checkout = reverse("partners:checkout", args=[application.pk])
+        portal = reverse("partners:portal", args=[application.pk])
+        PartnerApplication.objects.filter(pk=application.pk).update(
+            checkout_id="cs_test_previous", checkout_plan="monthly", checkout_amount_pence=1200,
+            stripe_customer_id="cus_test_previous", stripe_subscription_id="sub_test_previous",
+            paid_until=timezone.now() + timedelta(days=30), billing_status="active",
+        )
+        self.assertFalse(published_placements(self.tour).exists())
+        self.assertEqual(self.client.post(portal).status_code, 409)
+        self.assertNotContains(self.client.get(checkout), "Test checkout")
+
+        with self.settings(STRIPE_LIVE_SECRET_KEY="sk_test_fixture"):
+            self.assertContains(self.client.get(checkout), "Checkout is currently unavailable")
+            self.assertContains(self.client.get(checkout), 'value="monthly" disabled')
+            self.assertEqual(self.client.post(checkout, {"plan": "monthly"}).status_code, 409)
+        self.configure_price("month", 1200, live=True)
+        self.stripe.checkout.sessions.create.return_value = SimpleNamespace(id="cs_live_123", url="https://checkout.stripe.com/live")
+        self.assertRedirects(self.client.post(checkout, {"plan": "monthly"}), "https://checkout.stripe.com/live", fetch_redirect_response=False)
+        self.stripe.prices.retrieve.assert_called_once_with("price_live_month_fixture")
+        self.stripe.checkout.sessions.retrieve.assert_not_called()
+        params = self.stripe.checkout.sessions.create.call_args.args[0]
+        self.assertNotIn("customer", params)
+        application.refresh_from_db()
+        self.assertEqual(application.billing_mode, PartnerApplication.BillingMode.LIVE)
+        self.assertIsNone(application.paid_until)
+
+        end = int((timezone.now() + timedelta(days=30)).timestamp())
+        invoice = {
+            "status": "open", "parent": {"subscription_details": {"subscription": "sub_live"}},
+            "lines": {"data": [{
+                "parent": {"subscription_item_details": {"subscription_item": "si_live", "proration": False}},
+                "period": {"end": end},
+            }]},
+        }
+        self.stripe.subscriptions.retrieve.return_value = {
+            "livemode": True, "metadata": params["metadata"], "customer": "cus_live",
+            "status": "active", "latest_invoice": invoice, "items": {"data": [{
+                "id": "si_live", "price": self.stripe.prices.retrieve.return_value, "quantity": 1,
+            }]},
+        }
+        completed = {
+            "id": "cs_live_123", "livemode": True, "mode": "subscription", "subscription": "sub_live",
+            "metadata": params["metadata"], "client_reference_id": str(application.pk),
+        }
+        secret = b"whsec_live_fixture"
+        self.assertEqual(self.signed_event("checkout.session.completed", completed, live=True).status_code, 400)
+        self.assertEqual(self.signed_event("checkout.session.completed", completed, secret=secret).status_code, 400)
+        self.assertEqual(self.signed_event("checkout.session.completed", completed, live=True, secret=secret).status_code, 204)
+        self.assertFalse(published_placements(self.tour).exists())
+        invoice["status"] = "paid"
+        self.assertEqual(self.signed_event("invoice.paid", invoice, live=True, secret=secret).status_code, 204)
+        self.assertContains(Client().get(self.tour.get_absolute_url()), application.listing.name)
+        with self.settings(PARTNER_BILLING_MODE="test"):
+            self.assertFalse(published_placements(self.tour).exists())
+            self.assertEqual(self.client.post(portal).status_code, 409)
 
     @override_settings(PARTNER_RESEND_API_KEY="re_test_fixture", DEFAULT_FROM_EMAIL="EA600 <partners@example.com>")
     @patch("partners.mail.urlopen")

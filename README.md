@@ -59,15 +59,23 @@ Open **Settings → Advertise page** in Wagtail to change the page copy and butt
 
 On **Page content**, choose the hero photo and edit the information cards and callouts under **Advertiser information**. The information explains which businesses can advertise, what a listing includes, and what happens after an enquiry.
 
-## Test business applications and billing
+## Business applications and billing
 
-Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can choose the monthly or annual plan from **My business listings**. Verified payment makes the approved listing public on the preview. Wagtail-managed listings created by staff can still go live without billing.
+Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can select **Choose a payment plan** from **My business listings**. The payment page shows the current monthly and annual prices and opens Stripe Checkout. A verified paid invoice makes the approved listing public. Wagtail-managed listings created by staff can still go live without billing.
 
 Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development, email prints to the console when `PARTNER_RESEND_API_KEY` and `EMAIL_HOST` are empty. On the preview, set `PARTNER_RESEND_API_KEY` and a verified `DEFAULT_FROM_EMAIL` to send email over HTTPS. If your Railway plan supports outbound SMTP, you can instead configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`.
 
-For a hosted checkout test, use a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` and create active GBP recurring prices at £12/month and £120/year. Set their IDs as `STRIPE_TEST_MONTHLY_PRICE` and `STRIPE_TEST_ANNUAL_PRICE`. These identify the Stripe products and billing intervals. Checkout reuses a base price when its amount matches Wagtail and creates a price for the quoted amount on the same product otherwise. Enable the test customer portal for payment methods, invoices and cancellation at the end of the billing period. Keep subscription plan changes disabled in the portal.
+### Stripe test checkout
 
-Register `/advertise/stripe/webhook/` on the preview domain as a test webhook endpoint and set its signing secret as `STRIPE_TEST_WEBHOOK_SECRET`. Subscribe to `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated` and `customer.subscription.deleted`. Keep the key and signing secret in environment variables. This stage accepts test Stripe keys and events. Listings stop appearing when their paid period ends, even if a renewal fails or an expiry event arrives late.
+The default `PARTNER_BILLING_MODE=test` uses a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` and create one active monthly and one active annual Stripe price in GBP. Set their IDs as `STRIPE_TEST_MONTHLY_PRICE` and `STRIPE_TEST_ANNUAL_PRICE`. Checkout uses these products and intervals with the current prices from Wagtail.
+
+### Live Stripe checkout
+
+Set `PARTNER_BILLING_MODE=live` on the service that should accept real payments. Use an activated Stripe account and set `STRIPE_LIVE_SECRET_KEY`, `STRIPE_LIVE_MONTHLY_PRICE`, and `STRIPE_LIVE_ANNUAL_PRICE` using its live key and active GBP recurring prices. Prior test payments cannot unlock listings in live mode. A new live checkout for a test application keeps the listing and owner and starts a fresh Stripe checkout.
+
+### Webhook and subscription management
+
+Register the service's `/advertise/stripe/webhook/` URL in the matching Stripe mode, with `STRIPE_TEST_WEBHOOK_SECRET` for test or `STRIPE_LIVE_WEBHOOK_SECRET` for live. Subscribe to `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated` and `customer.subscription.deleted`. Store the API key and webhook signing secret as Railway variables. Enable Stripe's customer portal for payment methods, invoices and cancellation at the end of the billing period. Keep subscription plan changes disabled in the portal. Listings stop appearing when their paid period ends, even if a renewal fails or an expiry event arrives late.
 
 ## Run the business listing pilot
 

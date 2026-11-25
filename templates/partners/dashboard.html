@@ -4,7 +4,7 @@
     <section class="page-section">
         <div class="container partner-panel">
             {% if request.GET.checkout == "returned" %}
-                <p class="partner-callout" role="status">Thanks. The listing status updates when Stripe confirms payment.</p>
+                <p class="partner-callout" role="status">The listing status updates when Stripe confirms payment. Refresh this page to check.</p>
             {% endif %}
             {% for application in applications %}
                 <article class="card partner-panel__card">
@@ -18,29 +18,18 @@
                     {% else %}
                         <p>Awaiting review</p>
                     {% endif %}
-                    {% if application.billing_status == "past_due" %}
+                    {% if application.billing_status == "past_due" and application.has_current_billing_mode %}
                         <p>Your latest payment failed. Update your payment details in Manage billing.</p>
                     {% endif %}
                     {% include "partners/includes/click_totals.html" with activity=application only %}
-                    {% if billing_ready %}
-                        {% if application.can_checkout %}
-                            <form method="post" action="{% url 'partners:checkout' application.pk %}" class="partner-form">
-                                {% csrf_token %}
-                                <p>Test checkout. Your plan renews automatically each month or year until cancelled.</p>
-                                <div class="btn-group">
-                                    <button class="btn btn--primary" name="plan" value="monthly">{{ prices.monthly }} monthly</button>
-                                    <button class="btn btn--primary" name="plan" value="annual">{{ prices.annual }} annually</button>
-                                </div>
-                            </form>
-                        {% endif %}
-                        {% if application.stripe_customer_id %}
-                            <form method="post" action="{% url 'partners:portal' application.pk %}">
-                                {% csrf_token %}
-                                <button type="submit" class="partner-link">Manage billing</button>
-                            </form>
-                        {% endif %}
-                    {% elif application.approved %}
-                        <p>Checkout is currently unavailable.</p>
+                    {% if application.can_checkout %}
+                        <p><a class="btn btn--primary" href="{% url 'partners:checkout' application.pk %}">Choose a payment plan</a></p>
+                    {% endif %}
+                    {% if billing_ready and application.stripe_customer_id and application.has_current_billing_mode %}
+                        <form method="post" action="{% url 'partners:portal' application.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="partner-link">Manage billing</button>
+                        </form>
                     {% endif %}
                 </article>
             {% endfor %}

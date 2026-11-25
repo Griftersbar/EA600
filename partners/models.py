@@ -165,9 +165,14 @@ class AdvertisingEnquiry(models.Model):
 
 
 class PartnerApplication(models.Model):
+    class BillingMode(models.TextChoices):
+        TEST = "test", "Test"
+        LIVE = "live", "Live"
+
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     owner = models.ForeignKey(PartnerAccount, on_delete=models.PROTECT, related_name="applications")
     listing = models.OneToOneField(BusinessListing, on_delete=models.PROTECT, related_name="application")
+    billing_mode = models.CharField(max_length=4, choices=BillingMode, default=BillingMode.TEST, editable=False)
     checkout_attempt = models.UUIDField(default=uuid4, editable=False)
     checkout_plan = models.CharField(max_length=8, blank=True)
     checkout_amount_pence = models.PositiveIntegerField(null=True, blank=True, editable=False)
@@ -186,21 +191,31 @@ class PartnerApplication(models.Model):
         return self.listing.live and self.listing.stops.filter(tour__is_published=True).exists()
 
     @property
+    def has_current_billing_mode(self):
+        return self.billing_mode == settings.PARTNER_BILLING_MODE
+
+    @property
     def is_paid(self):
         return (
-            self.billing_status in self.BILLABLE_STATUSES
+            self.has_current_billing_mode
+            and self.billing_status in self.BILLABLE_STATUSES
             and self.paid_until is not None
             and self.paid_until > timezone.now()
         )
 
     @property
     def can_checkout(self):
-        return self.approved and (not self.stripe_subscription_id or self.billing_status in self.ENDED_STATUSES)
+        if not self.approved:
+            return False
+        if not self.has_current_billing_mode:
+            return self.billing_mode == self.BillingMode.TEST and settings.PARTNER_BILLING_MODE == self.BillingMode.LIVE
+        return not self.stripe_subscription_id or self.billing_status in self.ENDED_STATUSES
 
 
 def published_placements(tour=None):
     placements = RoutePlacement.objects.filter(
         Q(listing__requires_subscription=False) | Q(
+            listing__application__billing_mode=settings.PARTNER_BILLING_MODE,
             listing__application__billing_status__in=PartnerApplication.BILLABLE_STATUSES,
             listing__application__paid_until__gt=timezone.now(),
         ),

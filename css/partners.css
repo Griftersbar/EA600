@@ -145,6 +145,11 @@
   color: var(--color-brand-dark);
 }
 
+.partner-prices button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
 .partner-callout {
   padding: var(--space-4);
   background: color-mix(in srgb, var(--color-gold-light) 15%, var(--color-white));
@@ -251,6 +256,10 @@
   }
 
   .partner-enquiry__form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  form.partner-prices {
     grid-template-columns: minmax(0, 1fr);
   }
 }
