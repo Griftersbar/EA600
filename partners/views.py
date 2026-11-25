@@ -61,7 +61,7 @@ def allow_partner_request(request, purpose, limit):
 def show_advertise(request, *, form=None, enquiry_form=None, sent=False, status=200):
     page = AdvertisePageSettings.load(request)
     return show(
-        request, "advertise", status=status, page_title=page.title, advertise_page=page, prices=billing.display_prices(),
+        request, "advertise", status=status, page_title=page.title, advertise_page=page, prices=billing.display_prices(page),
         form=form if form is not None else OwnerEmailForm(),
         enquiry_form=enquiry_form if enquiry_form is not None else AdvertisingEnquiryForm(page, prefix="enquiry"),
         enquiry_received=request.session.pop("partner_enquiry_received", False),
@@ -174,7 +174,7 @@ def dashboard(request):
     return show(
         request, "dashboard", form=form, account=account, enabled=applications_enabled(),
         applications=with_recent_activity(account.applications.select_related("listing"), "listing__click_days").order_by("listing__name"),
-        billing_ready=billing.billing_ready(),
+        billing_ready=billing.billing_ready(), prices=billing.display_prices(AdvertisePageSettings.load(request)),
     )
 
 

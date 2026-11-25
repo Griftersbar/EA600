@@ -17,7 +17,7 @@ from django.utils import timezone
 from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
 
-from .models import BusinessListing, PartnerAccount, PartnerApplication, published_placements
+from .models import AdvertisePageSettings, BusinessListing, PartnerAccount, PartnerApplication, published_placements
 
 
 @override_settings(
@@ -73,6 +73,7 @@ class PartnerBillingTests(TestCase):
     def configure_price(self, interval, amount):
         self.stripe.prices.retrieve.return_value = {
             "livemode": False, "active": True, "currency": "gbp", "unit_amount": amount,
+            "product": "prod_listing_fixture",
             "recurring": {"interval": interval, "interval_count": 1, "usage_type": "licensed"},
         }
         self.stripe.checkout.sessions.create.return_value = SimpleNamespace(id="cs_test_123", url="https://checkout.stripe.com/test")
@@ -97,19 +98,24 @@ class PartnerBillingTests(TestCase):
         self.approve(application)
         self.assertFalse(published_placements(self.tour).exists())
         self.configure_price("year", 12000)
+        AdvertisePageSettings.objects.update(annual_price="145.25")
+        self.assertContains(self.client.get(reverse("partners:dashboard")), "£145.25 annually")
         self.assertRedirects(self.client.post(checkout, {"plan": "annual"}), "https://checkout.stripe.com/test", fetch_redirect_response=False)
         params = self.stripe.checkout.sessions.create.call_args.args[0]
-        self.assertEqual(params["line_items"], [{"price": "price_year_fixture", "quantity": 1}])
+        self.assertEqual(params["line_items"], [{"price_data": {
+            "currency": "gbp", "product": "prod_listing_fixture", "unit_amount": 14525, "recurring": {"interval": "year"},
+        }, "quantity": 1}])
         self.assertEqual(params["customer_email"], application.owner.email)
         self.assertFalse(published_placements(self.tour).exists())
 
         end = int((timezone.now() + timedelta(days=365)).timestamp())
         invoice_line = {"parent": {"subscription_item_details": {"subscription_item": "si_test", "proration": False}},
                         "period": {"end": end}}
+        subscribed_price = {**self.stripe.prices.retrieve.return_value, "id": "price_inline_fixture", "unit_amount": 14525, "active": False}
         subscription = {
             "livemode": False, "metadata": params["metadata"], "customer": "cus_test",
             "status": "active", "latest_invoice": {"status": "paid", "lines": {"data": [invoice_line]}},
-            "items": {"data": [{"id": "si_test", "price": {"id": "price_year_fixture"}, "quantity": 1, "current_period_end": end + 1000000}]},
+            "items": {"data": [{"id": "si_test", "price": subscribed_price, "quantity": 1, "current_period_end": end + 1000000}]},
         }
         self.stripe.subscriptions.retrieve.return_value = subscription
         completed = {"id": "cs_test_123", "livemode": False, "mode": "subscription", "subscription": "sub_test",
@@ -120,6 +126,7 @@ class PartnerBillingTests(TestCase):
         application.refresh_from_db()
         paid_until = application.paid_until
         self.assertEqual(int(paid_until.timestamp()), end)
+        self.assertEqual(application.checkout_amount_pence, 14525)
 
         invoice = {"parent": {"subscription_details": {"subscription": "sub_test"}}}
         subscription["status"] = "past_due"
@@ -133,6 +140,7 @@ class PartnerBillingTests(TestCase):
 
         subscription["status"] = "active"
         subscription["latest_invoice"]["status"] = "paid"
+        AdvertisePageSettings.objects.update(annual_price="160.00")
         invoice_line["period"]["end"] = end + 1000000
         subscription["cancel_at_period_end"] = True
         self.assertEqual(self.signed_event("invoice.paid", invoice).status_code, 204)
@@ -144,6 +152,27 @@ class PartnerBillingTests(TestCase):
         self.assertFalse(published_placements(self.tour).exists())
         self.assertEqual(self.signed_event("invoice.paid", invoice).status_code, 204)
         self.assertFalse(published_placements(self.tour).exists())
+
+    def test_open_checkout_is_requoted_when_an_owner_returns_after_price_change(self):
+        application = self.apply_as_owner()
+        self.approve(application)
+        self.configure_price("month", 1200)
+        checkout = reverse("partners:checkout", args=[application.pk])
+        self.assertEqual(self.client.post(checkout, {"plan": "monthly"}).status_code, 302)
+        self.assertEqual(self.stripe.checkout.sessions.create.call_args.args[0]["line_items"], [{"price": "price_month_fixture", "quantity": 1}])
+        original_key = self.stripe.checkout.sessions.create.call_args.kwargs["options"]["idempotency_key"]
+
+        AdvertisePageSettings.objects.update(monthly_price="17.50")
+        self.stripe.checkout.sessions.retrieve.return_value = {"status": "open"}
+        self.stripe.checkout.sessions.expire.return_value = {"status": "expired"}
+        self.stripe.checkout.sessions.create.return_value = SimpleNamespace(id="cs_test_new", url="https://checkout.stripe.com/test-new")
+        self.assertRedirects(self.client.post(checkout, {"plan": "monthly"}), "https://checkout.stripe.com/test-new", fetch_redirect_response=False)
+        self.stripe.checkout.sessions.expire.assert_called_once_with("cs_test_123")
+        call = self.stripe.checkout.sessions.create.call_args
+        self.assertEqual(call.args[0]["line_items"][0]["price_data"]["unit_amount"], 1750)
+        self.assertNotEqual(call.kwargs["options"]["idempotency_key"], original_key)
+        application.refresh_from_db()
+        self.assertEqual(application.checkout_amount_pence, 1750)
 
     def test_monthly_checkout_resumes_and_portal_requires_owner(self):
         application = self.apply_as_owner()

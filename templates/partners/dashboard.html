@@ -29,8 +29,8 @@
                                 {% csrf_token %}
                                 <p>Test checkout. Your plan renews automatically each month or year until cancelled.</p>
                                 <div class="btn-group">
-                                    <button class="btn btn--primary" name="plan" value="monthly">£12 monthly</button>
-                                    <button class="btn btn--primary" name="plan" value="annual">£120 annually</button>
+                                    <button class="btn btn--primary" name="plan" value="monthly">{{ prices.monthly }} monthly</button>
+                                    <button class="btn btn--primary" name="plan" value="annual">{{ prices.annual }} annually</button>
                                 </div>
                             </form>
                         {% endif %}

@@ -101,18 +101,20 @@ class AdvertisingEnquiryTests(TestCase):
         saved = self.edit_advertise_settings(
             fields, title="Advertise your business", enquiry_submit_label="Ask about a listing",
             enquiry_confirmation="Thank you. We’ll be in touch.", show_plan_prices=False,
+            monthly_price="14.50", annual_price="145.25",
         )
         self.assertEqual(saved.status_code, 302)
         editor_page = self.client.get(saved["Location"])
-        self.assertContains(editor_page, "Current plan prices")
-        self.assertContains(editor_page, "£12 a month")
-        self.assertContains(editor_page, "£120 a year")
+        self.assertContains(editor_page, "Monthly price (£)")
+        self.assertContains(editor_page, "Annual price (£)")
+        self.assertIn('value="14.50"', str(editor_page.context["form"]["monthly_price"]))
+        self.assertIn('value="145.25"', str(editor_page.context["form"]["annual_price"]))
         visitor = Client()
         page = visitor.get(self.advertise)
         self.assertContains(page, "Advertise your business")
         self.assertContains(page, "Ask about a listing")
         self.assertContains(page, "&lt;b&gt;Choose a type&lt;/b&gt;")
-        self.assertNotContains(page, "£12 a month")
+        self.assertNotContains(page, "£14.50 a month")
         form = page.context["enquiry_form"]
         extra_name = form.extra_fields[0]
         self.assertEqual(list(form.fields), ["email", "contact_name", extra_name])
@@ -134,8 +136,17 @@ class AdvertisingEnquiryTests(TestCase):
         self.assertContains(detail, "Listing interest")
         self.assertContains(detail, "Food and drink")
         self.assertContains(self.client.get(reverse("ea600_advertising_enquiries:index")), enquiry.email)
-        self.assertEqual(self.edit_advertise_settings([fields[0]]).status_code, 302)
+        self.assertEqual(self.edit_advertise_settings([fields[0]], show_plan_prices=True).status_code, 302)
         self.assertContains(self.client.get(edit_url), "Listing interest")
+        public = visitor.get(self.advertise)
+        self.assertContains(public, "£14.50 a month")
+        self.assertContains(public, "£145.25 a year")
+
+        invalid = self.edit_advertise_settings([fields[0]], monthly_price="0.01", annual_price="12.125")
+        self.assertEqual(invalid.status_code, 200)
+        self.assertIn("monthly_price", invalid.context["form"].errors)
+        self.assertIn("annual_price", invalid.context["form"].errors)
+        self.assertContains(visitor.get(self.advertise), "£14.50 a month")
 
     def test_wagtail_requires_exactly_one_reply_address_and_unique_standard_fields(self):
         editor = get_user_model().objects.create_superuser(username="enquiry-settings-editor")

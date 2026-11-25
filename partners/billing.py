@@ -7,14 +7,19 @@ from django.db.models.functions import Coalesce, Greatest
 from django.utils import timezone
 from stripe import StripeClient
 
-from .models import PartnerApplication
+from .models import AdvertisePageSettings, PartnerApplication
 
 
+# Keep the original amounts for unfinished checkouts created before Wagtail pricing.
 PLANS = {"monthly": ("month", 1200), "annual": ("year", 12000)}
 
 
-def display_prices():
-    return {plan: f"£{amount / 100:.2f}".removesuffix(".00") for plan, (_, amount) in PLANS.items()}
+def plan_amounts(page):
+    return {"monthly": page.monthly_price, "annual": page.annual_price}
+
+
+def display_prices(page):
+    return {plan: f"£{amount:.2f}".removesuffix(".00") for plan, amount in plan_amounts(page).items()}
 
 
 class BillingUnavailable(Exception):
@@ -37,16 +42,55 @@ def stripe_client():
     return StripeClient(settings.STRIPE_TEST_SECRET_KEY, max_network_retries=2)
 
 
+def is_test_recurring_price(price, plan):
+    recurring = price.get("recurring") or {}
+    return (
+        price.get("livemode") is False and price.get("currency") == "gbp"
+        and recurring.get("interval") == PLANS[plan][0]
+        and recurring.get("interval_count") == 1 and recurring.get("usage_type") == "licensed"
+    )
+
+
+def reserved_amount(application):
+    if application.checkout_amount_pence is not None:
+        return application.checkout_amount_pence
+    return PLANS[application.checkout_plan][1]
+
+
+def checkout_item(client, application):
+    plan = application.checkout_plan
+    configured_price_id = price_id(plan)
+    price = client.v1.prices.retrieve(configured_price_id)
+    if not is_test_recurring_price(price, plan) or not price.get("active"):
+        raise BillingUnavailable("The Stripe test price must be an active GBP price for this billing interval.")
+
+    amount = reserved_amount(application)
+    if price.get("unit_amount") == amount:
+        return {"price": configured_price_id, "quantity": 1}
+
+    # An older reserved attempt must retain its original Stripe request on retry.
+    if application.checkout_amount_pence is None:
+        raise BillingUnavailable("The Stripe test price does not match the reserved checkout.")
+    product = price.get("product")
+    if not isinstance(product, str) or not product.startswith("prod_"):
+        raise BillingUnavailable("The Stripe test price must belong to a product.")
+    return {"price_data": {
+        "currency": "gbp", "product": product, "unit_amount": amount,
+        "recurring": {"interval": PLANS[plan][0]},
+    }, "quantity": 1}
+
+
 def checkout(application, plan, return_url):
     """Reuse the unpaid session or reserve exactly one Stripe attempt per application."""
     client = stripe_client()
     if not application.can_checkout:
         return None
 
+    new_amount = int(plan_amounts(AdvertisePageSettings.load())[plan] * 100)
     if application.checkout_id:
         session = client.v1.checkout.sessions.retrieve(application.checkout_id)
         if session.get("status") == "open":
-            if application.checkout_plan == plan:
+            if application.checkout_plan == plan and reserved_amount(application) == new_amount:
                 return session.get("url")
             session = client.v1.checkout.sessions.expire(application.checkout_id)
         if session.get("status") == "complete" and not application.stripe_subscription_id:
@@ -56,7 +100,7 @@ def checkout(application, plan, return_url):
             return None
         rotated = PartnerApplication.objects.filter(pk=application.pk, checkout_attempt=application.checkout_attempt).update(
             checkout_attempt=uuid4(), checkout_id="", checkout_plan="", stripe_subscription_id=None,
-            billing_status="", paid_until=None, synced_at=None,
+            checkout_amount_pence=None, billing_status="", paid_until=None, synced_at=None,
         )
         if not rotated:
             raise BillingUnavailable("The checkout changed. Please try again.")
@@ -64,19 +108,11 @@ def checkout(application, plan, return_url):
 
     if not application.checkout_plan:
         PartnerApplication.objects.filter(pk=application.pk, checkout_attempt=application.checkout_attempt, checkout_plan="").update(
-            checkout_plan=plan,
+            checkout_plan=plan, checkout_amount_pence=new_amount,
         )
         application.refresh_from_db()
     if application.checkout_plan != plan:
         raise BillingUnavailable(f"Your {application.checkout_plan} checkout is being prepared. Continue with that plan.")
-
-    interval, amount = PLANS[plan]
-    price = client.v1.prices.retrieve(price_id(plan))
-    recurring = price.get("recurring") or {}
-    if (price.get("livemode") is not False or not price.get("active") or price.get("currency") != "gbp"
-            or price.get("unit_amount") != amount or recurring.get("interval") != interval
-            or recurring.get("interval_count") != 1 or recurring.get("usage_type") != "licensed"):
-        raise BillingUnavailable("The test price doesn’t match this plan.")
 
     metadata = {"application": str(application.pk), "attempt": str(application.checkout_attempt)}
     customer = {"customer": application.stripe_customer_id} if application.stripe_customer_id else {"customer_email": application.owner.email}
@@ -84,7 +120,7 @@ def checkout(application, plan, return_url):
         **customer,
         "mode": "subscription",
         "payment_method_types": ["card"],
-        "line_items": [{"price": price_id(plan), "quantity": 1}],
+        "line_items": [checkout_item(client, application)],
         "client_reference_id": str(application.pk),
         "metadata": metadata,
         "subscription_data": {"metadata": metadata},
@@ -129,6 +165,16 @@ def paid_invoice_end(invoice, item_id):
     return datetime.fromtimestamp(max(ends), tz=utc.utc) if ends else None
 
 
+def matches_subscription_price(application, item):
+    if item["quantity"] != 1:
+        return False
+    price = item["price"]
+    plan = application.checkout_plan
+    if application.checkout_amount_pence is None:
+        return price["id"] == price_id(plan)
+    return is_test_recurring_price(price, plan) and price.get("unit_amount") == application.checkout_amount_pence
+
+
 def sync_subscription(application, subscription_id):
     observed_at = timezone.now()
     subscription = stripe_client().v1.subscriptions.retrieve(subscription_id, {"expand": ["latest_invoice"]})
@@ -140,7 +186,7 @@ def sync_subscription(application, subscription_id):
     items = subscription["items"]["data"]
     invoice = subscription.get("latest_invoice") or {}
     status = subscription["status"]
-    correct_price = len(items) == 1 and items[0]["price"]["id"] == price_id(application.checkout_plan) and items[0]["quantity"] == 1
+    correct_price = len(items) == 1 and matches_subscription_price(application, items[0])
     updates = {
         "stripe_customer_id": subscription["customer"],
         "stripe_subscription_id": subscription_id,

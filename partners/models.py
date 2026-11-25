@@ -1,8 +1,9 @@
+from decimal import Decimal
 from urllib.parse import urlencode
 from uuid import uuid4
 
 from django.conf import settings
-from django.core.validators import RegexValidator, URLValidator
+from django.core.validators import MinValueValidator, RegexValidator, URLValidator
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -100,6 +101,14 @@ class AdvertisePageSettings(BaseGenericSetting):
         "Your listing can include a photo, directions, and a link to your website or booking page. "
         "Tell us which stop you’re near. We’ll review your listing before you choose a payment plan."
     ))
+    monthly_price = models.DecimalField(
+        "Monthly price (£)", max_digits=8, decimal_places=2, default=Decimal("12.00"),
+        validators=[MinValueValidator(Decimal("0.30"))],
+    )
+    annual_price = models.DecimalField(
+        "Annual price (£)", max_digits=8, decimal_places=2, default=Decimal("120.00"),
+        validators=[MinValueValidator(Decimal("0.30"))],
+    )
     show_plan_prices = models.BooleanField(default=True, help_text="Show the monthly and annual prices used by checkout.")
     enquiry_heading = models.CharField(max_length=160, default="Advertising enquiry")
     enquiry_description = models.TextField(default=(
@@ -153,6 +162,7 @@ class PartnerApplication(models.Model):
     listing = models.OneToOneField(BusinessListing, on_delete=models.PROTECT, related_name="application")
     checkout_attempt = models.UUIDField(default=uuid4, editable=False)
     checkout_plan = models.CharField(max_length=8, blank=True)
+    checkout_amount_pence = models.PositiveIntegerField(null=True, blank=True, editable=False)
     checkout_id = models.CharField(max_length=255, blank=True)
     stripe_customer_id = models.CharField(max_length=255, blank=True)
     stripe_subscription_id = models.CharField(max_length=255, unique=True, null=True, blank=True)

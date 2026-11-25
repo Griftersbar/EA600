@@ -15,11 +15,9 @@ from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
 from siteapp.models import TourStop
 
 from .activity import with_recent_activity
-from .billing import display_prices
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
 
 
-plan_prices = display_prices()
 AdvertisePageSettings.edit_handler = TabbedInterface([
     ObjectList([
         MultiFieldPanel([
@@ -27,12 +25,8 @@ AdvertisePageSettings.edit_handler = TabbedInterface([
         ], heading="Introduction"),
         MultiFieldPanel([
             FieldPanel("package_heading"), FieldPanel("package_description"),
-            HelpPanel(heading="Current plan prices", content=format_html(
-                "<p><strong>{} a month</strong> or <strong>{} a year</strong></p>"
-                "<p>These amounts come from the billing configuration.</p>",
-                plan_prices["monthly"], plan_prices["annual"],
-            )),
-            FieldPanel("show_plan_prices"),
+            HelpPanel(content="New checkouts use these prices. Renewals use each subscription’s agreed price."),
+            FieldPanel("monthly_price"), FieldPanel("annual_price"), FieldPanel("show_plan_prices"),
         ], heading="Listing package"),
         MultiFieldPanel([
             FieldPanel("sign_in_label"), FieldPanel("sign_in_confirmation"), FieldPanel("owner_listings_label"),
