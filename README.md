@@ -49,6 +49,8 @@ Visitors can submit a question on **Advertise** at `/advertise/#advertising-enqu
 
 Open **Settings → Advertise page** in Wagtail to change the page copy and buttons. Under **Page content → Listing package**, edit the monthly and annual prices in pounds or control whether visitors see the prices. Saved prices appear on the public page and apply to new checkouts. Renewals use the price already attached to each subscription. On the **Enquiry form** tab, edit field labels and help text, change required fields, and add, remove or reorder questions. Keep one reply email field so staff can respond. New answers appear in **Advertising enquiries**, with custom questions saved under the labels used at submission.
 
+On **Page content**, choose the hero photo and edit the information cards and callouts under **Advertiser information**. The information explains which businesses can advertise, what a listing includes, and what happens after an enquiry.
+
 ## Test business applications and billing
 
 Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can choose the monthly or annual plan from **My business listings**. Verified payment makes the approved listing public on the preview. Wagtail-managed listings created by staff can still go live without billing.

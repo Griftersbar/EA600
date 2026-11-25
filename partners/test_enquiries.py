@@ -27,6 +27,9 @@ class AdvertisingEnquiryTests(TestCase):
     def test_business_can_enquire_while_applications_are_closed(self):
         page = self.client.get(self.advertise)
         self.assertContains(page, "Make an enquiry")
+        self.assertContains(page, "Who can advertise?")
+        self.assertContains(page, "Click reporting")
+        self.assertNotContains(page, "None</div>")
         self.assertContains(page, "Online listing applications are currently closed.")
         self.assertRedirects(self.client.get(self.enquire), self.advertise + "#advertising-enquiry")
         result = self.client.post(self.enquire, self.post_data)
@@ -76,11 +79,15 @@ class AdvertisingEnquiryTests(TestCase):
         self.assertEqual(enquiry.status, AdvertisingEnquiry.Status.REPLIED)
         self.assertEqual(enquiry.business_name, self.details["business_name"])
 
-    def edit_advertise_settings(self, fields, **copy):
+    def edit_advertise_settings(self, fields, *, sections=(), **copy):
         settings_url = reverse("wagtailsettings:edit", args=["partners", "advertisepagesettings", AdvertisePageSettings.load().pk])
         field_form = self.client.get(settings_url).context["form"]
-        values = {name: field_form[name].value() for name in field_form.fields if name != "enquiry_fields"}
-        data = {**values, **copy, "enquiry_fields": streamfield(fields)}
+        values = {
+            name: field_form[name].value()
+            for name in field_form.fields if name not in ("enquiry_fields", "advertiser_sections")
+        }
+        values["hero_photo"] = values["hero_photo"] or ""
+        data = {**values, **copy, "enquiry_fields": streamfield(fields), "advertiser_sections": streamfield(sections)}
         return self.client.post(settings_url, nested_form_data(data))
 
     def test_wagtail_settings_control_page_form_and_saved_answers(self):
@@ -102,6 +109,8 @@ class AdvertisingEnquiryTests(TestCase):
             fields, title="Advertise your business", enquiry_submit_label="Ask about a listing",
             enquiry_confirmation="Thank you. We’ll be in touch.", show_plan_prices=False,
             monthly_price="14.50", annual_price="145.25",
+            hero_subtitle="Welcome local businesses",
+            sections=[("note", {"heading": "Questions before applying?", "description": "Tell us where you are based."})],
         )
         self.assertEqual(saved.status_code, 302)
         editor_page = self.client.get(saved["Location"])
@@ -112,6 +121,8 @@ class AdvertisingEnquiryTests(TestCase):
         visitor = Client()
         page = visitor.get(self.advertise)
         self.assertContains(page, "Advertise your business")
+        self.assertContains(page, "Welcome local businesses")
+        self.assertContains(page, "Questions before applying?")
         self.assertContains(page, "Ask about a listing")
         self.assertContains(page, "&lt;b&gt;Choose a type&lt;/b&gt;")
         self.assertNotContains(page, "£14.50 a month")

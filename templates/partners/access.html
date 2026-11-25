@@ -1,17 +1,19 @@
-{% extends "siteapp/content_page.html" %}
+{% extends "partners/page.html" %}
 {% block content %}
+    {% include "partners/includes/masthead.html" with title="Sign in to EA600 Business Listings" only %}
     <section class="page-section">
         <div class="container partner-panel">
-            <h1 class="heading-section">Sign in to EA600 Business Listings</h1>
-            {% if valid %}
-                <form method="post" class="partner-form">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn--primary">Continue to my listings</button>
-                </form>
-            {% else %}
-                <p>This sign-in link is expired or has already been used.</p>
-                <p><a href="{% url 'partners:advertise' %}">Request a new link</a></p>
-            {% endif %}
+            <div class="partner-panel__card">
+                {% if valid %}
+                    <form method="post" class="partner-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn--primary">Continue to my listings</button>
+                    </form>
+                {% else %}
+                    <p>This sign-in link is expired or has already been used.</p>
+                    <p><a href="{% url 'partners:advertise' %}" class="partner-link">Request a new link</a></p>
+                {% endif %}
+            </div>
         </div>
     </section>
 {% endblock %}

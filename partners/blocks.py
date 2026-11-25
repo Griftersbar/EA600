@@ -68,3 +68,48 @@ def default_enquiry_fields():
     ]
     standard.insert(2, ("reply_email", {"label": "Email for replies"}))
     return standard
+
+
+class AdvertiserCardBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(max_length=100)
+    description = blocks.TextBlock()
+
+    class Meta:
+        label_format = "{heading}"
+
+
+class AdvertiserCardsBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(max_length=120)
+    cards = blocks.ListBlock(AdvertiserCardBlock(), min_num=1)
+
+    class Meta:
+        label = "Information cards"
+        label_format = "{heading}"
+
+
+class AdvertiserNoteBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(max_length=120)
+    description = blocks.TextBlock()
+
+    class Meta:
+        label = "Callout"
+        label_format = "{heading}"
+
+
+def default_advertiser_sections():
+    return [
+        ("cards", {"heading": "Who can advertise?", "cards": [
+            {"heading": "Food and drink", "description": "Pubs, restaurants, cafés and tea rooms near a route stop."},
+            {"heading": "Places to stay", "description": "Hotels, B&Bs and other visitor accommodation along the route."},
+            {"heading": "Shops and makers", "description": "Independent shops, local producers and craft businesses."},
+        ]}),
+        ("cards", {"heading": "What your listing includes", "cards": [
+            {"heading": "A place on the route", "description": "Your business appears beside a relevant stop while visitors plan their trip."},
+            {"heading": "Direct links", "description": "Add a photo, directions and a link to your website or booking page."},
+            {"heading": "Click reporting", "description": "See 30-day totals for website, booking and directions clicks."},
+        ]}),
+        ("note", {"heading": "What happens next?", "description": (
+            "Enquire to discuss the best stop for your business. We review listing applications before payment. "
+            "Once we approve your listing and confirm payment, it appears on the route."
+        )}),
+    ]

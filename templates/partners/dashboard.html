@@ -1,11 +1,10 @@
-{% extends "siteapp/content_page.html" %}
+{% extends "partners/page.html" %}
 {% block content %}
+    {% include "partners/includes/masthead.html" with title="My business listings" intro=account.email only %}
     <section class="page-section">
         <div class="container partner-panel">
-            <h1 class="heading-section">My business listings</h1>
-            <p>{{ account.email }}</p>
             {% if request.GET.checkout == "returned" %}
-                <p role="status">Thanks. The listing status updates when Stripe confirms payment.</p>
+                <p class="partner-callout" role="status">Thanks. The listing status updates when Stripe confirms payment.</p>
             {% endif %}
             {% for application in applications %}
                 <article class="partner-panel__card">

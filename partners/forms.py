@@ -29,7 +29,7 @@ class AdvertisingEnquiryForm(forms.Form):
             kind, value = block.block_type, block.value
             options = {
                 "label": value["label"],
-                "help_text": escape(value.get("help_text", "")),
+                "help_text": escape(value.get("help_text") or ""),
                 "required": kind == "reply_email" or bool(value.get("required")),
             }
             if kind in ("standard", "reply_email"):

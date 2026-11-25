@@ -14,7 +14,7 @@ from wagtail.contrib.settings.models import BaseGenericSetting
 from wagtail.fields import StreamField
 from wagtail.models import DraftStateMixin, LockableMixin, PreviewableMixin, RevisionMixin, WorkflowMixin
 
-from .blocks import EnquiryFieldsBlock, default_enquiry_fields
+from .blocks import AdvertiserCardsBlock, AdvertiserNoteBlock, EnquiryFieldsBlock, default_advertiser_sections, default_enquiry_fields
 
 
 class BusinessListing(WorkflowMixin, LockableMixin, DraftStateMixin, RevisionMixin, PreviewableMixin, ClusterableModel):
@@ -91,7 +91,11 @@ class PartnerAccount(models.Model):
 
 
 class AdvertisePageSettings(BaseGenericSetting):
+    select_related = ("hero_photo",)
+
     title = models.CharField(max_length=160, default="Advertise on EA600")
+    hero_subtitle = models.CharField(max_length=160, blank=True, default="Reach travellers along the EA600")
+    hero_photo = models.ForeignKey("siteapp.Photo", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     introduction = models.TextField(
         default="Help road-trippers find your restaurant, tea room, accommodation, shop or workshop as they plan their route.",
     )
@@ -110,6 +114,10 @@ class AdvertisePageSettings(BaseGenericSetting):
         validators=[MinValueValidator(Decimal("0.30"))],
     )
     show_plan_prices = models.BooleanField(default=True, help_text="Show the monthly and annual prices used by checkout.")
+    advertiser_sections = StreamField(
+        [("cards", AdvertiserCardsBlock()), ("note", AdvertiserNoteBlock())],
+        default=default_advertiser_sections, blank=True, use_json_field=True,
+    )
     enquiry_heading = models.CharField(max_length=160, default="Advertising enquiry")
     enquiry_description = models.TextField(default=(
         "Ask about advertising options or where your business could appear. We’ll use your contact details to reply."

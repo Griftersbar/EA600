@@ -21,13 +21,15 @@ from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
 AdvertisePageSettings.edit_handler = TabbedInterface([
     ObjectList([
         MultiFieldPanel([
-            FieldPanel("title"), FieldPanel("introduction"), FieldPanel("enquiry_link_label"),
+            FieldPanel("title"), FieldPanel("hero_subtitle"), FieldPanel("hero_photo"),
+            FieldPanel("introduction"), FieldPanel("enquiry_link_label"),
         ], heading="Introduction"),
         MultiFieldPanel([
             FieldPanel("package_heading"), FieldPanel("package_description"),
             HelpPanel(content="New checkouts use these prices. Renewals use each subscription’s agreed price."),
             FieldPanel("monthly_price"), FieldPanel("annual_price"), FieldPanel("show_plan_prices"),
         ], heading="Listing package"),
+        FieldPanel("advertiser_sections", heading="Advertiser information"),
         MultiFieldPanel([
             FieldPanel("sign_in_label"), FieldPanel("sign_in_confirmation"), FieldPanel("owner_listings_label"),
             FieldPanel("applications_closed_message"), FieldPanel("pilot_activity_label"),

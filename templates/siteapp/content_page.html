@@ -2,10 +2,11 @@
 <html lang="en">
     <head>
         {% include "siteapp/includes/site_head.html" %}
+        {% block extra_head %}{% endblock %}
     </head>
-    <body id="top">
+    <body id="top" {% block body_attributes %}{% endblock %}>
         {% include "siteapp/includes/site_header.html" %}
-        <main class="content-page">
+        <main class="{% block main_class %}content-page{% endblock %}">
             {% block content %}{% endblock %}
         </main>
         <footer class="content-page__footer">

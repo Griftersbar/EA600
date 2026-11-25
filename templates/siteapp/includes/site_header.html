@@ -39,7 +39,7 @@
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#destinations"{% if is_home %} data-nav-link{% endif %}>Destination</a>
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#itinerary"{% if is_home %} data-nav-link{% endif %}>Itinerary</a>
                     <a class="nav__link" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning"{% if is_home %} data-nav-link{% endif %}>Planning</a>
-                    <a class="nav__link" href="{% url 'partners:advertise' %}">Advertise</a>
+                    <a class="nav__link{% if request.resolver_match.namespace == 'partners' %} is-active{% endif %}" href="{% url 'partners:advertise' %}"{% if request.resolver_match.url_name == 'advertise' %} aria-current="page"{% endif %}>Advertise</a>
                     <a class="btn btn--primary site-header__nav-cta" href="{% if not is_home %}{% url 'home' %}{% endif %}#planning">{{ homepage.cta_button }}</a>
                 </nav>
                 <div class="site-header__actions">
