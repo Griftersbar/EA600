@@ -315,6 +315,9 @@
 }
 
 @media (max-width: 35rem) {
+  .builder-brand { flex-shrink: 0; }
+  .builder-topbar__nav { flex-wrap: wrap; justify-content: flex-end; gap: .35rem .75rem; }
+  .builder-topbar__nav a { white-space: nowrap; }
   .builder-field-grid { grid-template-columns: minmax(0, 1fr); }
   .builder-heading { align-items: flex-start; flex-wrap: wrap; }
   .builder-filter { flex-wrap: wrap; }

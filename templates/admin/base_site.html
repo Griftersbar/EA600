@@ -4,5 +4,8 @@
     {% if perms.wagtailadmin.access_admin %}
         <a href="{% url 'wagtailadmin_home' %}">Wagtail</a> /
     {% endif %}
+    {% if perms.siteapp.add_tour or perms.siteapp.change_tour %}
+        <a href="{% url 'builder_index' %}">Tour Builder</a> /
+    {% endif %}
     {{ block.super }}
 {% endblock %}

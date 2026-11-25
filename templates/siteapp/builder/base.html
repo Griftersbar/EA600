@@ -19,6 +19,7 @@
                 </a>
                 <nav class="builder-topbar__nav" aria-label="Site links">
                     {% if perms.wagtailadmin.access_admin %}<a href="{% url 'wagtailadmin_home' %}">Wagtail</a>{% endif %}
+                    <a href="{% url 'admin:index' %}">Django admin</a>
                     <a href="{% url 'tour_list' %}">View site <span aria-hidden="true">↗</span></a>
                 </nav>
             </div>
