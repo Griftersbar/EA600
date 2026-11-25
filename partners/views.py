@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.core.cache import cache
-from django.db import DatabaseError, transaction
+from django.db import DatabaseError
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -158,18 +158,7 @@ def dashboard(request):
         return redirect("partners:advertise")
     form = PartnerApplicationForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and applications_enabled() and form.is_valid():
-        with transaction.atomic():
-            listing = form.save(commit=False)
-            photo_form = form.cleaned_data["photo_upload"]
-            if photo_form:
-                listing.photo = photo_form.save()
-            listing.requires_subscription = True
-            listing.save()
-            listing.stops = [form.cleaned_data["stop"]]
-            listing.save_revision()
-            # Persist the initial placement so Wagtail can list and edit the new draft.
-            listing.save(update_fields=["stops"])
-            PartnerApplication.objects.create(listing=listing, owner=account)
+        form.create_application(account)
         return redirect("partners:dashboard")
     return show(
         request, "dashboard", form=form, account=account, enabled=applications_enabled(),

@@ -1,11 +1,12 @@
 from django import forms
 from django.core.validators import URLValidator
+from django.db import transaction
 from django.utils.html import escape
 
 from siteapp.forms import PhotoForm
 from siteapp.models import TourStop
 
-from .models import AdvertisingEnquiry, BusinessListing
+from .models import AdvertisingEnquiry, BusinessListing, PartnerApplication
 
 
 class OwnerEmailForm(forms.Form):
@@ -85,3 +86,17 @@ class PartnerApplicationForm(forms.ModelForm):
             if not photo_form.is_valid():
                 raise forms.ValidationError(photo_form.errors["image"])
             return photo_form
+
+    @transaction.atomic
+    def create_application(self, owner, *, source_enquiry=None, user=None):
+        listing = self.save(commit=False)
+        photo_form = self.cleaned_data["photo_upload"]
+        listing.requires_subscription = True
+        listing.save()
+        if photo_form:
+            listing.photo = photo_form.save()
+        listing.stops = [self.cleaned_data["stop"]]
+        listing.save_revision(user=user)
+        # Keep the draft's placement available in the Wagtail listing editor.
+        listing.save(update_fields=["stops", "photo"])
+        return PartnerApplication.objects.create(listing=listing, owner=owner, source_enquiry=source_enquiry)

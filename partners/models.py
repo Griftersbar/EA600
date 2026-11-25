@@ -163,6 +163,10 @@ class AdvertisingEnquiry(models.Model):
     def subject(self):
         return str(self)
 
+    @property
+    def listing_status(self):
+        return "Converted" if hasattr(self, "application") else "—"
+
 
 class PartnerApplication(models.Model):
     class BillingMode(models.TextChoices):
@@ -172,6 +176,9 @@ class PartnerApplication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     owner = models.ForeignKey(PartnerAccount, on_delete=models.PROTECT, related_name="applications")
     listing = models.OneToOneField(BusinessListing, on_delete=models.PROTECT, related_name="application")
+    source_enquiry = models.OneToOneField(
+        AdvertisingEnquiry, on_delete=models.SET_NULL, null=True, blank=True, editable=False, related_name="application",
+    )
     billing_mode = models.CharField(max_length=4, choices=BillingMode, default=BillingMode.TEST, editable=False)
     checkout_attempt = models.UUIDField(default=uuid4, editable=False)
     checkout_plan = models.CharField(max_length=8, blank=True)

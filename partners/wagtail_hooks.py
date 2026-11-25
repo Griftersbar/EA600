@@ -1,13 +1,15 @@
 from urllib.parse import quote
 
 from django import forms
+from django.urls import path
 from django.utils.html import format_html, format_html_join
 from wagtail import hooks
 from wagtail.admin.forms import WagtailAdminModelForm
-from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel, ObjectList, Panel, TabbedInterface
 from wagtail.admin.ui.tables import Column, LiveStatusTagColumn
-from wagtail.admin.views.generic.models import InspectView
+from wagtail.admin.views.generic.models import IndexView as ModelIndexView, InspectView
 from wagtail.admin.viewsets.model import ModelViewSet
+from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.settings.registry import register_setting
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
@@ -15,6 +17,7 @@ from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
 from siteapp.models import TourStop
 
 from .activity import with_recent_activity
+from .enquiry_conversion import convert_enquiry, enquiry_listing_action
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
 
 
@@ -127,6 +130,28 @@ class AdvertisingEnquiryInspectView(InspectView):
     def get_additional_answers_display_value(self):
         return display_enquiry_answers(self.object.additional_answers)
 
+    def get_header_buttons(self):
+        buttons = super().get_header_buttons()
+        label, url = enquiry_listing_action(self.request.user, self.object)
+        if url:
+            buttons.insert(0, HeaderButton(label, url=url, icon_name="tag"))
+        return buttons
+
+
+class EnquiryListingPanel(Panel):
+    class BoundPanel(Panel.BoundPanel):
+        template_name = "partners/admin/enquiry_listing_panel.html"
+
+        def get_context_data(self, parent_context=None):
+            context = super().get_context_data(parent_context)
+            label, url = enquiry_listing_action(self.request.user, self.instance)
+            return {**context, "listing_action_label": label, "listing_action_url": url}
+
+
+class AdvertisingEnquiryIndexView(ModelIndexView):
+    def get_queryset(self):
+        return super().get_queryset().select_related("application")
+
 
 class AdvertisingEnquiryViewSet(ModelViewSet):
     model = AdvertisingEnquiry
@@ -139,12 +164,14 @@ class AdvertisingEnquiryViewSet(ModelViewSet):
     copy_view_enabled = False
     inspect_view_enabled = True
     inspect_view_class = AdvertisingEnquiryInspectView
+    index_view_class = AdvertisingEnquiryIndexView
     inspect_view_fields = ("business_name", "contact_name", "email", "location", "message", "additional_answers", "submitted_at", "status")
-    list_display = ("subject", "location", "status", "submitted_at")
+    list_display = ("subject", "location", "status", Column("listing_status", label="Listing"), "submitted_at")
     list_filter = ("status",)
     search_fields = ("business_name", "location", "email")
     search_backend_name = None
     panels = [
+        EnquiryListingPanel(),
         FieldPanel("business_name", read_only=True),
         FieldPanel("contact_name", read_only=True),
         EnquiryEmailPanel("email", read_only=True, heading="Reply by email"),
@@ -159,7 +186,10 @@ class AdvertisingEnquiryViewSet(ModelViewSet):
         return super().get_common_view_kwargs(add_url_name=None, **kwargs)
 
     def get_urlpatterns(self):
-        return [pattern for pattern in super().get_urlpatterns() if pattern.name != "add"]
+        return [
+            *[pattern for pattern in super().get_urlpatterns() if pattern.name != "add"],
+            path("convert/<int:pk>/", convert_enquiry, name="convert"),
+        ]
 
 
 @hooks.register("register_admin_viewset")

@@ -1,0 +1,5 @@
+{% if listing_action_url %}
+    <p><a class="button button-secondary" href="{{ listing_action_url }}">{{ listing_action_label }}</a></p>
+{% elif instance.application %}
+    <p>Converted to a business listing.</p>
+{% endif %}

@@ -1,0 +1,34 @@
+{% extends "wagtailadmin/base.html" %}
+{% load wagtailadmin_tags %}
+
+{% block titletag %}Create business listing{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title="Create business listing" subtitle=enquiry.subject icon="tag" %}
+    <div class="nice-padding">
+        <p><a href="{{ enquiry_url }}">Return to the enquiry</a></p>
+        <p>The draft will be linked to <strong>{{ enquiry.email }}</strong>. Complete the listing details for review and payment.</p>
+        <details class="w-mb-4">
+            <summary>Original enquiry</summary>
+            {% if enquiry.contact_name %}<p>{{ enquiry.contact_name }}</p>{% endif %}
+            {% if enquiry.message %}<p>{{ enquiry.message|linebreaksbr }}</p>{% endif %}
+            {% if enquiry.additional_answers %}
+                <dl>
+                    {% for answer in enquiry.additional_answers %}
+                        <dt><strong>{{ answer.label }}</strong></dt>
+                        <dd>{{ answer.value }}</dd>
+                    {% endfor %}
+                </dl>
+            {% endif %}
+        </details>
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <p>Confirm the street address and postcode. Use the description for text you want visitors to see on the route.</p>
+            {% for field in form %}
+                {% include "wagtailadmin/shared/field.html" with field=field only %}
+            {% endfor %}
+            <button type="submit" class="button">Create draft listing</button>
+        </form>
+    </div>
+{% endblock %}

@@ -5,9 +5,11 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from wagtail.test.utils.form_data import nested_form_data, streamfield
 
+from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
 
-from .models import AdvertisePageSettings, AdvertisingEnquiry, PartnerAccount
+from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing, PartnerAccount, PartnerApplication
+from .views import OWNER_SESSION
 
 
 @override_settings(PARTNER_APPLICATIONS_ENABLED=False)
@@ -78,6 +80,76 @@ class AdvertisingEnquiryTests(TestCase):
         enquiry.refresh_from_db()
         self.assertEqual(enquiry.status, AdvertisingEnquiry.Status.REPLIED)
         self.assertEqual(enquiry.business_name, self.details["business_name"])
+
+    def test_wagtail_converts_an_enquiry_once_into_the_owners_paid_draft(self):
+        enquiry = AdvertisingEnquiry.objects.create(
+            **{**self.details, "email": self.details["email"].upper()},
+            additional_answers=[{"label": "Other details", "value": "Private notes about the business"}],
+        )
+        owner = PartnerAccount.objects.create(email=self.details["email"])
+        editor = get_user_model().objects.create_superuser(username="enquiry-conversion-editor")
+        sign_in_verified(self.client, editor)
+        convert = reverse("ea600_advertising_enquiries:convert", args=[enquiry.pk])
+        edit = reverse("ea600_advertising_enquiries:edit", args=[enquiry.pk])
+        inspect = reverse("ea600_advertising_enquiries:inspect", args=[enquiry.pk])
+        for url in (edit, inspect):
+            self.assertContains(self.client.get(url), f'href="{convert}"')
+        page = self.client.get(convert)
+        self.assertContains(page, "Create draft listing")
+        self.assertContains(page, "Private notes about the business")
+        self.assertEqual(page.context["form"].initial, {"name": enquiry.business_name, "address": enquiry.location})
+        self.assertFalse(BusinessListing.objects.exists())
+        self.assertContains(self.client.post(convert, {"name": enquiry.business_name}), "This field is required.")
+        self.assertFalse(PartnerApplication.objects.exists())
+
+        tour = Tour.objects.get(slug="ea600")
+        stop = tour.stops.get(title="Norwich")
+        data = {
+            "name": enquiry.business_name, "category": "shop", "description": "Independent deli in Norwich.",
+            "address": "Norwich, NR1", "stop": stop.pk, "link": "https://example.test/deli", "link_label": "website",
+        }
+        response = self.client.post(convert, data)
+        application = PartnerApplication.objects.get(source_enquiry=enquiry)
+        listing = application.listing
+        listing_edit = reverse("ea600_business_listings:edit", args=[listing.pk])
+        self.assertRedirects(response, listing_edit)
+        self.assertEqual(application.owner, owner)
+        self.assertEqual(PartnerAccount.objects.count(), 1)
+        self.assertTrue(listing.requires_subscription)
+        self.assertFalse(listing.live)
+        self.assertEqual(listing.stops.get(), stop)
+        self.assertEqual(listing.description, data["description"])
+        self.assertIsNotNone(listing.latest_revision)
+        self.assertContains(self.client.get(edit), "Open business listing")
+        self.assertContains(self.client.get(reverse("ea600_advertising_enquiries:index")), "Converted")
+        self.assertRedirects(self.client.get(convert), listing_edit)
+        self.assertRedirects(self.client.post(convert, data), listing_edit)
+        self.assertEqual(BusinessListing.objects.count(), 1)
+        self.assertEqual(PartnerApplication.objects.count(), 1)
+
+        advertiser = Client()
+        session = advertiser.session
+        session[OWNER_SESSION] = owner.pk
+        session.save()
+        dashboard = reverse("partners:dashboard")
+        self.assertContains(advertiser.get(dashboard), "Awaiting review")
+        self.assertEqual(self.client.post(listing_edit, {**data, "stops": [stop.pk], "action-publish": "1"}).status_code, 302)
+        self.assertContains(advertiser.get(dashboard), "Choose a payment plan")
+        self.assertNotContains(Client().get(tour.get_absolute_url()), listing.name)
+
+    def test_enquiry_conversion_requires_enquiry_and_listing_permissions(self):
+        enquiry = AdvertisingEnquiry.objects.create(**self.details)
+        url = reverse("ea600_advertising_enquiries:convert", args=[enquiry.pk])
+        self.assertEqual(self.client.get(url).status_code, 302)
+        editor = get_user_model().objects.create_user(username="enquiry-only-editor", is_staff=True)
+        editor.user_permissions.add(*Permission.objects.filter(codename__in=("access_admin", "change_advertisingenquiry")))
+        sign_in_verified(self.client, editor)
+        edit = reverse("ea600_advertising_enquiries:edit", args=[enquiry.pk])
+        self.assertNotContains(self.client.get(edit), "Create business listing")
+        admin_home = reverse("wagtailadmin_home")
+        self.assertRedirects(self.client.get(url), admin_home, fetch_redirect_response=False)
+        self.assertRedirects(self.client.post(url, self.details), admin_home, fetch_redirect_response=False)
+        self.assertFalse(PartnerApplication.objects.exists())
 
     def edit_advertise_settings(self, fields, *, sections=(), **copy):
         settings_url = reverse("wagtailsettings:edit", args=["partners", "advertisepagesettings", AdvertisePageSettings.load().pk])

@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.20.0",
+    "date": "2026-11-25",
+    "title": "Create listings from advertising enquiries",
+    "changes": [
+      "Added a Wagtail action to create a draft listing from an enquiry. It fills in the business name and location and links the listing to the enquiry's reply email.",
+      "The inbox marks converted enquiries and links back to the listing. The listing follows the existing approval and payment process."
+    ]
+  },
+  {
     "version": "2.19.0",
     "date": "2026-11-25",
     "title": "Advertiser payment page and live Stripe support",
