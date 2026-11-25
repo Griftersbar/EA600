@@ -76,9 +76,13 @@ class StopBuilderForm(forms.ModelForm):
 class DayBuilderForm(forms.ModelForm):
     class Meta:
         model = ItineraryDay
-        fields = ("number", "title", "route", "distance", "driving_time", "overnight", "tip", "highlights", "photo")
+        fields = (
+            "number", "title", "route", "description", "distance", "driving_time",
+            "overnight", "tip", "highlights", "photo",
+        )
         labels = {"number": "Day number"}
         widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
             "tip": forms.Textarea(attrs={"rows": 2}),
             "highlights": forms.Textarea(attrs={"rows": 3}),
             "photo": PhotoPicker(),

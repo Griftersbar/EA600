@@ -34,11 +34,13 @@ class TourBuilderTests(TestCase):
             "stops-1-title": "Horning", "stops-1-ORDER": 1,
             "days-TOTAL_FORMS": 1, "days-INITIAL_FORMS": 0,
             "days-0-number": 1, "days-0-title": "The Broads", "days-0-photo": photo.pk,
+            "days-0-description": "Follow the river from Horning to Wroxham.",
         }
 
         preview = self.client.post(url, {**data, "action": "preview"})
         self.assertContains(preview, "Preview · Close this tab")
         self.assertContains(preview, photo.url)
+        self.assertContains(preview, data["days-0-description"])
         self.assertLess(preview.content.index(b"Horning"), preview.content.index(b"Wroxham"))
         self.assertFalse(Tour.objects.filter(slug="broads-loop").exists())
 
@@ -60,6 +62,7 @@ class TourBuilderTests(TestCase):
             data.update({f"stops-{index}-id": stop.pk, f"stops-{index}-title": stop.title, f"stops-{index}-ORDER": index + 1})
         self.assertRedirects(self.client.post(edit, data), edit, fetch_redirect_response=False)
         self.assertContains(self.client.get(tour.get_absolute_url()), "Broads Loop")
+        self.assertContains(self.client.get(tour.get_absolute_url()), data["days-0-description"])
         catalogue = self.client.get(reverse("tour_list"))
         self.assertContains(catalogue, "Broads Loop")
         self.assertContains(catalogue, "Norfolk Broads")

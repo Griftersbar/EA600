@@ -1,0 +1,223 @@
+[
+  {
+    "slug": "ea600-3-day",
+    "title": "EA600 3-Day Road Trip",
+    "summary": "An ambitious three-day loop from Cambridge through the Fens, the Norfolk and Suffolk coasts, and back through Essex, with overnight stops in Cromer and Orford.",
+    "description": "Allow about 600 miles for this itinerary. Expect three substantial driving days and check distances for the roads and detours you choose.\n\nMap pins show approximate stop locations. Check road directions and allow extra time for visits and seasonal access.",
+    "region": "East Anglia",
+    "start_finish": "Cambridge",
+    "counties": 4,
+    "distance_miles": 600,
+    "duration_days": 3,
+    "position": 10,
+    "cover": "day-01.webp",
+    "days": [
+      {
+        "number": 1,
+        "title": "Cambridgeshire to Norfolk",
+        "route": "Cambridge → Ely → North Norfolk → Cromer",
+        "description": "Depart Cambridge and head north through the Fens, taking in Ely and its cathedral before continuing across Norfolk to the coast. The day finishes in Cromer, with time for the seafront, pier and traditional coastal town atmosphere.",
+        "distance": "~240 miles",
+        "highlights": "Cambridge\nEly Cathedral\nFenland landscapes\nNorwich area\nNorth Norfolk coast\nCromer Pier",
+        "photo": "cromer.webp",
+        "overnight": "Cromer / North Norfolk"
+      },
+      {
+        "number": 2,
+        "title": "Norfolk to Suffolk",
+        "route": "Cromer → Norfolk Coast → Suffolk Coast → Orford",
+        "description": "Explore the beaches, marshes and historic harbours west of Cromer before heading east towards Great Yarmouth. Continue south through Southwold and Aldeburgh to Orford, a riverside village beside the Alde estuary.",
+        "distance": "~170 miles",
+        "highlights": "Cromer\nSheringham\nWells-next-the-Sea\nHolkham\nBlakeney\nGreat Yarmouth area\nSouthwold\nAldeburgh\nOrford",
+        "photo": "southwold.webp",
+        "overnight": "Orford / Suffolk Coast"
+      },
+      {
+        "number": 3,
+        "title": "Suffolk and Essex return",
+        "route": "Orford → Walton-on-the-Naze → Dedham Vale → Colchester → Maldon → Saffron Walden → Cambridge",
+        "description": "Complete the southern and western arc of the loop. Travel via the Essex coast and estuaries, into Constable Country and the historic town of Colchester, then continue through Maldon and the north-west Essex countryside before returning to Cambridge.",
+        "distance": "~190 miles",
+        "highlights": "Orford\nWalton-on-the-Naze\nDedham Vale\nFlatford\nColchester\nMaldon\nSaffron Walden\nCambridge"
+      }
+    ],
+    "stops": [
+      {"title": "Cambridge", "region": "Cambridgeshire", "day_number": 1, "latitude": "52.205300", "longitude": "0.121800", "description": "Start and finish the circular route in Cambridge."},
+      {"title": "Ely", "region": "Cambridgeshire", "day_number": 1, "latitude": "52.398500", "longitude": "0.263400", "description": "Set aside time for Ely Cathedral and the surrounding Fenland landscape."},
+      {"title": "Norwich", "region": "Norfolk", "day_number": 1, "latitude": "52.628500", "longitude": "1.292400"},
+      {"title": "Cromer", "region": "Norfolk", "day_number": 1, "latitude": "52.931800", "longitude": "1.301000", "description": "Visit the seafront and Cromer Pier."},
+      {"title": "Sheringham", "region": "Norfolk", "day_number": 2, "latitude": "52.941200", "longitude": "1.209700"},
+      {"title": "Wells-next-the-Sea", "region": "Norfolk", "day_number": 2, "latitude": "52.956900", "longitude": "0.850900"},
+      {"title": "Holkham", "region": "Norfolk", "day_number": 2, "latitude": "52.955200", "longitude": "0.808100"},
+      {"title": "Blakeney", "region": "Norfolk", "day_number": 2, "latitude": "52.955600", "longitude": "1.019700", "description": "A base for exploring the coast and Blakeney Point."},
+      {"title": "Great Yarmouth", "region": "Norfolk", "day_number": 2, "latitude": "52.607500", "longitude": "1.731500"},
+      {"title": "Southwold", "region": "Suffolk", "day_number": 2, "latitude": "52.325100", "longitude": "1.679900"},
+      {"title": "Aldeburgh", "region": "Suffolk", "day_number": 2, "latitude": "52.151900", "longitude": "1.601200"},
+      {"title": "Orford", "region": "Suffolk", "day_number": 2, "latitude": "52.093600", "longitude": "1.534500", "description": "A riverside village and a starting point for exploring the Orford area."},
+      {"title": "Walton-on-the-Naze", "region": "Essex", "day_number": 3, "latitude": "51.847300", "longitude": "1.268200"},
+      {"title": "Flatford", "region": "Suffolk", "day_number": 3, "latitude": "51.958400", "longitude": "1.021200", "description": "Explore the Stour and Constable Country in the Dedham Vale."},
+      {"title": "Colchester", "region": "Essex", "day_number": 3, "latitude": "51.889300", "longitude": "0.901600"},
+      {"title": "Maldon", "region": "Essex", "day_number": 3, "latitude": "51.731300", "longitude": "0.677200"},
+      {"title": "Saffron Walden", "region": "Essex", "day_number": 3, "latitude": "52.023200", "longitude": "0.240600"}
+    ]
+  },
+  {
+    "slug": "ea600-14-day",
+    "title": "EA600 14-Day Road Trip",
+    "summary": "Take two weeks to explore the EA600 loop across Cambridgeshire, Norfolk, Suffolk and Essex. The itinerary leaves time for coastal walks, historic towns and village detours before a full day in Cambridge.",
+    "description": "The day-by-day planning estimates add up to about 665 miles, including the itinerary’s detours. The last day is for exploring Cambridge without a driving leg.\n\nMap pins show approximate stop locations. Check road directions and allow extra time for visits and seasonal access.",
+    "region": "East Anglia",
+    "start_finish": "Cambridge",
+    "counties": 4,
+    "distance_miles": 665,
+    "duration_days": 14,
+    "position": 20,
+    "cover": "intro-stack-2.webp",
+    "days": [
+      {
+        "number": 1,
+        "title": "Cambridge and the Fens",
+        "description": "Cambridge, Ely Cathedral & the Fens",
+        "distance": "~35 miles",
+        "highlights": "Cambridge\nEly Cathedral\nFenland waterways",
+        "route": "Cambridge → Ely"
+      },
+      {
+        "number": 2,
+        "title": "From the Fens to the coast",
+        "description": "Fenland landscapes, market towns & the coast",
+        "distance": "~70 miles",
+        "highlights": "Fenland landscapes\nNorfolk market towns\nNorth Norfolk coast",
+        "route": "Ely → North Norfolk"
+      },
+      {
+        "number": 3,
+        "title": "North Norfolk coast",
+        "description": "Holkham, Blakeney Point & Cromer",
+        "distance": "~45 miles",
+        "highlights": "Holkham\nBlakeney Point\nCromer",
+        "route": "Holkham → Blakeney → Cromer",
+        "photo": "holkham.webp"
+      },
+      {
+        "number": 4,
+        "title": "Norfolk estates and King’s Lynn",
+        "description": "Blickling, Felbrigg & historic West Norfolk",
+        "distance": "~65 miles",
+        "highlights": "Blickling Estate\nFelbrigg Hall\nHistoric West Norfolk",
+        "route": "Cromer → King’s Lynn"
+      },
+      {
+        "number": 5,
+        "title": "Castles, forest and Bury",
+        "description": "Castle Rising, Thetford Forest & Bury",
+        "distance": "~65 miles",
+        "highlights": "Castle Rising\nThetford Forest\nBury St Edmunds",
+        "route": "King’s Lynn → Bury St Edmunds"
+      },
+      {
+        "number": 6,
+        "title": "Suffolk villages and coast",
+        "description": "Suffolk heritage, villages & the coast",
+        "distance": "~60 miles",
+        "highlights": "Suffolk villages\nSouthwold and the coast",
+        "route": "Bury St Edmunds → Southwold"
+      },
+      {
+        "number": 7,
+        "title": "The Suffolk coast",
+        "description": "Pier, Snape, Aldeburgh & Orford Ness",
+        "distance": "~45 miles",
+        "highlights": "Southwold Pier\nSnape\nAldeburgh\nOrford Ness",
+        "route": "Southwold → Aldeburgh → Orford",
+        "photo": "southwold.webp"
+      },
+      {
+        "number": 8,
+        "title": "Sutton Hoo and the estuaries",
+        "description": "Estuaries, Sutton Hoo & Woodbridge",
+        "distance": "~45 miles",
+        "highlights": "Sutton Hoo\nWoodbridge\nIpswich",
+        "route": "Orford → Woodbridge → Ipswich"
+      },
+      {
+        "number": 9,
+        "title": "From Suffolk to maritime Essex",
+        "description": "Deben estuary, Felixstowe & maritime Essex",
+        "distance": "~45 miles",
+        "highlights": "Deben estuary\nFelixstowe\nHarwich",
+        "route": "Ipswich → Felixstowe → Harwich",
+        "tip": "Check driving directions around the estuaries and allow time for the onward journey to Harwich."
+      },
+      {
+        "number": 10,
+        "title": "Constable Country and Colchester",
+        "description": "Harwich, Stour estuary, Flatford & Roman Colchester",
+        "distance": "~40 miles",
+        "highlights": "Harwich\nStour estuary and Flatford\nRoman Colchester",
+        "route": "Harwich → Colchester"
+      },
+      {
+        "number": 11,
+        "title": "Mersea Island and Maldon",
+        "description": "Mersea Island, seafood & Maldon waterfront",
+        "distance": "~55 miles",
+        "highlights": "Mersea Island and seafood\nMaldon waterfront",
+        "route": "Colchester → Mersea → Maldon"
+      },
+      {
+        "number": 12,
+        "title": "Gardens and Essex countryside",
+        "description": "Hylands, Essex countryside & Audley End",
+        "distance": "~60 miles",
+        "highlights": "Hylands Estate\nAudley End\nSaffron Walden",
+        "route": "Maldon → Chelmsford → Saffron Walden"
+      },
+      {
+        "number": 13,
+        "title": "Back to Cambridge",
+        "description": "Audley End, villages & the Cambridge approach",
+        "distance": "~35 miles",
+        "highlights": "Audley End\nVillages on the way back to Cambridge",
+        "route": "Saffron Walden → Cambridge"
+      },
+      {
+        "number": 14,
+        "title": "Cambridge finale",
+        "description": "Cambridge discovery day — museums, colleges & river",
+        "distance": "0 miles",
+        "highlights": "Museums\nCambridge colleges\nThe river"
+      }
+    ],
+    "stops": [
+      {"title": "Cambridge", "region": "Cambridgeshire", "day_number": 1, "latitude": "52.205300", "longitude": "0.121800", "description": "Start and finish the circular route in Cambridge."},
+      {"title": "Ely", "region": "Cambridgeshire", "day_number": 1, "latitude": "52.398500", "longitude": "0.263400", "description": "Set aside time for Ely Cathedral and the surrounding Fenland landscape."},
+      {"title": "Holkham", "region": "Norfolk", "day_number": 3, "latitude": "52.955200", "longitude": "0.808100"},
+      {"title": "Blakeney", "region": "Norfolk", "day_number": 3, "latitude": "52.955600", "longitude": "1.019700", "description": "A base for exploring the coast and Blakeney Point."},
+      {"title": "Cromer", "region": "Norfolk", "day_number": 3, "latitude": "52.931800", "longitude": "1.301000", "description": "Visit the seafront and Cromer Pier."},
+      {"title": "Blickling Estate", "region": "Norfolk", "day_number": 4, "latitude": "52.811000", "longitude": "1.230400"},
+      {"title": "Felbrigg Hall", "region": "Norfolk", "day_number": 4, "latitude": "52.904000", "longitude": "1.255200"},
+      {"title": "King’s Lynn", "region": "Norfolk", "day_number": 4, "latitude": "52.753800", "longitude": "0.395800"},
+      {"title": "Castle Rising", "region": "Norfolk", "day_number": 5, "latitude": "52.793300", "longitude": "0.471100"},
+      {"title": "Thetford Forest", "region": "Suffolk", "day_number": 5, "latitude": "52.428000", "longitude": "0.664700"},
+      {"title": "Bury St Edmunds", "region": "Suffolk", "day_number": 5, "latitude": "52.244200", "longitude": "0.712000"},
+      {"title": "Southwold", "region": "Suffolk", "day_number": 6, "latitude": "52.325100", "longitude": "1.679900"},
+      {"title": "Snape", "region": "Suffolk", "day_number": 7, "latitude": "52.170200", "longitude": "1.498000"},
+      {"title": "Aldeburgh", "region": "Suffolk", "day_number": 7, "latitude": "52.151900", "longitude": "1.601200"},
+      {"title": "Orford", "region": "Suffolk", "day_number": 7, "latitude": "52.093600", "longitude": "1.534500", "description": "A riverside village and a starting point for exploring the Orford area."},
+      {"title": "Sutton Hoo", "region": "Suffolk", "day_number": 8, "latitude": "52.089200", "longitude": "1.337600"},
+      {"title": "Woodbridge", "region": "Suffolk", "day_number": 8, "latitude": "52.094900", "longitude": "1.319500"},
+      {"title": "Ipswich", "region": "Suffolk", "day_number": 8, "latitude": "52.057500", "longitude": "1.154800"},
+      {"title": "Felixstowe", "region": "Suffolk", "day_number": 9, "latitude": "51.963500", "longitude": "1.351800"},
+      {"title": "Harwich", "region": "Essex", "day_number": 9, "latitude": "51.944900", "longitude": "1.291700"},
+      {"title": "Flatford", "region": "Suffolk", "day_number": 10, "latitude": "51.958400", "longitude": "1.021200", "description": "Explore the Stour and Constable Country in the Dedham Vale."},
+      {"title": "Colchester", "region": "Essex", "day_number": 10, "latitude": "51.889300", "longitude": "0.901600"},
+      {"title": "West Mersea", "region": "Essex", "day_number": 11, "latitude": "51.776900", "longitude": "0.912300", "description": "Allow time for seafood and the Mersea Island waterfront."},
+      {"title": "Maldon", "region": "Essex", "day_number": 11, "latitude": "51.731300", "longitude": "0.677200"},
+      {"title": "Chelmsford", "region": "Essex", "day_number": 12, "latitude": "51.735200", "longitude": "0.468500"},
+      {"title": "Hylands Estate", "region": "Essex", "day_number": 12, "latitude": "51.712400", "longitude": "0.428200"},
+      {"title": "Audley End", "region": "Essex", "day_number": 12, "latitude": "52.019600", "longitude": "0.220500"},
+      {"title": "Saffron Walden", "region": "Essex", "day_number": 12, "latitude": "52.023200", "longitude": "0.240600"}
+    ]
+  }
+]

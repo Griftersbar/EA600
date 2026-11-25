@@ -24,6 +24,7 @@
             <p class="day-panel__number" aria-hidden="true">{{ day.number|stringformat:"02d" }}</p>
             <h3 class="day-panel__title">{{ day.title }}</h3>
             {% if day.route %}<p class="day-panel__route">{{ day.route }}</p>{% endif %}
+            {% if day.description %}<p class="day-panel__description">{{ day.description|linebreaksbr }}</p>{% endif %}
             {% if day.tip %}<p class="day-panel__tip">“{{ day.tip|linebreaksbr }}”</p>{% endif %}
             {% if day.highlights %}
                 <ul class="day-panel__list">

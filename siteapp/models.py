@@ -139,6 +139,7 @@ class ItineraryDay(models.Model):
     number = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
     title = models.CharField(max_length=140)
     route = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
     distance = models.CharField(max_length=60, blank=True)
     driving_time = models.CharField(max_length=60, blank=True)
     overnight = models.CharField(max_length=100, blank=True)

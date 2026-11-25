@@ -46,6 +46,7 @@ class ContentTests(TestCase):
         self.assertContains(self.client.get(reverse("home")), homepage.hero_title)
 
     def test_catalog_paginates_published_tours_and_hides_drafts(self):
+        initial_count = Tour.objects.filter(is_published=True).count()
         Tour.objects.bulk_create([
             Tour(title=f"Tour {number}", slug=f"test-{number}", summary="Tour description", is_published=True)
             for number in range(13)
@@ -53,10 +54,40 @@ class ContentTests(TestCase):
         draft = Tour.objects.create(title="Private draft", slug="private", summary="Still in progress")
         first_page = self.client.get(reverse("tour_list"))
         second_page = self.client.get(reverse("tour_list"), {"page": 2})
-        self.assertEqual(first_page.context["page"].paginator.count, 14)
-        self.assertEqual(len(second_page.context["page"].object_list), 2)
+        self.assertEqual(first_page.context["page"].paginator.count, initial_count + 13)
+        self.assertEqual(len(second_page.context["page"].object_list), initial_count + 1)
         self.assertNotContains(first_page, draft.title)
         self.assertEqual(self.client.get(draft.get_absolute_url()).status_code, 404)
+
+    def test_imported_ea600_itineraries_are_available_in_the_planner_and_wagtail(self):
+        home = self.client.get(reverse("home"))
+        self.assertEqual(home.context["tour"].slug, "ea600")
+        catalogue = self.client.get(reverse("tour_list"))
+        editor = get_user_model().objects.create_superuser(username="itinerary-editor")
+        sign_in_verified(self.client, editor)
+        self.assertContains(self.client.get("/cms/"), reverse("builder_index"))
+        builder = self.client.get(reverse("builder_index"))
+        chooser = self.client.get(reverse("guide-tour-chooser:choose"))
+
+        for length, miles, final_day in ((3, 600, "Suffolk and Essex return"), (14, 665, "Cambridge finale")):
+            with self.subTest(days=length):
+                tour = Tour.objects.get(slug=f"ea600-{length}-day")
+                self.assertIn((tour.slug, tour.title), home.context["route_choices"])
+                self.assertContains(catalogue, tour.get_absolute_url())
+                self.assertContains(builder, tour.title)
+                self.assertContains(chooser, tour.title)
+                selected = self.client.get(reverse("home"), {"route": tour.slug})
+                self.assertEqual(selected.context["tour"], tour)
+                map_data = selected.context["geographic_map"]
+                self.assertEqual(map_data["track"], [])
+                self.assertEqual(map_data["stops"][0]["title"], "Cambridge")
+                self.assertEqual(len(map_data["stops"]), tour.stops.count())
+                public = self.client.get(tour.get_absolute_url())
+                self.assertContains(public, f'id="day-{length}"')
+                self.assertContains(public, final_day)
+                self.assertEqual(tour.distance_miles, miles)
+                self.assertEqual(list(tour.days.values_list("number", flat=True)), list(range(1, length + 1)))
+                self.assertContains(self.client.get(reverse("builder_edit", args=[tour.pk])), final_day)
 
     def test_homepage_picker_switches_route_copy_map_stops_and_itinerary(self):
         homepage = HomeContent.objects.get()

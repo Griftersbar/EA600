@@ -1678,6 +1678,10 @@ button {
   color: var(--color-primary-green);
 }
 
+.day-panel__description {
+  margin-top: var(--space-3);
+}
+
 .day-panel__list {
   margin: var(--space-4) 0 0;
   padding: 0;

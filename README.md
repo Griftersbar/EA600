@@ -2,6 +2,8 @@
 
 Manage EA600's site content in Wagtail and its tour catalogue in Tour Builder. The first migration of the content models imports the existing EA600 route, stops, itinerary, homepage copy and images.
 
+The 3-day and 14-day EA600 itineraries are added as published tours. Select either from the homepage route picker, or edit its stops, approximate map pins and daily descriptions in Tour Builder.
+
 ## Run locally
 
 Use Python 3.11 or newer for Wagtail 8.1.
