@@ -1,0 +1,10 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    <section class="page-section">
+        <div class="container partner-panel">
+            <h1 class="heading-section">Business listing billing</h1>
+            <p>{{ error }}</p>
+            <p><a href="{% url 'partners:dashboard' %}">Return to my listings</a></p>
+        </div>
+    </section>
+{% endblock %}

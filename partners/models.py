@@ -1,5 +1,10 @@
+from uuid import uuid4
+
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.functional import cached_property
 from modelcluster.fields import ParentalManyToManyField
 from modelcluster.models import ClusterableModel
 from wagtail.models import DraftStateMixin, LockableMixin, PreviewableMixin, RevisionMixin, WorkflowMixin
@@ -28,6 +33,7 @@ class BusinessListing(WorkflowMixin, LockableMixin, DraftStateMixin, RevisionMix
     )
     stops = ParentalManyToManyField("siteapp.TourStop", through="RoutePlacement", related_name="business_listings")
     live = models.BooleanField(default=False, editable=False)
+    requires_subscription = models.BooleanField(default=False, editable=False)
 
     class Meta:
         ordering = ["name", "pk"]
@@ -47,7 +53,50 @@ class RoutePlacement(models.Model):
         constraints = [models.UniqueConstraint(fields=["listing", "stop"], name="unique_business_listing_stop")]
 
 
+class PartnerAccount(models.Model):
+    email = models.EmailField(unique=True)
+    access_digest = models.CharField(max_length=64, blank=True, db_index=True)
+    access_expires = models.DateTimeField(null=True, blank=True)
+
+
+class PartnerApplication(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    owner = models.ForeignKey(PartnerAccount, on_delete=models.PROTECT, related_name="applications")
+    listing = models.OneToOneField(BusinessListing, on_delete=models.PROTECT, related_name="application")
+    checkout_attempt = models.UUIDField(default=uuid4, editable=False)
+    checkout_plan = models.CharField(max_length=8, blank=True)
+    checkout_id = models.CharField(max_length=255, blank=True)
+    stripe_customer_id = models.CharField(max_length=255, blank=True)
+    stripe_subscription_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    billing_status = models.CharField(max_length=30, blank=True)
+    paid_until = models.DateTimeField(null=True, blank=True)
+    synced_at = models.DateTimeField(null=True, blank=True)
+
+    BILLABLE_STATUSES = ("active", "past_due")
+    ENDED_STATUSES = ("canceled", "incomplete_expired")
+
+    @cached_property
+    def approved(self):
+        return self.listing.live and self.listing.stops.filter(tour__is_published=True).exists()
+
+    @property
+    def is_paid(self):
+        return (
+            self.billing_status in self.BILLABLE_STATUSES
+            and self.paid_until is not None
+            and self.paid_until > timezone.now()
+        )
+
+    @property
+    def can_checkout(self):
+        return self.approved and (not self.stripe_subscription_id or self.billing_status in self.ENDED_STATUSES)
+
+
 def published_placements(tour):
     return RoutePlacement.objects.filter(
+        Q(listing__requires_subscription=False) | Q(
+            listing__application__billing_status__in=PartnerApplication.BILLABLE_STATUSES,
+            listing__application__paid_until__gt=timezone.now(),
+        ),
         stop__tour=tour, stop__tour__is_published=True, listing__live=True,
     ).select_related("stop", "listing__photo").order_by("stop__position", "stop_id", "listing__name", "listing_id")

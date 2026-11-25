@@ -1,0 +1,64 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    <section class="page-section">
+        <div class="container partner-panel">
+            <h1 class="heading-section">My business listings</h1>
+            <p>{{ account.email }}</p>
+            {% if request.GET.checkout == "returned" %}
+                <p role="status">Thanks. The listing status updates when Stripe confirms payment.</p>
+            {% endif %}
+            {% for application in applications %}
+                <article class="partner-panel__card">
+                    <h2>{{ application.listing.name }}</h2>
+                    {% if application.approved and application.is_paid %}
+                        <p>Live · Paid through {{ application.paid_until|date:"j F Y" }}</p>
+                    {% elif application.approved %}
+                        <p>Approved · Payment required</p>
+                    {% elif application.listing.first_published_at %}
+                        <p>Listing unavailable</p>
+                    {% else %}
+                        <p>Awaiting review</p>
+                    {% endif %}
+                    {% if application.billing_status == "past_due" %}
+                        <p>Your latest payment failed. Update your payment details in Manage billing.</p>
+                    {% endif %}
+                    {% if billing_ready %}
+                        {% if application.can_checkout %}
+                            <form method="post" action="{% url 'partners:checkout' application.pk %}" class="partner-form">
+                                {% csrf_token %}
+                                <p>Test checkout. Your plan renews automatically each month or year until cancelled.</p>
+                                <div class="btn-group">
+                                    <button class="btn btn--primary" name="plan" value="monthly">£12 monthly</button>
+                                    <button class="btn btn--primary" name="plan" value="annual">£120 annually</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                        {% if application.stripe_customer_id %}
+                            <form method="post" action="{% url 'partners:portal' application.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="partner-link">Manage billing</button>
+                            </form>
+                        {% endif %}
+                    {% elif application.approved %}
+                        <p>Checkout is currently unavailable.</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
+            {% if enabled %}
+                <div class="partner-panel__card">
+                    <h2>Apply for a listing</h2>
+                    <p>Use details you’re happy to display on the route page.</p>
+                    <form method="post" enctype="multipart/form-data" class="partner-form">
+                        {% csrf_token %}
+                        {{ form.as_div }}
+                        <button type="submit" class="btn btn--primary">Submit for review</button>
+                    </form>
+                </div>
+            {% endif %}
+            <form method="post" action="{% url 'partners:sign_out' %}">
+                {% csrf_token %}
+                <button type="submit" class="partner-link">Sign out</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

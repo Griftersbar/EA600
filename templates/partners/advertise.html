@@ -1,0 +1,27 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    <section class="page-section" aria-labelledby="advertise-title">
+        <div class="container partner-panel">
+            <h1 class="heading-section" id="advertise-title">Advertise on EA600</h1>
+            <p class="text-lead">Help road-trippers find your restaurant, tea room, accommodation, shop or workshop as they plan their route.</p>
+            <div class="partner-panel__card">
+                <h2>One business location on one route</h2>
+                <p><strong>£12 a month</strong> or <strong>£120 a year</strong></p>
+                <p>Your listing can include a photo, directions, and a link to your website or booking page. Tell us which stop you’re near. We’ll review your listing before you choose a payment plan.</p>
+            </div>
+            {% if sent %}
+                <p role="status">Check your inbox for a sign-in link. The link is valid for 20 minutes.</p>
+            {% elif signed_in %}
+                <p><a class="btn btn--primary" href="{% url 'partners:dashboard' %}">Open my listings</a></p>
+            {% elif enabled %}
+                <form method="post" class="partner-form">
+                    {% csrf_token %}
+                    {{ form.as_div }}
+                    <button type="submit" class="btn btn--primary">Email me a sign-in link</button>
+                </form>
+            {% else %}
+                <p>Business applications are currently closed.</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

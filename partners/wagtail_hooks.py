@@ -24,6 +24,12 @@ class BusinessListingForm(WagtailAdminModelForm):
         help_text="Choose the nearest stop on each relevant route.",
     )
 
+    def clean_stops(self):
+        stops = self.cleaned_data["stops"]
+        if self.instance.requires_subscription and len({stop.tour_id for stop in stops}) > 1:
+            raise forms.ValidationError("A subscription covers one route. Choose stops on the same route.")
+        return stops
+
 
 class BusinessListingViewSet(SnippetViewSet):
     model = BusinessListing
@@ -45,6 +51,7 @@ class BusinessListingViewSet(SnippetViewSet):
         FieldPanel("photo"),
         MultiFieldPanel([FieldPanel("link"), FieldPanel("link_label"), FieldPanel("phone")], heading="Visitor links"),
         FieldPanel("stops"),
+        FieldPanel("requires_subscription", read_only=True, heading="Requires subscription"),
     ], base_form_class=BusinessListingForm)
 
 

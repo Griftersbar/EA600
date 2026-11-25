@@ -43,6 +43,16 @@ Save a draft and use **Preview** to review the card and its placements. Select *
 
 Wagtail group permissions control who can add, change and publish business listings. To require sign-off for editors, assign a moderation workflow to **Business listing** under **Settings → Workflows** and reserve direct publish permission for reviewers.
 
+## Test business applications and billing
+
+Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can choose £12 monthly or £120 annually from **My business listings**. Verified payment makes the approved listing public on the preview. Wagtail-managed listings created by staff can still go live without billing.
+
+Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development, email prints to the console when `PARTNER_RESEND_API_KEY` and `EMAIL_HOST` are empty. On the preview, set `PARTNER_RESEND_API_KEY` and a verified `DEFAULT_FROM_EMAIL` to send email over HTTPS. If your Railway plan supports outbound SMTP, you can instead configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`.
+
+For a hosted checkout test, use a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` and create active GBP recurring prices at £12/month and £120/year. Set their IDs as `STRIPE_TEST_MONTHLY_PRICE` and `STRIPE_TEST_ANNUAL_PRICE`. Enable the test customer portal for payment methods, invoices and cancellation at the end of the billing period. Keep subscription plan changes disabled in the portal.
+
+Register `/advertise/stripe/webhook/` on the preview domain as a test webhook endpoint and set its signing secret as `STRIPE_TEST_WEBHOOK_SECRET`. Subscribe to `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated` and `customer.subscription.deleted`. Keep the key and signing secret in environment variables. This stage accepts test Stripe keys and events. Listings stop appearing when their paid period ends, even if a renewal fails or an expiry event arrives late.
+
 ## Edit a tour map
 
 In Tour Builder, choose a GPX file under **Route map** and select **Import GPX**. The map follows the points and segments in the file, including its start and finish. GPX files can contain up to 25,000 points and be up to 2 MB.

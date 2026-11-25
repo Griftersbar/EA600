@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("tours/", views.tour_list, name="tour_list"),
     path("tours/<slug:slug>/", views.tour_detail, name="tour_detail"),
+    path("advertise/", include("partners.urls")),
     path("builder/tours/", builder_views.builder_index, name="builder_index"),
     path("builder/tours/new/", builder_views.builder_edit, name="builder_new"),
     path("builder/tours/<int:pk>/", builder_views.builder_edit, name="builder_edit"),

@@ -183,6 +183,57 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.partner-panel,
+.partner-panel__card,
+.partner-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.partner-panel {
+  max-width: 48rem;
+}
+
+.partner-panel__card {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-brand);
+  border-radius: var(--radius-md);
+  background: var(--color-stat-bg);
+  overflow-wrap: anywhere;
+}
+
+.partner-panel__card h2 {
+  font: var(--font-weight-bold) var(--font-size-xl) / 1.2 var(--font-family-display);
+}
+
+.partner-form label {
+  display: block;
+  font-weight: var(--font-weight-bold);
+}
+
+.partner-form input:not([type="hidden"]),
+.partner-form select,
+.partner-form textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--btn-height);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-text-brand-muted);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  font: inherit;
+}
+
+.partner-form .btn {
+  justify-self: start;
+}
+
+.partner-link {
+  color: var(--color-primary-green);
+  padding: 0;
+  text-decoration: underline;
+}
+
 .tour-pages,
 .itinerary-links {
   display: flex;
