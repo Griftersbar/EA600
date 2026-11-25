@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from .builder_views import tour_version
 from .models import HomeContent, ItineraryDay, Photo, Tour, TourStop
+from .test_support import sign_in_verified
 
 
 class TourBuilderTests(TestCase):
@@ -18,7 +19,7 @@ class TourBuilderTests(TestCase):
         cls.editor = get_user_model().objects.create_superuser(username="builder-editor")
 
     def setUp(self):
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
 
     def test_preview_then_save_and_publish_a_new_tour(self):
         url = reverse("builder_new")
@@ -114,10 +115,10 @@ class TourBuilderTests(TestCase):
         url = reverse("builder_delete", args=[tour.pk])
         editor = get_user_model().objects.create_user(username="changes-only", is_staff=True)
         editor.user_permissions.add(Permission.objects.get(codename="change_tour"))
-        self.client.force_login(editor)
+        sign_in_verified(self.client, editor)
         self.assertEqual(self.client.post(url, {"version": tour_version(tour)}).status_code, 403)
 
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
         self.assertContains(self.client.get(url), "This permanently deletes the tour")
         self.assertTrue(Tour.objects.filter(pk=tour.pk).exists())
         self.assertEqual(self.client.post(url, {"version": "stale"}).status_code, 409)
@@ -136,10 +137,10 @@ class TourBuilderTests(TestCase):
         self.client.logout()
         self.assertEqual(self.client.get(protected).status_code, 302)
         staff = get_user_model().objects.create_user(username="read-only-staff", is_staff=True)
-        self.client.force_login(staff)
+        sign_in_verified(self.client, staff)
         self.assertEqual(self.client.get(protected).status_code, 403)
 
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
         png = BytesIO()
         Image.new("RGB", (8, 8), "green").save(png, "PNG")
         with TemporaryDirectory() as media_root, self.settings(MEDIA_ROOT=media_root):

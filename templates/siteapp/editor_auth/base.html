@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{% block title %}EA600 editor sign-in{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/design-tokens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tour-builder.css' %}">
+    <link rel="stylesheet" href="{% static 'css/editor-auth.css' %}">
+</head>
+<body class="builder">
+    <main class="builder-wrap builder-main editor-auth">
+        <a class="builder-brand" href="{% url 'home' %}">
+            <img src="{% static 'assets/images/logo-vector.webp' %}" width="44" height="44" alt="">
+            <strong>EA600</strong>
+        </a>
+        <div class="builder-panel editor-auth__panel">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
+</html>

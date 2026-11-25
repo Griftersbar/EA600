@@ -1,0 +1,18 @@
+.editor-auth { max-width: 30rem; }
+.editor-auth > .builder-brand { width: fit-content; margin-bottom: 1rem; }
+.editor-auth__panel { display: grid; gap: 1rem; }
+.editor-auth h1 { margin: 0; font: 700 2rem/1.12 var(--font-family-display); }
+.editor-auth__form { display: grid; gap: .9rem; }
+.editor-auth__form label { display: block; margin-bottom: .25rem; font-weight: 650; }
+.editor-auth__qr { width: 200px; max-width: 100%; height: auto; background: #fff; }
+.editor-auth__key { overflow-wrap: anywhere; }
+.editor-auth__links { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .9rem; }
+.editor-auth__codes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+    gap: .45rem 1rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.editor-auth__codes li { padding: .25rem .45rem; border-radius: .3rem; background: #eef1e9; }

@@ -1,0 +1,30 @@
+{% extends "siteapp/editor_auth/base.html" %}
+{% block title %}{% if enrolling %}Set up{% else %}Verify{% endif %} two-factor authentication · EA600{% endblock %}
+{% block content %}
+    {% if enrolling %}
+        <h1>Set up your authenticator</h1>
+        <p>Scan this QR code with your authenticator app, then enter the six-digit code it shows.</p>
+        <img class="editor-auth__qr" src="{{ qr_image }}" width="200" height="200" alt="EA600 authenticator setup QR code">
+        <details>
+            <summary>Enter the setup key manually</summary>
+            <p>Add a time-based account named EA600 using this key.</p>
+            <code class="editor-auth__key">{{ setup_key }}</code>
+        </details>
+    {% elif recovering %}
+        <h1>Use a recovery code</h1>
+        <p>Enter one of the recovery codes you saved when setting up your authenticator.</p>
+    {% else %}
+        <h1>Verify your sign-in</h1>
+        <p>Enter the six-digit EA600 code from your authenticator app.</p>
+    {% endif %}
+    <form method="post" class="editor-auth__form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="builder-button builder-button--primary">{% if enrolling %}Enable and sign in{% else %}Verify and sign in{% endif %}</button>
+    </form>
+    <div class="editor-auth__links">
+        {% if recovering %}<a href="{% url 'editor_verify' %}">Use authenticator code</a>
+        {% elif has_recovery_codes %}<a href="?recovery=1">Use a recovery code</a>{% endif %}
+        <a href="{{ restart_url }}">Start again</a>
+    </div>
+{% endblock %}

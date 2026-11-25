@@ -10,6 +10,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .models import FAQ, HomeContent, Photo, PlanningTip, Story, Tour
+from .test_support import sign_in_verified
 
 
 class EditorialCMSTests(TestCase):
@@ -18,7 +19,7 @@ class EditorialCMSTests(TestCase):
         cls.editor = get_user_model().objects.create_superuser(username="cms-editor")
 
     def setUp(self):
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
 
     def form_data(self, url, instance):
         response = self.client.get(url)
@@ -63,7 +64,7 @@ class EditorialCMSTests(TestCase):
     def test_wagtail_editors_require_homepage_change_permission(self):
         staff = get_user_model().objects.create_user(username="limited-editor", is_staff=True)
         staff.user_permissions.add(Permission.objects.get(codename="access_admin"))
-        self.client.force_login(staff)
+        sign_in_verified(self.client, staff)
         for url in ("/cms/homepage/", "/cms/site-settings/"):
             self.assertEqual(self.client.get(url).status_code, 302)
         staff.user_permissions.add(Permission.objects.get(codename="change_homecontent"))

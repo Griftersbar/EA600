@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from siteapp.builder_views import tour_version
 from siteapp.models import Photo, Tour
+from siteapp.test_support import sign_in_verified
 
 from .models import DestinationGuidePage, GuideIndexPage
 
@@ -49,7 +50,7 @@ class GuideTests(TestCase):
         guide.introduction = "Private draft revision"
         guide.save_revision()
         self.assertNotContains(self.client.get("/guides/coastal/"), guide.introduction)
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
         self.assertRedirects(
             self.client.post(reverse("builder_unpublish", args=[tour.pk]), {"version": tour_version(tour)}),
             reverse("builder_edit", args=[tour.pk]),
@@ -64,7 +65,7 @@ class GuideTests(TestCase):
         self.assertNotContains(self.client.get("/guides/coastal/"), 'href="/tours/ea600/"')
 
     def test_photo_uploaded_through_wagtail_can_be_used_in_django(self):
-        self.client.force_login(self.editor)
+        sign_in_verified(self.client, self.editor)
         self.assertContains(self.client.get("/cms/"), "EA600 Guides")
         photo_url = reverse("guide-photo-chooser:create")
         png = BytesIO()

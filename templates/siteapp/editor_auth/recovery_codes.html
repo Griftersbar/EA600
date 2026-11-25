@@ -1,0 +1,10 @@
+{% extends "siteapp/editor_auth/base.html" %}
+{% block title %}Save your recovery codes · EA600{% endblock %}
+{% block content %}
+    <h1>Save your recovery codes</h1>
+    <p>Keep these codes somewhere safe. Each code works once if you lose access to your authenticator. This page shows them once.</p>
+    <ul class="editor-auth__codes">
+        {% for code in codes %}<li><code>{{ code }}</code></li>{% endfor %}
+    </ul>
+    <a class="builder-button builder-button--primary" href="{{ destination }}">Continue to EA600</a>
+{% endblock %}

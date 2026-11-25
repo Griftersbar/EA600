@@ -8,12 +8,13 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .models import Destination, HomeContent, Photo, Tour
+from .test_support import sign_in_verified
 
 
 class ContentTests(TestCase):
     def test_wagtail_destination_editor_updates_the_homepage_card(self):
         editor = get_user_model().objects.create_superuser(username="destination-editor")
-        self.client.force_login(editor)
+        sign_in_verified(self.client, editor)
         destination = Destination.objects.get(title="Norwich")
         listing = reverse("ea600_destinations:list")
         edit = reverse("ea600_destinations:edit", args=[destination.pk])
@@ -59,7 +60,7 @@ class ContentTests(TestCase):
 
     def test_editor_can_upload_and_publish_a_tour_with_an_itinerary(self):
         editor = get_user_model().objects.create_superuser(username="preview-editor")
-        self.client.force_login(editor)
+        sign_in_verified(self.client, editor)
         png = BytesIO()
         Image.new("RGB", (8, 8), "green").save(png, "PNG")
         photo_admin = reverse("admin:siteapp_photo_add")

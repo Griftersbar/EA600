@@ -1,0 +1,14 @@
+{% extends "siteapp/editor_auth/base.html" %}
+{% block title %}Sign in - {% if entry == "wagtail" %}Wagtail{% else %}EA600 Admin{% endif %}{% endblock %}
+{% block content %}
+    <h1>Sign in to EA600</h1>
+    <form method="post" class="editor-auth__form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ destination }}">
+        <button type="submit" class="builder-button builder-button--primary">Continue</button>
+    </form>
+    {% if show_password_reset %}
+        <a href="{% url 'wagtailadmin_password_reset' %}">Forgotten your password?</a>
+    {% endif %}
+{% endblock %}
