@@ -1,11 +1,11 @@
-<article class="tour-card business-card">
+<article class="card business-card">
     {% if listing.photo %}
-        <img class="tour-card__image" src="{{ listing.photo.url }}" alt="{{ listing.photo.alt_text }}" loading="lazy" decoding="async">
+        {% include "siteapp/includes/card_photo.html" with photo=listing.photo only %}
     {% endif %}
-    <div class="tour-card__body business-card__body">
+    <div class="card__body">
         <p class="business-card__category"><span class="business-card__ad">{% if listing.demo_key %}Test business{% else %}Ad{% endif %}</span> {{ listing.get_category_display }}</p>
-        <h4>{{ listing.name }}</h4>
-        <p>{{ listing.description }}</p>
+        <h4 class="card__title">{{ listing.name }}</h4>
+        <p class="card__text">{{ listing.description }}</p>
         <p>{{ listing.address }}</p>
         {% if placement or not listing.demo_key %}
             {% if placement %}

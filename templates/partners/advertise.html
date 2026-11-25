@@ -12,7 +12,7 @@
     </section>
     <div class="container partner-landing">
         <div class="partner-offer">
-            <section class="partner-panel__card partner-package" aria-labelledby="package-title">
+            <section class="card partner-panel__card partner-package" aria-labelledby="package-title">
                 <h2 id="package-title">{{ advertise_page.package_heading }}</h2>
                 {% if advertise_page.show_plan_prices %}
                     <ul class="partner-prices" aria-label="Billing options">
@@ -28,8 +28,8 @@
                         <h2 id="partner-info-{{ forloop.counter }}">{{ section.value.heading }}</h2>
                         <ul class="partner-information__cards">
                             {% for card in section.value.cards %}
-                                <li class="partner-information__card">
-                                    <h3>{{ card.heading }}</h3>
+                                <li class="card partner-information__card">
+                                    <h3 class="card__title">{{ card.heading }}</h3>
                                     <p>{{ card.description|linebreaksbr }}</p>
                                 </li>
                             {% endfor %}
@@ -44,7 +44,7 @@
             {% endfor %}
         </div>
         <div class="partner-actions">
-            <section class="partner-panel__card partner-enquiry" id="advertising-enquiry" aria-labelledby="enquiry-title">
+            <section class="card partner-panel__card partner-enquiry" id="advertising-enquiry" aria-labelledby="enquiry-title">
                 <h2 id="enquiry-title">{{ advertise_page.enquiry_heading }}</h2>
                 {% if enquiry_received %}
                     <p class="partner-callout" role="status">{{ advertise_page.enquiry_confirmation|linebreaksbr }}</p>
@@ -60,7 +60,7 @@
                     </form>
                 {% endif %}
             </section>
-            <div class="partner-panel__card partner-account-entry">
+            <div class="card partner-panel__card partner-account-entry">
                 {% if sent %}
                     <p role="status">{{ advertise_page.sign_in_confirmation }}</p>
                 {% elif signed_in %}

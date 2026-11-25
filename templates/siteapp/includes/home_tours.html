@@ -4,7 +4,7 @@
             <h2 class="heading-section" id="tours-title">Explore routes</h2>
             <a class="btn btn--primary" href="{% url 'tour_list' %}">View all routes</a>
         </header>
-        <div class="tour-grid">
+        <div class="card-grid">
             {% for entry in tours %}{% include "siteapp/includes/tour_card.html" %}{% endfor %}
         </div>
     </div>

@@ -1,20 +1,15 @@
-<article class="tour-card">
-    {% if entry.cover %}
-        <a href="{{ entry.get_absolute_url }}" aria-label="{{ entry.title }}">
-            <img class="tour-card__image" src="{{ entry.cover.url }}" alt="{{ entry.cover.alt_text }}"
-                 width="420" height="240" loading="lazy" decoding="async">
-        </a>
-    {% endif %}
-    <div class="tour-card__body">
-        <h3><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
+<article class="card card--linked">
+    {% if entry.cover %}{% include "siteapp/includes/card_photo.html" with photo=entry.cover only %}{% endif %}
+    <div class="card__body">
+        <{{ heading_tag|default:'h3' }} class="card__title"><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></{{ heading_tag|default:'h3' }}>
         {% if entry.region or entry.distance_miles or entry.duration_days %}
-            <p class="tour-card__meta">
+            <p class="card__meta">
                 {% if entry.region %}{{ entry.region }}{% if entry.distance_miles or entry.duration_days %} · {% endif %}{% endif %}
                 {% if entry.distance_miles %}{{ entry.distance_miles }} miles{% endif %}
                 {% if entry.distance_miles and entry.duration_days %} · {% endif %}
                 {% if entry.duration_days %}{{ entry.duration_days }} day{{ entry.duration_days|pluralize }}{% endif %}
             </p>
         {% endif %}
-        <p>{{ entry.summary|linebreaksbr }}</p>
+        <p class="card__text">{{ entry.summary|linebreaksbr }}</p>
     </div>
 </article>

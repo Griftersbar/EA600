@@ -1,0 +1,27 @@
+{% if homepage.cta_title %}
+<section class="trip-panel page-section" aria-labelledby="trip-panel-title">
+    {% if homepage.footer_photo %}<img class="trip-panel__backdrop" src="{{ homepage.footer_photo.url }}" alt="" width="1920" height="747" loading="lazy" decoding="async">{% endif %}
+    <div class="container trip-panel__inner">
+        <div class="trip-panel__cta">
+            {% if homepage.cta_photo %}<img class="trip-panel__backdrop" src="{{ homepage.cta_photo.url }}" alt="" loading="lazy" decoding="async">{% endif %}
+            <div class="trip-panel__copy">
+                {% if homepage.cta_subtitle %}<p class="trip-panel__subtitle">{{ homepage.cta_subtitle }}</p>{% endif %}
+                <h2 id="trip-panel-title">{{ homepage.cta_title }}</h2>
+                {% if homepage.cta_description %}<p>{{ homepage.cta_description|linebreaksbr }}</p>{% endif %}
+            </div>
+            {% if homepage.cta_button %}<a class="btn btn--secondary" href="#planning">{{ homepage.cta_button }}</a>{% endif %}
+        </div>
+        {% if footer_photos %}
+            <ul class="trip-panel__photos" aria-label="Photos from the route">
+                {% for entry in footer_photos %}
+                    <li>
+                        {% if entry.link %}<a href="{{ entry.link }}">{% endif %}
+                        <img src="{{ entry.photo.url }}" alt="{{ entry.photo.alt_text }}" width="98" height="91" loading="lazy" decoding="async">
+                        {% if entry.link %}</a>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</section>
+{% endif %}

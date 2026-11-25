@@ -1,0 +1,50 @@
+<footer class="site-footer" id="contact">
+    <div class="container site-footer__main">
+        <div class="site-footer__brand">
+            <a class="site-footer__home" href="{% url 'home' %}">
+                {% with logo=homepage.badge_logo|default:homepage.logo %}
+                    {% if logo %}<img src="{{ logo.url }}" alt="" width="52" height="52" loading="lazy" decoding="async">{% endif %}
+                {% endwith %}
+                <span>{{ homepage.hero_title|default:"EA600" }}</span>
+            </a>
+            {% if homepage.footer_tagline %}<p>{{ homepage.footer_tagline }}</p>{% endif %}
+        </div>
+        <nav class="site-footer__nav" aria-label="Footer">
+            <p class="site-footer__label">Explore</p>
+            <ul class="site-footer__links">
+                <li><a href="{% url 'tour_list' %}">Explore routes</a></li>
+                <li><a href="{% url 'wagtail_serve' '' %}">Guides</a></li>
+                <li><a href="{% url 'home' %}#destinations">Destinations</a></li>
+                <li><a href="{% url 'home' %}#itinerary">Itinerary</a></li>
+                <li><a href="{% url 'home' %}#planning">Planning</a></li>
+                <li><a href="{% url 'home' %}#blog">Stories</a></li>
+                <li><a href="{% url 'partners:advertise' %}">Advertise</a></li>
+            </ul>
+        </nav>
+        {% if homepage.contact_email or homepage.contact_phone or homepage.contact_region or homepage.instagram_url or homepage.facebook_url or homepage.youtube_url %}
+            <div class="site-footer__contact">
+                <p class="site-footer__label">Contact</p>
+                <address>
+                    {% if homepage.contact_email %}<a href="mailto:{{ homepage.contact_email }}">{{ homepage.contact_email }}</a>{% endif %}
+                    {% if homepage.contact_phone %}<a href="tel:{{ homepage.contact_phone|cut:' ' }}">{{ homepage.contact_phone }}</a>{% endif %}
+                    {% if homepage.contact_region %}<p>{{ homepage.contact_region }}</p>{% endif %}
+                </address>
+                {% if homepage.instagram_url or homepage.facebook_url or homepage.youtube_url %}
+                    <div class="site-footer__social">
+                        {% if homepage.instagram_url %}<a href="{{ homepage.instagram_url }}" aria-label="Instagram"><img src="/static/assets/icons/social-instagram.svg" alt="" width="24" height="24" loading="lazy"></a>{% endif %}
+                        {% if homepage.facebook_url %}<a href="{{ homepage.facebook_url }}" aria-label="Facebook"><img src="/static/assets/icons/social-facebook.svg" alt="" width="24" height="24" loading="lazy"></a>{% endif %}
+                        {% if homepage.youtube_url %}<a href="{{ homepage.youtube_url }}" aria-label="YouTube"><img src="/static/assets/icons/social-youtube.svg" alt="" width="24" height="24" loading="lazy"></a>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    {% if homepage.footer_legal or homepage.footer_motto %}
+        <div class="container">
+            <div class="site-footer__legal">
+                {% if homepage.footer_legal %}<p>{{ homepage.footer_legal }}</p>{% endif %}
+                {% if homepage.footer_motto %}<p>{{ homepage.footer_motto }}</p>{% endif %}
+            </div>
+        </div>
+    {% endif %}
+</footer>

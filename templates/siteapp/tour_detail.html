@@ -3,11 +3,10 @@
     {% if builder_preview %}
         <p class="tour-preview-banner">Preview · Close this tab to return to Tour Builder.</p>
     {% endif %}
+    {% url 'tour_list' as routes_url %}
+    {% include "siteapp/includes/page_intro.html" with title=tour.title intro=tour.summary back_url=routes_url back_label="All routes" only %}
     <section class="page-section">
         <div class="container">
-            <a class="content-page__back" href="{% url 'tour_list' %}">All routes</a>
-            <h1 class="heading-section content-page__title">{{ tour.title }}</h1>
-            <p class="text-lead">{{ tour.summary|linebreaksbr }}</p>
             {% if tour.cover %}
                 <img class="content-page__cover" src="{{ tour.cover.url }}" alt="{{ tour.cover.alt_text }}" decoding="async">
             {% endif %}
@@ -45,7 +44,7 @@
         <section class="page-section" aria-labelledby="tour-photos-title">
             <div class="container">
                 <h2 class="heading-section content-page__title" id="tour-photos-title">Tour photos</h2>
-                <div class="tour-grid tour-gallery">
+                <div class="card-grid tour-gallery">
                     {% for photo in photos %}
                         <img src="{{ photo.url }}" alt="{{ photo.alt_text }}" width="420" height="280" loading="lazy" decoding="async">
                     {% endfor %}

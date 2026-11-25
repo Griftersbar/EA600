@@ -1,13 +1,13 @@
 {% extends "partners/page.html" %}
 {% block content %}
-    {% include "partners/includes/masthead.html" with title="My business listings" intro=account.email only %}
+    {% include "siteapp/includes/page_intro.html" with title="My business listings" intro=account.email only %}
     <section class="page-section">
         <div class="container partner-panel">
             {% if request.GET.checkout == "returned" %}
                 <p class="partner-callout" role="status">Thanks. The listing status updates when Stripe confirms payment.</p>
             {% endif %}
             {% for application in applications %}
-                <article class="partner-panel__card">
+                <article class="card partner-panel__card">
                     <h2>{{ application.listing.name }}</h2>
                     {% if application.approved and application.is_paid %}
                         <p>Live · Paid through {{ application.paid_until|date:"j F Y" }}</p>
@@ -45,7 +45,7 @@
                 </article>
             {% endfor %}
             {% if enabled %}
-                <div class="partner-panel__card">
+                <div class="card partner-panel__card">
                     <h2>Apply for a listing</h2>
                     <p>Use details you’re happy to display on the route page.</p>
                     <form method="post" enctype="multipart/form-data" class="partner-form">

@@ -1,41 +1,10 @@
-<article class="planning-card{% if tip.panel_left %} planning-card--panel-left{% endif %}">
-                        <div class="planning-card__frame">
-                            <img
-                                class="planning-card__visual"
-                                src="{{ tip.photo.url }}"
-                                alt="{{ tip.photo.alt_text }}"
-                                width="409"
-                                height="465"
-                                loading="lazy"
-                                decoding="async"
-                            >
-                            {% if tip.link %}<a class="planning-card__action" href="{{ tip.link }}" aria-label="Read more about {{ tip.title }}">
-                                <img decoding="async" loading="lazy"
-                                    src="/static/assets/icons/arrow-up-right.svg"
-                                    alt=""
-                                    width="28"
-                                    height="28"
-                                >
-                            </a>{% endif %}
-                            <div class="planning-card__panel">
-                                <img decoding="async" loading="lazy"
-                                    class="planning-card__panel-shape"
-                                    src="/static/assets/images/panel-shape.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                >
-                                <div class="planning-card__panel-inner">
-                                    {% if tip.icon %}<div class="planning-card__icon" aria-hidden="true">
-                                        <img decoding="async" loading="lazy"
-                                            src="{{ tip.icon.url }}"
-                                            alt=""
-                                            width="20"
-                                            height="20"
-                                        >
-                                    </div>{% endif %}
-                                    <h3 class="planning-card__title">{{ tip.title }}</h3>
-                                    <p class="planning-card__text">{{ tip.description|linebreaksbr }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+<article class="card planning-card{% if tip.panel_left %} planning-card--panel-left{% endif %}{% if tip.link %} card--linked{% endif %}">
+    {% include "siteapp/includes/card_photo.html" with photo=tip.photo only %}
+    <div class="card__body">
+        <div class="planning-card__heading">
+            {% if tip.icon %}<img class="planning-card__icon" src="{{ tip.icon.url }}" alt="" width="34" height="34" loading="lazy" decoding="async">{% endif %}
+            <h3 class="card__title">{% if tip.link %}<a href="{{ tip.link }}">{{ tip.title }}</a>{% else %}{{ tip.title }}{% endif %}</h3>
+        </div>
+        <p class="card__text">{{ tip.description|linebreaksbr }}</p>
+    </div>
+</article>

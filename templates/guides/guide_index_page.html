@@ -1,24 +1,18 @@
 {% extends "siteapp/content_page.html" %}
 {% load wagtailcore_tags %}
 {% block content %}
+    {% include "siteapp/includes/page_intro.html" with title=page.title intro=page.introduction only %}
     <section class="page-section">
         <div class="container">
-            <h1 class="heading-section content-page__title">{{ page.title }}</h1>
-            {% if page.introduction %}<p class="text-lead guide-index__intro">{{ page.introduction|linebreaksbr }}</p>{% endif %}
             {% if guides.object_list %}
-                <div class="tour-grid">
+                <div class="card-grid">
                     {% for guide in guides %}
                         {% pageurl guide as guide_url %}
-                        <article class="tour-card">
-                            {% if guide.cover %}
-                                <a href="{{ guide_url }}" aria-label="{{ guide.title }}">
-                                    <img class="tour-card__image" src="{{ guide.cover.url }}" alt="{{ guide.cover.alt_text }}"
-                                         width="420" height="240" loading="lazy" decoding="async">
-                                </a>
-                            {% endif %}
-                            <div class="tour-card__body">
-                                <h2 class="guide-card__title"><a href="{{ guide_url }}">{{ guide.title }}</a></h2>
-                                <p>{{ guide.introduction|linebreaksbr }}</p>
+                        <article class="card card--linked">
+                            {% if guide.cover %}{% include "siteapp/includes/card_photo.html" with photo=guide.cover only %}{% endif %}
+                            <div class="card__body">
+                                <h2 class="card__title"><a href="{{ guide_url }}">{{ guide.title }}</a></h2>
+                                <p class="card__text">{{ guide.introduction|linebreaksbr }}</p>
                             </div>
                         </article>
                     {% endfor %}

@@ -1,37 +1,10 @@
 .partner-site {
-  --partner-cream: #f7f2e8;
-  --partner-green: #073b35;
-  --partner-forest: #0e5a4f;
-  --partner-ink: #102b2a;
-  --partner-muted: #4c625e;
-  --partner-gold: #d8b36a;
   --partner-ochre: #795511;
-  --partner-line: #dbe4e1;
-  --partner-shadow: 0 8px 28px rgba(7, 59, 53, 0.09);
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  background: var(--partner-cream);
-  color: var(--partner-ink);
-  line-height: 1.55;
+  background: var(--color-cream);
 }
 
 .partner-main {
-  flex: 1;
   overflow-wrap: anywhere;
-}
-
-.partner-site .content-page__footer,
-.partner-main .btn--primary {
-  background: var(--partner-green);
-}
-
-.partner-main .btn--primary:hover {
-  background: var(--partner-forest);
-}
-
-.partner-main .btn {
-  white-space: normal;
 }
 
 .partner-hero {
@@ -60,25 +33,26 @@
 .partner-hero::after {
   z-index: -1;
   content: "";
-  background: linear-gradient(90deg, var(--partner-cream) 4%, rgba(247, 242, 232, 0.95) 39%, rgba(247, 242, 232, 0.52) 63%, transparent 89%);
+  background: linear-gradient(
+    90deg,
+    var(--color-cream) 4%,
+    color-mix(in srgb, var(--color-cream) 95%, transparent) 39%,
+    color-mix(in srgb, var(--color-cream) 52%, transparent) 63%,
+    transparent 89%
+  );
 }
 
-.partner-hero__copy,
-.partner-masthead .container {
+.partner-hero__copy {
   display: grid;
   gap: var(--space-4);
   padding-block: clamp(2.5rem, 6vw, 5rem);
 }
 
-.partner-hero h1,
-.partner-masthead h1 {
+.partner-hero h1 {
   font-family: var(--font-family-display);
   font-weight: var(--font-weight-bold);
   line-height: 1.06;
-  color: var(--partner-green);
-}
-
-.partner-hero h1 {
+  color: var(--color-brand-dark);
   max-width: 17ch;
   font-size: clamp(2.55rem, 5.15vw, 4.6rem);
   letter-spacing: -0.035em;
@@ -92,7 +66,7 @@
 
 .partner-hero .text-lead {
   max-width: 54ch;
-  color: var(--partner-ink);
+  color: var(--color-brand-dark);
 }
 
 .partner-hero .btn {
@@ -115,15 +89,12 @@
 }
 
 .partner-site .partner-panel__card {
-  background: var(--color-white);
-  border-color: var(--partner-line);
-  box-shadow: var(--partner-shadow);
   padding: clamp(1.25rem, 2.6vw, 2rem);
 }
 
-.partner-site h2 {
+.partner-main h2 {
   font: var(--font-weight-bold) clamp(1.4rem, 2.25vw, 2rem) / 1.18 var(--font-family-display);
-  color: var(--partner-green);
+  color: var(--color-brand-dark);
 }
 
 .partner-information {
@@ -144,22 +115,18 @@
 
 .partner-information__card {
   padding: var(--space-4);
-  background: var(--color-white);
-  border: 1px solid var(--partner-line);
-  border-radius: 0.75rem;
-  box-shadow: var(--partner-shadow);
 }
 
-.partner-information__card h3 {
+.partner-information__card .card__title {
   margin: 0 0 var(--space-2);
   font: var(--font-weight-bold) var(--font-size-lg) / 1.2 var(--font-family-display);
-  color: var(--partner-green);
+  color: var(--color-brand-dark);
 }
 
 .partner-information__card p,
 .partner-enquiry > p:not([role="status"]),
 .partner-account-entry > p {
-  color: var(--partner-muted);
+  color: var(--color-text-brand-muted);
 }
 
 .partner-information__card p {
@@ -172,16 +139,16 @@
 
 .partner-prices li {
   padding: var(--space-3);
-  border: 1px solid var(--partner-line);
+  border: 1px solid var(--color-border-brand);
   border-radius: 0.5rem;
-  background: #f4f8f6;
-  color: var(--partner-green);
+  background: var(--color-cream);
+  color: var(--color-brand-dark);
 }
 
 .partner-callout {
   padding: var(--space-4);
-  background: #fffaf0;
-  border-inline-start: 4px solid var(--partner-gold);
+  background: color-mix(in srgb, var(--color-gold-light) 15%, var(--color-white));
+  border-inline-start: 4px solid var(--color-gold);
   border-radius: 0 0.5rem 0.5rem 0;
 }
 
@@ -193,7 +160,7 @@
 .partner-enquiry__form {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   padding-top: var(--space-4);
-  border-top: 1px solid var(--partner-line);
+  border-top: 1px solid var(--color-border-brand);
 }
 
 .partner-field--wide,
@@ -206,15 +173,8 @@
   justify-self: stretch;
 }
 
-.partner-site .partner-form input:not([type="hidden"]),
-.partner-site .partner-form select,
-.partner-site .partner-form textarea {
-  border-color: #819d96;
-  border-radius: 0.5rem;
-}
-
 .partner-site .partner-form :is(input, select, textarea):focus-visible {
-  outline: 2px solid var(--partner-forest);
+  outline: 2px solid var(--color-primary-green);
   outline-offset: 2px;
 }
 
@@ -229,27 +189,13 @@
 }
 
 .partner-site .partner-form .helptext {
-  color: var(--partner-muted);
+  color: var(--color-text-brand-muted);
 }
 
 .partner-site .partner-form .errorlist {
   margin: var(--space-1) 0;
   padding-left: var(--space-4);
   color: #972d20;
-}
-
-.partner-masthead {
-  background: linear-gradient(105deg, #fbf8f0, #e6efe8);
-  border-bottom: 1px solid var(--partner-line);
-}
-
-.partner-masthead h1 {
-  font-size: clamp(2.1rem, 4vw, 3.55rem);
-}
-
-.partner-masthead p {
-  max-width: 58ch;
-  color: var(--partner-muted);
 }
 
 .partner-pilot {
@@ -296,7 +242,12 @@
   }
 
   .partner-hero::after {
-    background: linear-gradient(0deg, var(--partner-cream) 7%, rgba(247, 242, 232, 0.96) 62%, rgba(247, 242, 232, 0.2) 100%);
+    background: linear-gradient(
+      0deg,
+      var(--color-cream) 7%,
+      color-mix(in srgb, var(--color-cream) 96%, transparent) 62%,
+      color-mix(in srgb, var(--color-cream) 20%, transparent) 100%
+    );
   }
 
   .partner-enquiry__form {

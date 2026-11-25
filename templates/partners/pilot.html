@@ -1,12 +1,12 @@
 {% extends "partners/page.html" %}
 {% block content %}
-    {% include "partners/includes/masthead.html" with title="Pilot test activity" intro="These businesses are fictional. Try a website, booking or directions link on an EA600 test listing. It returns you here and adds a click to that listing’s report." only %}
+    {% include "siteapp/includes/page_intro.html" with title="Pilot test activity" intro="These businesses are fictional. Try a website, booking or directions link on an EA600 test listing. It returns you here and adds a click to that listing’s report." only %}
     <section class="page-section">
         <div class="container partner-pilot">
             <p><a href="{% url 'tour_detail' 'ea600' %}#places-along-the-route" class="btn btn--primary">Open EA600 test listings</a></p>
             <div class="partner-pilot__grid">
                 {% for listing in listings %}
-                    <article class="partner-panel__card pilot-listing" id="listing-{{ listing.pk }}">
+                    <article class="card partner-panel__card pilot-listing" id="listing-{{ listing.pk }}">
                         <h2>{{ listing.name }}</h2>
                         {% include "partners/includes/click_totals.html" with activity=listing only %}
                     </article>

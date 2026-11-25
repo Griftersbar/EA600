@@ -1,10 +1,10 @@
 {% extends "siteapp/content_page.html" %}
 {% block content %}
+    {% include "siteapp/includes/page_intro.html" with title="Explore routes" intro="Find a road trip and explore its map, stops and day-by-day itinerary." only %}
     <section class="page-section">
         <div class="container">
-            <h1 class="heading-section content-page__title">Explore routes</h1>
             {% if page.object_list %}
-                <div class="tour-grid">
+                <div class="card-grid">
                     {% for entry in page %}{% include "siteapp/includes/tour_card.html" %}{% endfor %}
                 </div>
             {% else %}

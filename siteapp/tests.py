@@ -12,6 +12,15 @@ from .test_support import sign_in_verified
 
 
 class ContentTests(TestCase):
+    def test_public_footer_reuses_contact_details_from_site_settings(self):
+        HomeContent.objects.update(contact_email="route-team@example.test")
+        for path in ("/", "/tours/", "/tours/ea600-14-day/", "/advertise/"):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertContains(response, '<footer class="site-footer" id="contact">')
+                self.assertContains(response, 'href="mailto:route-team@example.test"')
+                self.assertContains(response, '<nav class="site-footer__nav" aria-label="Footer">')
+
     def test_public_navigation_marks_the_current_page_or_section(self):
         for path, href, label, current in (
             ("/", "#top", "Home", "page"),

@@ -4,17 +4,12 @@
         {% include "siteapp/includes/site_head.html" %}
         {% block extra_head %}{% endblock %}
     </head>
-    <body id="top" {% block body_attributes %}{% endblock %}>
+    <body id="top" class="public-page{% block body_class %}{% endblock %}">
         {% include "siteapp/includes/site_header.html" %}
         <main class="{% block main_class %}content-page{% endblock %}">
             {% block content %}{% endblock %}
         </main>
-        <footer class="content-page__footer">
-            <div class="container">
-                <a href="{% url 'home' %}">{{ homepage.hero_title }}</a>
-                {% if homepage.footer_legal %}<p>{{ homepage.footer_legal }}</p>{% endif %}
-            </div>
-        </footer>
+        {% include "siteapp/includes/site_footer.html" %}
         <script type="module" src="/static/js/main.js"></script>
     </body>
 </html>

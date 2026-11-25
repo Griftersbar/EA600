@@ -1,9 +1,9 @@
 {% extends "partners/page.html" %}
 {% block content %}
-    {% include "partners/includes/masthead.html" with title="Sign in to EA600 Business Listings" only %}
+    {% include "siteapp/includes/page_intro.html" with title="Sign in to EA600 Business Listings" only %}
     <section class="page-section">
         <div class="container partner-panel">
-            <div class="partner-panel__card">
+            <div class="card partner-panel__card">
                 {% if valid %}
                     <form method="post" class="partner-form">
                         {% csrf_token %}

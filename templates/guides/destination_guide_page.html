@@ -1,11 +1,10 @@
 {% extends "siteapp/content_page.html" %}
 {% load wagtailcore_tags %}
 {% block content %}
+    {% url 'wagtail_serve' '' as guides_url %}
+    {% include "siteapp/includes/page_intro.html" with title=page.title intro=page.introduction back_url=guides_url back_label="All guides" only %}
     <article class="page-section">
         <div class="container">
-            <a class="content-page__back" href="{% url 'wagtail_serve' '' %}">All guides</a>
-            <h1 class="heading-section content-page__title">{{ page.title }}</h1>
-            <p class="text-lead">{{ page.introduction|linebreaksbr }}</p>
             {% if page.cover %}
                 <img class="content-page__cover" src="{{ page.cover.url }}" alt="{{ page.cover.alt_text }}" decoding="async">
             {% endif %}

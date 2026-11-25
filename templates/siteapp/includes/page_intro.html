@@ -1,0 +1,8 @@
+<header class="page-intro">
+    <div class="container page-intro__inner">
+        {% if back_url and back_label %}<a class="page-intro__back" href="{{ back_url }}">{{ back_label }}</a>{% endif %}
+        <h1 class="page-intro__title">{{ title }}</h1>
+        {% if intro %}<p class="page-intro__lead">{{ intro|linebreaksbr }}</p>{% endif %}
+        {% if author %}<p class="page-intro__byline">By {{ author }}</p>{% endif %}
+    </div>
+</header>

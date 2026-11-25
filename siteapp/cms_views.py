@@ -103,8 +103,9 @@ class HomepageViewSet(HomeContentViewSet):
         ], heading="Stories and questions"),
         MultiFieldPanel([
             FieldPanel("cta_title"), FieldPanel("cta_subtitle"), FieldPanel("cta_description"),
-            FieldPanel("cta_button"), FieldPanel("cta_photo"), FieldPanel("footer_photo"),
-        ], heading="Call to action and footer images"),
+            FieldPanel("cta_button"), FieldPanel("cta_photo"),
+            FieldPanel("footer_photo", help_text="Background photo for the homepage panel above the shared footer."),
+        ], heading="Trip-planning panel"),
     ]
 
 

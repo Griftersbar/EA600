@@ -5,7 +5,7 @@
         {% for group in listings_by_stop %}
             <section class="route-listings__stop" aria-labelledby="near-stop-{{ group.grouper.pk }}">
                 <h3 id="near-stop-{{ group.grouper.pk }}">Near {{ group.grouper.title }}</h3>
-                <div class="tour-grid">
+                <div class="card-grid">
                     {% for placement in group.list %}
                         {% include "partners/includes/listing_card.html" with listing=placement.listing placement=placement only %}
                     {% endfor %}

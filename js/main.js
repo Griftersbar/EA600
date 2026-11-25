@@ -192,43 +192,6 @@ function initFaqAccordion(root = document) {
   });
 }
 
-const FOOTER_LINK_ARROW_MS = 600;
-
-function initFooterLinkHover(root = document) {
-  const links = [...root.querySelectorAll(".site-footer__link-list a")];
-  if (!links.length) return;
-
-  links.forEach((link) => {
-    let hoverFrame = null;
-    let collapseTimer = null;
-
-    const setHover = (active) => {
-      cancelAnimationFrame(hoverFrame);
-      hoverFrame = requestAnimationFrame(() => {
-        link.classList.toggle("is-hover", active);
-        clearTimeout(collapseTimer);
-
-        const arrow = link.querySelector(".site-footer__link-arrow");
-        if (!arrow) return;
-
-        if (active) {
-          arrow.classList.add("is-open");
-          return;
-        }
-
-        collapseTimer = setTimeout(() => {
-          arrow.classList.remove("is-open");
-        }, FOOTER_LINK_ARROW_MS);
-      });
-    };
-
-    link.addEventListener("mouseenter", () => setHover(true), { passive: true });
-    link.addEventListener("mouseleave", () => setHover(false), { passive: true });
-    link.addEventListener("focus", () => setHover(true), true);
-    link.addEventListener("blur", () => setHover(false), true);
-  });
-}
-
 // Adds responsive card-slider controls and optional autoplay for marked tracks.
 function initCardSliders() {
   const sliderQuery = "(max-width: 60.75rem)";
@@ -630,7 +593,6 @@ function initRouteMapScroll(root = document) {
 document.addEventListener("DOMContentLoaded", () => {
   initSiteHeader();
   initFaqAccordion();
-  initFooterLinkHover();
   initCardSliders();
   initRouteMapScroll();
 });
