@@ -1,0 +1,52 @@
+{% extends "siteapp/content_page.html" %}
+{% block content %}
+    {% url 'home' as home_url %}
+    {% with destinations_url=home_url|add:'#destinations' %}
+        {% include "siteapp/includes/page_intro.html" with title=destination.title intro=destination.region back_url=destinations_url back_label="All destinations" only %}
+    {% endwith %}
+    <article class="page-section">
+        <div class="container">
+            <div class="destination-overview">
+                <img class="content-page__cover" src="{{ destination.photo.url }}" alt="{{ destination.photo.alt_text }}" decoding="async">
+                <div>
+                    <div class="content-page__text">{{ destination.description|linebreaks }}</div>
+                    {% if destination.link %}<p><a class="page-intro__back" href="{{ destination.link }}">Visitor information</a></p>{% endif %}
+                </div>
+            </div>
+            {% if gallery %}
+                <section class="destination-gallery" aria-labelledby="destination-gallery-title">
+                    <h2 class="heading-section content-page__title" id="destination-gallery-title">Photos of {{ destination.title }}</h2>
+                    <div class="card-grid tour-gallery">
+                        {% for item in gallery %}
+                            <img src="{{ item.photo.url }}" alt="{{ item.photo.alt_text }}" width="420" height="280" loading="lazy" decoding="async">
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </article>
+    {% if placements %}
+        <section class="page-section page-section--muted" aria-labelledby="destination-businesses-title">
+            <div class="container">
+                <h2 class="heading-section content-page__title" id="destination-businesses-title">Local businesses in {{ destination.title }}</h2>
+                <div class="card-grid">
+                    {% for placement in placements %}
+                        {% include "partners/includes/listing_card.html" with listing=placement.listing placement=placement destination_page=True only %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+    {% if tours %}
+        <section class="page-section" aria-labelledby="destination-tours-title">
+            <div class="container">
+                <h2 class="heading-section content-page__title" id="destination-tours-title">Routes that visit {{ destination.title }}</h2>
+                <div class="card-grid">
+                    {% for tour in tours %}
+                        {% include "siteapp/includes/tour_card.html" with entry=tour only %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

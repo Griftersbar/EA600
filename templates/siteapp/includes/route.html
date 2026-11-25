@@ -64,7 +64,9 @@
                     {% endif %}
                 </header>
                 <div class="stop-card__body">
-                    <h3 class="stop-card__place">{{ stop.title }}</h3>
+                    <h3 class="stop-card__place">
+                        {% if stop.destination_id %}<a href="{{ stop.destination.get_absolute_url }}">{{ stop.title }}</a>{% else %}{{ stop.title }}{% endif %}
+                    </h3>
                     {% if stop.region %}<p class="stop-card__region">{{ stop.region }}</p>{% endif %}
                     {% if stop.description %}<p class="stop-card__text">{{ stop.description|linebreaksbr }}</p>{% endif %}
                     {% if stop.onward_journey %}

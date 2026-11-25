@@ -1,11 +1,15 @@
+from datetime import timedelta
 from io import BytesIO
 from tempfile import TemporaryDirectory
 
 from PIL import Image
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
+
+from partners.models import BusinessListing, PartnerAccount, PartnerApplication, RoutePlacement
 
 from .models import Destination, HomeContent, Photo, Tour
 from .test_support import sign_in_verified
@@ -36,7 +40,7 @@ class ContentTests(TestCase):
                     html=True,
                 )
 
-    def test_wagtail_destination_editor_updates_the_homepage_card(self):
+    def test_wagtail_destination_editor_updates_the_homepage_card_and_detail(self):
         editor = get_user_model().objects.create_superuser(username="destination-editor")
         sign_in_verified(self.client, editor)
         destination = Destination.objects.get(title="Norwich")
@@ -46,17 +50,76 @@ class ContentTests(TestCase):
         self.assertContains(self.client.get("/cms/"), listing)
         self.assertContains(self.client.get(listing, {"q": "Norwich"}), destination.title)
         self.assertContains(self.client.get(edit), "Choose another photo")
+        gallery_photo = Photo.objects.exclude(pk=destination.photo_id).get(bundled_path="assets/images/intro-stack-1.webp")
         text = "A new introduction to Norwich."
         response = self.client.post(edit, {
             "title": destination.title,
+            "slug": destination.slug,
             "region": destination.region,
             "description": text,
             "photo": destination.photo_id,
-            "link": destination.link,
+            "link": "https://example.test/norwich",
             "position": destination.position,
+            "gallery-TOTAL_FORMS": 1,
+            "gallery-INITIAL_FORMS": 0,
+            "gallery-0-photo": gallery_photo.pk,
+            "gallery-0-ORDER": 0,
         })
         self.assertEqual(response.status_code, 302)
-        self.assertContains(self.client.get(reverse("home")), text)
+        home = self.client.get(reverse("home"))
+        self.assertContains(home, text)
+        self.assertContains(home, f'href="{destination.get_absolute_url()}"')
+        detail = self.client.get(destination.get_absolute_url())
+        self.assertContains(detail, text)
+        self.assertContains(detail, destination.photo.url)
+        self.assertContains(detail, gallery_photo.url)
+        self.assertContains(detail, 'href="https://example.test/norwich"')
+
+    def test_existing_route_stops_link_to_the_same_destination_across_routes(self):
+        destination = Destination.objects.get(slug="cromer")
+        for slug in ("ea600", "ea600-3-day", "ea600-14-day"):
+            tour = Tour.objects.get(slug=slug)
+            self.assertEqual(tour.stops.get(title="Cromer").destination, destination)
+            self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{destination.get_absolute_url()}"')
+            self.assertContains(self.client.get(destination.get_absolute_url()), f'href="{tour.get_absolute_url()}"')
+        self.assertEqual(self.client.get("/destinations/unknown/").status_code, 404)
+
+    @override_settings(PARTNER_BILLING_MODE="live", PARTNER_PILOT_PREVIEW=False)
+    def test_destination_only_lists_eligible_local_advertisers_once(self):
+        destination = Destination.objects.get(slug="norwich")
+        stops = list(destination.route_stops.filter(tour__is_published=True))
+        draft = Tour.objects.create(title="Draft Norwich route", slug="draft-norwich", summary="Private")
+        draft_stop = draft.stops.create(title="Norwich", destination=destination)
+        elsewhere = Tour.objects.get(slug="ea600").stops.get(title="Cromer")
+        owner = PartnerAccount.objects.create(email="norwich-business@example.test")
+
+        def listing(name, stop, **settings):
+            business = BusinessListing.objects.create(name=name, category="food", live=True, **settings)
+            RoutePlacement.objects.create(listing=business, stop=stop)
+            return business
+
+        paid = listing("Norwich paid tea room", stops[0], requires_subscription=True)
+        PartnerApplication.objects.create(
+            listing=paid, owner=owner, billing_mode="live", billing_status="active",
+            paid_until=timezone.now() + timedelta(days=30),
+        )
+        RoutePlacement.objects.create(listing=paid, stop=stops[1])
+        unpaid = listing("Norwich awaiting payment", stops[0], requires_subscription=True)
+        draft_route_ad = listing("Private route business", draft_stop)
+        other_town_ad = listing("Cromer tea room", elsewhere)
+        pilot_ad = listing("Hidden pilot tea room", stops[0], demo_key="hidden-pilot")
+        unpublished = listing("Norwich unpublished tea room", stops[0])
+        BusinessListing.objects.filter(pk=unpublished.pk).update(live=False)
+
+        page = self.client.get(destination.get_absolute_url())
+        self.assertContains(page, paid.name, count=1)
+        placement = paid.placements.order_by("pk").first()
+        self.assertContains(page, reverse("partners:listing_click", args=[placement.pk, "website"]))
+        for hidden in (unpaid, draft_route_ad, other_town_ad, pilot_ad, unpublished):
+            self.assertNotContains(page, hidden.name)
+        self.assertNotContains(page, draft.get_absolute_url())
+        PartnerApplication.objects.filter(listing=paid).update(paid_until=timezone.now() - timedelta(days=1))
+        self.assertNotContains(self.client.get(destination.get_absolute_url()), paid.name)
 
     def test_existing_route_and_homepage_are_loaded_from_editable_content(self):
         tour = Tour.objects.get(slug="ea600")

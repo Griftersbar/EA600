@@ -97,6 +97,12 @@ In a route stop, select **Place on map**, then click or tap its location. You ca
 
 Interactive maps use Leaflet and display OpenStreetMap tiles with attribution.
 
+## Edit a destination page
+
+Open **Content → Destinations** in Wagtail to edit the description, cover photo, gallery and visitor information link. Saved destinations have a public page at `/destinations/<slug>/` and a card on the homepage.
+
+To link a route to a destination, open the stop in Tour Builder and select its **Destination**, then publish the route. Existing matching stops on the three EA600 routes are linked when the destination pages are first installed. Approved business listings at linked stops appear on the destination page with the same publication and payment rules as on the route.
+
 ## Create a destination guide
 
 Use the same Django superuser to sign in to Wagtail at `/cms/`. Under **Pages**, open **Guides** and add a **Destination guide**. Add a cover and reorder the heading, text, photo and featured-tour blocks. Photos chosen or uploaded in a guide are available in the EA600 photo library. A featured-tour block links to a published tour in the catalogue.

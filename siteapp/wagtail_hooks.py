@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, TitleFieldPanel
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.viewsets.model import ModelViewSet
 from wagtail.snippets.models import register_snippet
@@ -57,13 +57,15 @@ class DestinationViewSet(EditorialSnippetViewSet):
     url_namespace = "ea600_destinations"
     url_prefix = "destinations"
     list_display = ("title", "region", "position")
-    search_fields = ("title", "region")
+    search_fields = ("title", "region", "slug")
     panels = [
-        FieldPanel("title"),
+        TitleFieldPanel("title", targets=["slug"]),
+        FieldPanel("slug"),
         FieldPanel("region"),
         FieldPanel("description"),
-        FieldPanel("photo"),
-        FieldPanel("link"),
+        FieldPanel("photo", heading="Cover photo"),
+        InlinePanel("gallery", heading="Photo gallery", label="Gallery photo"),
+        FieldPanel("link", heading="Visitor information link"),
         FieldPanel("position"),
     ]
 

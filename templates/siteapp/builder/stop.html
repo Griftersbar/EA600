@@ -7,6 +7,7 @@
             {{ stop.non_field_errors }}
             {% include "siteapp/builder/field.html" with field=stop.title %}
             {% include "siteapp/builder/field.html" with field=stop.region %}
+            {% include "siteapp/builder/field.html" with field=stop.destination full=True %}
             {% include "siteapp/builder/field.html" with field=stop.description full=True %}
             {% include "siteapp/builder/field.html" with field=stop.day_number %}
             {% include "siteapp/builder/field.html" with field=stop.onward_journey %}

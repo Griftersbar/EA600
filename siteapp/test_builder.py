@@ -9,7 +9,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .builder_views import tour_version
-from .models import HomeContent, ItineraryDay, Photo, Tour, TourStop
+from .models import Destination, HomeContent, ItineraryDay, Photo, Tour, TourStop
 from .test_support import sign_in_verified
 
 
@@ -25,12 +25,15 @@ class TourBuilderTests(TestCase):
         url = reverse("builder_new")
         self.assertContains(self.client.get(url), "Add stop")
         photo = Photo.objects.get(bundled_path="assets/images/norwich.webp")
+        destination = Destination.objects.create(
+            title="Wroxham", slug="wroxham", region="Norfolk Broads", description="Riverside village.", photo=photo,
+        )
         data = {
             "title": "Broads Loop", "slug": "broads-loop", "summary": "A weekend by the water.",
             "region": "Norfolk Broads", "distance_miles": 90, "duration_days": 2,
             "position": 0, "cover": photo.pk, "gallery": [photo.pk],
             "stops-TOTAL_FORMS": 2, "stops-INITIAL_FORMS": 0,
-            "stops-0-title": "Wroxham", "stops-0-ORDER": 2,
+            "stops-0-title": "Wroxham", "stops-0-destination": destination.pk, "stops-0-ORDER": 2,
             "stops-1-title": "Horning", "stops-1-ORDER": 1,
             "days-TOTAL_FORMS": 1, "days-INITIAL_FORMS": 0,
             "days-0-number": 1, "days-0-title": "The Broads", "days-0-photo": photo.pk,
@@ -59,10 +62,14 @@ class TourBuilderTests(TestCase):
             "stops-INITIAL_FORMS": 2, "days-INITIAL_FORMS": 1, "days-0-id": tour.days.get().pk,
         })
         for index, stop in enumerate(tour.stops.all()):
-            data.update({f"stops-{index}-id": stop.pk, f"stops-{index}-title": stop.title, f"stops-{index}-ORDER": index + 1})
+            data.update({
+                f"stops-{index}-id": stop.pk, f"stops-{index}-title": stop.title,
+                f"stops-{index}-destination": stop.destination_id or "", f"stops-{index}-ORDER": index + 1,
+            })
         self.assertRedirects(self.client.post(edit, data), edit, fetch_redirect_response=False)
         self.assertContains(self.client.get(tour.get_absolute_url()), "Broads Loop")
         self.assertContains(self.client.get(tour.get_absolute_url()), data["days-0-description"])
+        self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{destination.get_absolute_url()}"')
         catalogue = self.client.get(reverse("tour_list"))
         self.assertContains(catalogue, "Broads Loop")
         self.assertContains(catalogue, "Norfolk Broads")

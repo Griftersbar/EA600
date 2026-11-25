@@ -29,7 +29,7 @@ def published_tours():
 
 def route_content(tour, *, stops=None, days=None):
     if stops is None:
-        stops = list(tour.stops.all()) if tour else []
+        stops = list(tour.stops.select_related("destination")) if tour else []
     if days is None:
         days = tour.days.select_related("photo") if tour else []
     track = tour.route_track if tour else []
@@ -86,6 +86,24 @@ def tour_detail(request, slug):
     tour = get_object_or_404(published_tours().prefetch_related("gallery"), slug=slug)
     return render_tour_detail(request, tour)
 
+
+@require_safe
+def destination_detail(request, slug):
+    destination = get_object_or_404(Destination.objects.select_related("photo"), slug=slug)
+    placements = {}
+    for placement in published_placements().filter(stop__destination=destination).order_by(
+        "listing__name", "listing_id", "pk",
+    ):
+        placements.setdefault(placement.listing_id, placement)
+    return render(request, "siteapp/destination_detail.html", {
+        "homepage": homepage_content(),
+        "destination": destination,
+        "page_title": f"{destination.title} · EA600",
+        "page_description": destination.description,
+        "gallery": destination.gallery.select_related("photo").exclude(photo_id=destination.photo_id).order_by("sort_order", "pk"),
+        "placements": list(placements.values()),
+        "tours": published_tours().filter(stops__destination=destination).distinct(),
+    })
 
 def render_tour_detail(request, tour, *, stops=None, days=None, photos=None, builder_preview=False):
     response = render(request, "siteapp/tour_detail.html", {

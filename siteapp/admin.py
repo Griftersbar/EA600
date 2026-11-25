@@ -33,7 +33,7 @@ class PhotoAdmin(admin.ModelAdmin):
 class TourStopInline(admin.StackedInline):
     model = TourStop
     extra = 0
-    fields = ("title", "region", "description", "position", "day_number", "onward_journey", ("map_x", "map_y"))
+    fields = ("title", "region", "destination", "description", "position", "day_number", "onward_journey", ("map_x", "map_y"))
 
 
 class ItineraryDayInline(admin.StackedInline):
@@ -92,12 +92,18 @@ class HomeContentAdmin(admin.ModelAdmin):
         return False
 
 
-@admin.register(Highlight, Destination, PlanningTip, FAQ, FooterPhoto)
+@admin.register(Highlight, PlanningTip, FAQ, FooterPhoto)
 class OrderedContentAdmin(admin.ModelAdmin):
     list_display = ("__str__", "position")
 
     def get_autocomplete_fields(self, request):
         return tuple(field.name for field in self.model._meta.fields if field.related_model is Photo)
+
+
+@admin.register(Destination)
+class DestinationAdmin(OrderedContentAdmin):
+    search_fields = ("title", "region", "slug")
+    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Story)

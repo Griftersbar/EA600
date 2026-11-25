@@ -4,7 +4,7 @@
     {% endif %}
     <div class="card__body">
         <p class="business-card__category"><span class="business-card__ad">{% if listing.demo_key %}Test business{% else %}Ad{% endif %}</span> {{ listing.get_category_display }}</p>
-        <h4 class="card__title">{{ listing.name }}</h4>
+        {% if destination_page %}<h3 class="card__title">{{ listing.name }}</h3>{% else %}<h4 class="card__title">{{ listing.name }}</h4>{% endif %}
         <p class="card__text">{{ listing.description }}</p>
         <p>{{ listing.address }}</p>
         {% if placement or not listing.demo_key %}

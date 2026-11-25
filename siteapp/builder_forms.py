@@ -67,7 +67,7 @@ class StopBuilderForm(forms.ModelForm):
     class Meta:
         model = TourStop
         fields = (
-            "title", "region", "description", "day_number", "onward_journey",
+            "title", "region", "destination", "description", "day_number", "onward_journey",
             "latitude", "longitude", "map_x", "map_y",
         )
         widgets = {"description": forms.Textarea(attrs={"rows": 2})}

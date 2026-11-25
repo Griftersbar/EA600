@@ -125,6 +125,37 @@
   border-radius: var(--radius-md);
 }
 
+.destination-overview {
+  display: grid;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.destination-overview .content-page__cover {
+  aspect-ratio: 16 / 10;
+}
+
+.destination-overview .content-page__text {
+  margin: 0 0 var(--space-3);
+}
+
+@media (min-width: 48rem) {
+  .destination-overview {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+}
+
+.destination-gallery {
+  margin-top: var(--space-6);
+}
+
+.stop-card__place a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
 .itinerary-links a,
 .business-card__links a {
   color: var(--color-primary-green);

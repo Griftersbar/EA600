@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.21.0",
+    "date": "2026-11-25",
+    "title": "Public pages for destinations",
+    "changes": [
+      "Gave each Wagtail destination a public page with a description, cover photo, editable gallery and links to routes that visit it.",
+      "Linked homepage cards and matching EA600 route stops to the new pages. Tour Builder can link further stops.",
+      "Destination pages show eligible business listings from linked stops, with the same payment and publication rules as route pages."
+    ]
+  },
+  {
     "version": "2.20.2",
     "date": "2026-11-25",
     "title": "Make advertiser payments easier to find",

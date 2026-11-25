@@ -1,9 +1,9 @@
-<article class="card{% if destination.link %} card--linked{% endif %}">
+<article class="card card--linked">
     {% if featured %}<div class="card__feature">{% endif %}
     {% include "siteapp/includes/card_photo.html" with photo=destination.photo only %}
     {% if featured %}<div class="card__feature-title">{% else %}<div class="card__body">{% endif %}
         <h3 class="card__title">
-            {% if destination.link %}<a href="{{ destination.link }}">{{ destination.title }}</a>{% else %}{{ destination.title }}{% endif %}
+            <a href="{{ destination.get_absolute_url }}">{{ destination.title }}</a>
         </h3>
         <p class="card__meta">{{ destination.region }}</p>
     {% if featured %}</div></div><div class="card__body">{% endif %}

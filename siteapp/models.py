@@ -6,6 +6,9 @@ from django.core.validators import FileExtensionValidator, MaxValueValidator, Mi
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+from wagtail.models import Orderable
 
 from .route_tracks import validate_route_track
 
@@ -90,6 +93,10 @@ class Tour(OrderedContent):
 
 class TourStop(OrderedContent):
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="stops")
+    destination = models.ForeignKey(
+        "Destination", on_delete=models.SET_NULL, null=True, blank=True, related_name="route_stops",
+        help_text="Link to the public destination page and show this stop’s eligible business listings there.",
+    )
     title = models.CharField(max_length=140)
     region = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
@@ -225,8 +232,9 @@ class Highlight(OrderedContent):
         return self.title
 
 
-class Destination(OrderedContent):
+class Destination(OrderedContent, ClusterableModel):
     title = models.CharField(max_length=140)
+    slug = models.SlugField(max_length=160, unique=True, help_text="Keep this part of the public URL stable.")
     region = models.CharField(max_length=100)
     description = models.TextField()
     photo = models.ForeignKey(Photo, on_delete=models.PROTECT, related_name="+")
@@ -234,6 +242,14 @@ class Destination(OrderedContent):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("destination_detail", args=[self.slug])
+
+
+class DestinationPhoto(Orderable):
+    destination = ParentalKey(Destination, on_delete=models.CASCADE, related_name="gallery")
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="+")
 
 
 class PlanningTip(OrderedContent):
