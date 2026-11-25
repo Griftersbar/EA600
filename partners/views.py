@@ -60,9 +60,8 @@ def allow_partner_request(request, purpose, limit):
 
 def show_advertise(request, *, form=None, enquiry_form=None, sent=False, status=200):
     page = AdvertisePageSettings.load(request)
-    prices = {plan: f"£{amount / 100:.2f}".removesuffix(".00") for plan, (_, amount) in billing.PLANS.items()}
     return show(
-        request, "advertise", status=status, page_title=page.title, advertise_page=page, prices=prices,
+        request, "advertise", status=status, page_title=page.title, advertise_page=page, prices=billing.display_prices(),
         form=form if form is not None else OwnerEmailForm(),
         enquiry_form=enquiry_form if enquiry_form is not None else AdvertisingEnquiryForm(page, prefix="enquiry"),
         enquiry_received=request.session.pop("partner_enquiry_received", False),

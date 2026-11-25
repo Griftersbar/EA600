@@ -13,6 +13,10 @@ from .models import PartnerApplication
 PLANS = {"monthly": ("month", 1200), "annual": ("year", 12000)}
 
 
+def display_prices():
+    return {plan: f"£{amount / 100:.2f}".removesuffix(".00") for plan, (_, amount) in PLANS.items()}
+
+
 class BillingUnavailable(Exception):
     pass
 

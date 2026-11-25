@@ -103,6 +103,10 @@ class AdvertisingEnquiryTests(TestCase):
             enquiry_confirmation="Thank you. We’ll be in touch.", show_plan_prices=False,
         )
         self.assertEqual(saved.status_code, 302)
+        editor_page = self.client.get(saved["Location"])
+        self.assertContains(editor_page, "Current plan prices")
+        self.assertContains(editor_page, "£12 a month")
+        self.assertContains(editor_page, "£120 a year")
         visitor = Client()
         page = visitor.get(self.advertise)
         self.assertContains(page, "Advertise your business")

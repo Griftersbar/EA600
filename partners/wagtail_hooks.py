@@ -4,7 +4,7 @@ from django import forms
 from django.utils.html import format_html, format_html_join
 from wagtail import hooks
 from wagtail.admin.forms import WagtailAdminModelForm
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel, ObjectList, TabbedInterface
 from wagtail.admin.ui.tables import Column, LiveStatusTagColumn
 from wagtail.admin.views.generic.models import InspectView
 from wagtail.admin.viewsets.model import ModelViewSet
@@ -15,16 +15,24 @@ from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
 from siteapp.models import TourStop
 
 from .activity import with_recent_activity
+from .billing import display_prices
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
 
 
+plan_prices = display_prices()
 AdvertisePageSettings.edit_handler = TabbedInterface([
     ObjectList([
         MultiFieldPanel([
             FieldPanel("title"), FieldPanel("introduction"), FieldPanel("enquiry_link_label"),
         ], heading="Introduction"),
         MultiFieldPanel([
-            FieldPanel("package_heading"), FieldPanel("package_description"), FieldPanel("show_plan_prices"),
+            FieldPanel("package_heading"), FieldPanel("package_description"),
+            HelpPanel(heading="Current plan prices", content=format_html(
+                "<p><strong>{} a month</strong> or <strong>{} a year</strong></p>"
+                "<p>These amounts come from the billing configuration.</p>",
+                plan_prices["monthly"], plan_prices["annual"],
+            )),
+            FieldPanel("show_plan_prices"),
         ], heading="Listing package"),
         MultiFieldPanel([
             FieldPanel("sign_in_label"), FieldPanel("sign_in_confirmation"), FieldPanel("owner_listings_label"),
