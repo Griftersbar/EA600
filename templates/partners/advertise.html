@@ -8,7 +8,11 @@
             {% if advertise_page.hero_subtitle %}<p class="partner-hero__subtitle">{{ advertise_page.hero_subtitle }}</p>{% endif %}
             <p class="text-lead">{{ advertise_page.introduction|linebreaksbr }}</p>
             <div class="btn-group">
-                {% if enabled or signed_in %}<a class="btn btn--primary" href="#business-listing-access">{% if signed_in %}{{ advertise_page.owner_listings_label }}{% else %}Apply for a listing{% endif %}</a>{% endif %}
+                {% if signed_in %}
+                    <a class="btn btn--primary" href="{% url 'partners:dashboard' %}">{{ advertise_page.owner_listings_label }}</a>
+                {% elif enabled %}
+                    <a class="btn btn--primary" href="{% url 'partners:apply' %}">Start my listing</a>
+                {% endif %}
                 <a class="btn {% if enabled or signed_in %}btn--secondary{% else %}btn--primary{% endif %}" href="#advertising-enquiry">{{ advertise_page.enquiry_link_label }}</a>
             </div>
         </div>
@@ -69,7 +73,7 @@
                 {% elif signed_in %}
                     <p><a class="btn btn--primary" href="{% url 'partners:dashboard' %}">{{ advertise_page.owner_listings_label }}</a></p>
                 {% elif enabled %}
-                    <h2>Apply for a listing</h2>
+                    <h2>Manage an existing listing</h2>
                     <form method="post" class="partner-form">
                         {% csrf_token %}
                         {{ form.as_div }}

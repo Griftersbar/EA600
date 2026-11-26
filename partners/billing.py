@@ -2,12 +2,14 @@ from datetime import datetime, timezone as utc
 from uuid import UUID, uuid4
 
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django.db.models.functions import Coalesce, Greatest
 from django.utils import timezone
 from stripe import StripeClient
 
 from .models import AdvertisePageSettings, PartnerApplication
+from .notifications import notify_listing_live
 
 
 # Keep the original amounts for unfinished checkouts created before Wagtail pricing.
@@ -230,11 +232,13 @@ def sync_subscription(application, subscription_id):
         paid_end = paid_invoice_end(invoice, items[0]["id"])
         if paid_end:
             updates["paid_until"] = Greatest(Coalesce("paid_until", paid_end), paid_end)
-    PartnerApplication.objects.filter(
+    updated = PartnerApplication.objects.filter(
         Q(synced_at__lt=observed_at) | Q(synced_at__isnull=True),
         Q(stripe_subscription_id=subscription_id) | Q(stripe_subscription_id__isnull=True),
         pk=application.pk, checkout_attempt=application.checkout_attempt, billing_mode=settings.PARTNER_BILLING_MODE,
     ).update(**updates)
+    if updated:
+        transaction.on_commit(lambda: notify_listing_live(application.pk))
 
 
 def apply_event(event):

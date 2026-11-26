@@ -63,7 +63,9 @@ On **Page content**, choose the hero photo and edit the information cards and ca
 
 ## Business applications and billing
 
-Open **Advertise** at `/advertise/`. After signing in with an emailed link, an owner can submit their listing, photo and nearest route stop. It appears as a draft under **Business listings**. Publish it in Wagtail to approve the application. The owner receives an approval email and can select **Choose a payment plan** from **My business listings**. The payment page shows the current monthly and annual prices and opens Stripe Checkout. A verified paid invoice makes the approved listing public. Wagtail-managed listings created by staff can still go live without billing.
+Open **Advertise** at `/advertise/` and choose **Start my listing**. The business enters its email, listing details, photo and nearest route stop. After the business confirms its email, EA600 creates or reuses its passwordless account, sends a submission receipt and places the draft under **Business listings**. Publish it in Wagtail to approve the application and send a private payment link. The link expires after 48 hours, and an editor can send another from **Advertiser payments**. A verified paid invoice makes the approved listing public and triggers an email with route and destination links. Wagtail-managed listings created by staff can still go live without billing.
+
+Advertisers can sign in with an emailed link to view **My business listings**, save changes for editorial review, see click counts and manage billing.
 
 Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development, email prints to the console when `PARTNER_RESEND_API_KEY` and `EMAIL_HOST` are empty. On the preview, set `PARTNER_RESEND_API_KEY` and a verified `DEFAULT_FROM_EMAIL` to send email over HTTPS. If your Railway plan supports outbound SMTP, you can instead configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`.
 

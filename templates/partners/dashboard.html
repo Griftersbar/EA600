@@ -9,6 +9,9 @@
             {% if request.GET.checkout == "returned" %}
                 <p class="partner-callout" role="status">The listing status updates when Stripe confirms payment. Refresh this page to check.</p>
             {% endif %}
+            {% if request.GET.listing == "updated" %}
+                <p class="partner-callout" role="status">Your changes were saved for review.</p>
+            {% endif %}
             {% for application in applications %}
                 <article class="card partner-panel__card">
                     <h2>{{ application.listing.name }}</h2>
@@ -27,6 +30,9 @@
                     {% include "partners/includes/click_totals.html" with activity=application only %}
                     {% if application.can_checkout %}
                         <p><a class="btn btn--primary" href="{% url 'partners:checkout' application.pk %}">Choose a payment plan</a></p>
+                    {% endif %}
+                    {% if not sandbox %}
+                        <p><a class="partner-link" href="{% url 'partners:edit_listing' application.pk %}">Edit listing</a></p>
                     {% endif %}
                     {% if billing_ready and application.stripe_customer_id and application.has_current_billing_mode %}
                         <form method="post" action="{% url 'partners:portal' application.pk %}">

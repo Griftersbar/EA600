@@ -1,0 +1,18 @@
+{% extends "partners/page.html" %}
+{% block content %}
+    {% url 'partners:dashboard' as dashboard_url %}
+    {% include "siteapp/includes/page_intro.html" with title="Edit your business listing" intro=listing.name back_url=dashboard_url back_label="My business listings" only %}
+    <section class="page-section">
+        <div class="container partner-panel">
+            <div class="card partner-panel__card">
+                <p>Your changes will go to EA600 for review.</p>
+                <form method="post" enctype="multipart/form-data" class="partner-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="revision" value="{{ revision }}">
+                    {{ form.as_div }}
+                    <button type="submit" class="btn btn--primary">Save changes for review</button>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

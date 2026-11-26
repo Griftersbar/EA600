@@ -1,4 +1,5 @@
 from decimal import Decimal
+from pathlib import Path
 from urllib.parse import urlencode
 from uuid import uuid4
 
@@ -88,6 +89,18 @@ class PartnerAccount(models.Model):
     email = models.EmailField(unique=True)
     access_digest = models.CharField(max_length=64, blank=True, db_index=True)
     access_expires = models.DateTimeField(null=True, blank=True)
+
+
+def pending_photo_path(instance, filename):
+    return f"pending_partner_photos/{uuid4().hex}{Path(filename).suffix.lower()}"
+
+
+class PendingPartnerApplication(models.Model):
+    email = models.EmailField()
+    verification_digest = models.CharField(max_length=64, unique=True)
+    expires_at = models.DateTimeField(db_index=True)
+    details = models.JSONField()
+    photo = models.FileField(upload_to=pending_photo_path, blank=True)
 
 
 class AdvertisePageSettings(BaseGenericSetting):
@@ -189,6 +202,9 @@ class PartnerApplication(models.Model):
     billing_status = models.CharField(max_length=30, blank=True)
     paid_until = models.DateTimeField(null=True, blank=True)
     synced_at = models.DateTimeField(null=True, blank=True)
+    payment_digest = models.CharField(max_length=64, blank=True, db_index=True)
+    payment_link_expires = models.DateTimeField(null=True, blank=True)
+    live_email_mode = models.CharField(max_length=4, choices=BillingMode, blank=True)
 
     BILLABLE_STATUSES = ("active", "past_due")
     ENDED_STATUSES = ("canceled", "incomplete_expired")

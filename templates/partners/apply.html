@@ -1,0 +1,22 @@
+{% extends "partners/page.html" %}
+{% block content %}
+    {% url 'partners:advertise' as advertise_url %}
+    {% include "siteapp/includes/page_intro.html" with title="Start your EA600 listing" back_url=advertise_url back_label="Advertise on EA600" only %}
+    <section class="page-section">
+        <div class="container partner-panel">
+            <div class="card partner-panel__card">
+                {% if sent %}
+                    <h2>Confirm your business email</h2>
+                    <p role="status">Check your inbox for a link to submit your listing for review. The link is valid for 24 hours.</p>
+                {% else %}
+                    <p>Enter the details for your advert. We’ll ask you to confirm your email before the listing goes to review.</p>
+                    <form method="post" enctype="multipart/form-data" class="partner-form">
+                        {% csrf_token %}
+                        {{ form.as_div }}
+                        <button type="submit" class="btn btn--primary">Email me a confirmation link</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

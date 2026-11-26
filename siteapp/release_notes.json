@@ -1,5 +1,15 @@
 [
   {
+    "version": "2.24.0",
+    "date": "2026-11-26",
+    "title": "Passwordless advertiser applications and confirmation emails",
+    "changes": [
+      "Advertisers can enter their listing details first and verify their business email to create or reuse an account. Confirmed applications reach Wagtail for review.",
+      "Approval emails include a private payment link. Confirmed payments trigger a live listing email with route and destination links.",
+      "Advertisers can save listing edits for review, and editors can email another payment link from Wagtail."
+    ]
+  },
+  {
     "version": "2.23.0",
     "date": "2026-11-26",
     "title": "Check where adverts appear",

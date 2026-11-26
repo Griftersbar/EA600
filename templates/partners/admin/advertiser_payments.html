@@ -24,6 +24,12 @@
         {% if advertiser_email %}
             <p>The listing is linked to <strong>{{ advertiser_email }}</strong>.</p>
         {% endif %}
+        {% if can_email %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="button button-secondary" name="action" value="email-payment-link">Email payment link</button>
+            </form>
+        {% endif %}
 
         {% if sandbox_enabled %}
             <p>Current plans are <strong>{{ prices.monthly }} monthly</strong> and <strong>{{ prices.annual }} annually</strong>.</p>

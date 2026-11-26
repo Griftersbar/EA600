@@ -3,14 +3,18 @@ import hmac
 import json
 import time
 from datetime import timedelta
+from io import BytesIO
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
+from PIL import Image
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core import mail
 from django.core.cache import cache
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -19,7 +23,7 @@ from django_otp import DEVICE_ID_SESSION_KEY
 from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
 
-from .models import AdvertisePageSettings, BusinessListing, PartnerAccount, PartnerApplication, published_placements
+from .models import AdvertisePageSettings, BusinessListing, PartnerAccount, PartnerApplication, PendingPartnerApplication, published_placements
 
 
 @override_settings(
@@ -40,20 +44,24 @@ class PartnerBillingTests(TestCase):
         self.stripe = gateway.start().return_value.v1
         self.addCleanup(gateway.stop)
 
-    def apply_as_owner(self):
-        self.assertContains(self.client.post(reverse("partners:advertise"), {"email": "Owner@Example.com"}), "Check your inbox")
-        self.assertEqual(mail.outbox[0].to, ["owner@example.com"])
-        access_url = urlsplit(mail.outbox[0].body.split()[-1]).path
-        self.assertContains(self.client.get(access_url), "Continue to my listings")
-        self.assertContains(self.client.get(access_url), "Continue to my listings")
-        dashboard = reverse("partners:dashboard")
-        self.assertRedirects(self.client.post(access_url), dashboard)
-        self.assertContains(Client().post(access_url), "has already been used")
-        self.assertEqual(self.client.post(dashboard, {
+    def apply_as_owner(self, **fields):
+        self.assertContains(self.client.post(reverse("partners:apply"), {
+            "email": "Owner@Example.com",
             "name": "Norwich Test Tea Room", "category": "food", "description": "Tea and scones",
             "address": "Norwich, NR1", "stop": self.stop.pk, "link": "https://example.com/tea",
-            "link_label": "website",
-        }).status_code, 302)
+            "link_label": "website", **fields,
+        }), "Check your inbox")
+        self.assertEqual(mail.outbox[-1].to, ["owner@example.com"])
+        self.assertEqual(mail.outbox[-1].subject, "Confirm your EA600 business email")
+        self.assertFalse(PartnerApplication.objects.exists())
+        access_url = urlsplit(mail.outbox[-1].body.split()[-1]).path
+        self.assertContains(self.client.get(access_url), "Confirm and submit listing")
+        self.assertFalse(PartnerApplication.objects.exists())
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertRedirects(self.client.post(access_url), reverse("partners:dashboard"))
+        self.assertEqual(mail.outbox[-1].subject, "We received your EA600 listing application")
+        self.assertContains(Client().post(access_url), "has already been used")
+        self.assertFalse(PendingPartnerApplication.objects.exists())
         return PartnerApplication.objects.select_related("listing", "owner").get()
 
     def approve(self, application):
@@ -100,6 +108,12 @@ class PartnerBillingTests(TestCase):
         self.assertEqual(Client().post(checkout, {"plan": "annual"}).status_code, 404)
 
         self.approve(application)
+        pay_link = urlsplit(mail.outbox[-1].body.split()[-1]).path
+        fresh_buyer = Client()
+        self.assertContains(fresh_buyer.get(pay_link), "Continue to payment options")
+        self.assertEqual(fresh_buyer.get(checkout).status_code, 404)
+        self.assertRedirects(fresh_buyer.post(pay_link), checkout)
+        self.assertContains(Client().post(pay_link), "has already been used")
         self.assertFalse(published_placements(self.tour).exists())
         self.configure_price("year", 12000)
         AdvertisePageSettings.objects.update(annual_price="145.25")
@@ -130,10 +144,17 @@ class PartnerBillingTests(TestCase):
         self.stripe.subscriptions.retrieve.return_value = subscription
         completed = {"id": "cs_test_123", "livemode": False, "mode": "subscription", "subscription": "sub_test",
                      "metadata": params["metadata"], "client_reference_id": str(application.pk)}
-        self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
+        self.assertEqual(mail.outbox[-1].subject, "Your EA600 business listing is live on the test preview")
+        self.assertIn("/tours/ea600/#places-along-the-route", mail.outbox[-1].body)
+        self.assertIn("/destinations/norwich/#destination-businesses", mail.outbox[-1].body)
+        sent_count = len(mail.outbox)
         self.assertContains(Client().get(self.tour.get_absolute_url()), listing.name)
         self.assertRedirects(self.client.get(checkout), reverse("partners:dashboard"))
-        self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
+        with self.captureOnCommitCallbacks(execute=True):
+            self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
+        self.assertEqual(len(mail.outbox), sent_count)
         application.refresh_from_db()
         paid_until = application.paid_until
         self.assertEqual(int(paid_until.timestamp()), end)
@@ -379,6 +400,7 @@ class PartnerBillingTests(TestCase):
     @override_settings(PARTNER_RESEND_API_KEY="re_test_fixture", DEFAULT_FROM_EMAIL="EA600 <partners@example.com>")
     @patch("partners.mail.urlopen")
     def test_sign_in_link_can_be_sent_using_https_email(self, urlopen):
+        PartnerAccount.objects.create(email="owner@example.com")
         self.assertContains(self.client.post(reverse("partners:advertise"), {"email": "owner@example.com"}), "Check your inbox")
         request = urlopen.call_args.args[0]
         self.assertEqual(request.full_url, "https://api.resend.com/emails")
@@ -386,3 +408,34 @@ class PartnerBillingTests(TestCase):
         message = json.loads(request.data)
         self.assertEqual(message["to"], ["owner@example.com"])
         self.assertIn("/advertise/access/", message["text"])
+
+    def test_confirmation_reuses_an_account_and_preserves_the_uploaded_photo(self):
+        owner = PartnerAccount.objects.create(email="owner@example.com")
+        image_data = BytesIO()
+        Image.new("RGB", (24, 16), "green").save(image_data, "PNG")
+        photo = SimpleUploadedFile("shop.png", image_data.getvalue(), content_type="image/png")
+        with TemporaryDirectory() as media, self.settings(MEDIA_ROOT=media):
+            application = self.apply_as_owner(photo_upload=photo)
+            self.assertEqual(application.owner, owner)
+            self.assertEqual(PartnerAccount.objects.count(), 1)
+            self.assertTrue(application.listing.photo.image.storage.exists(application.listing.photo.image.name))
+            edit_url = reverse("partners:edit_listing", args=[application.pk])
+            self.assertEqual(Client().get(edit_url).status_code, 404)
+            self.assertContains(self.client.get(edit_url), "Save changes for review")
+            self.assertRedirects(self.client.post(edit_url, {
+                "description": "New menu", "link": "https://example.com/menu", "link_label": "website",
+                "revision": application.listing.latest_revision_id,
+            }), reverse("partners:dashboard") + "?listing=updated")
+            application.listing.refresh_from_db()
+            self.assertEqual(application.listing.description, "Tea and scones")
+            self.assertEqual(application.listing.get_latest_revision_as_object().description, "New menu")
+
+    def test_unverified_application_does_not_create_an_account_or_draft(self):
+        self.assertContains(self.client.post(reverse("partners:apply"), {
+            "email": "new@example.com", "name": "New listing", "category": "food",
+            "description": "A new cafe", "address": "Norwich", "stop": self.stop.pk,
+            "link": "https://example.com", "link_label": "website",
+        }), "Check your inbox")
+        self.assertFalse(PartnerAccount.objects.exists())
+        self.assertFalse(BusinessListing.objects.exists())
+        self.assertTrue(PendingPartnerApplication.objects.exists())

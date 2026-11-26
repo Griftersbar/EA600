@@ -6,11 +6,15 @@ from . import views
 app_name = "partners"
 urlpatterns = [
     path("", views.advertise, name="advertise"),
+    path("apply/", views.apply, name="apply"),
+    path("apply/confirm/<slug:token>/", views.confirm_application, name="confirm_application"),
+    path("approved/<slug:token>/", views.approve_access, name="approve_access"),
     path("enquire/", views.enquire, name="enquire"),
     path("go/<int:pk>/<slug:action>/", views.listing_click, name="listing_click"),
     path("pilot/", views.pilot, name="pilot"),
     path("access/<slug:token>/", views.access, name="access"),
     path("listings/", views.dashboard, name="dashboard"),
+    path("listings/<uuid:pk>/edit/", views.edit_listing, name="edit_listing"),
     path("sign-out/", views.sign_out, name="sign_out"),
     path("checkout/<uuid:pk>/", views.start_checkout, name="checkout"),
     path("billing/<uuid:pk>/", views.portal, name="portal"),

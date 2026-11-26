@@ -66,26 +66,30 @@ class PublishedStopField(forms.ModelChoiceField):
         return f"{stop.tour.title} · {stop.title}"
 
 
-class PartnerApplicationForm(forms.ModelForm):
+class ListingPhotoUploadForm(forms.ModelForm):
+    photo_upload = forms.FileField(required=False, label="Business photo", help_text="JPEG, PNG, WebP or GIF, up to 10 MB.")
+
+    def clean_photo_upload(self):
+        upload = self.cleaned_data["photo_upload"]
+        if upload:
+            title = self.cleaned_data.get("name") or self.instance.name or "Business photo"
+            photo_form = PhotoForm({"title": title}, {"image": upload})
+            if not photo_form.is_valid():
+                raise forms.ValidationError(photo_form.errors["image"])
+            return photo_form
+
+
+class PartnerApplicationForm(ListingPhotoUploadForm):
     stop = PublishedStopField(
         queryset=TourStop.objects.filter(tour__is_published=True).select_related("tour").order_by(
             "tour__position", "tour_id", "position", "pk",
         ), label="Nearest route stop",
     )
-    photo_upload = forms.FileField(required=False, label="Business photo", help_text="JPEG, PNG, WebP or GIF, up to 10 MB.")
 
     class Meta:
         model = BusinessListing
         fields = ("name", "category", "description", "address", "stop", "link", "link_label", "phone", "photo_upload")
         widgets = {"description": forms.Textarea(attrs={"rows": 3})}
-
-    def clean_photo_upload(self):
-        upload = self.cleaned_data["photo_upload"]
-        if upload:
-            photo_form = PhotoForm({"title": self.cleaned_data.get("name") or "Business photo"}, {"image": upload})
-            if not photo_form.is_valid():
-                raise forms.ValidationError(photo_form.errors["image"])
-            return photo_form
 
     @transaction.atomic
     def create_application(self, owner, *, source_enquiry=None, user=None):
@@ -100,3 +104,27 @@ class PartnerApplicationForm(forms.ModelForm):
         # Keep the draft's placement available in the Wagtail listing editor.
         listing.save(update_fields=["stops", "photo"])
         return PartnerApplication.objects.create(listing=listing, owner=owner, source_enquiry=source_enquiry)
+
+
+class GuestPartnerApplicationForm(PartnerApplicationForm, OwnerEmailForm):
+    field_order = ("email",)
+
+    def submission_details(self):
+        details = {field: self.cleaned_data[field] for field in self.Meta.fields if field != "photo_upload"}
+        details["stop"] = details["stop"].pk
+        return details
+
+
+class PartnerListingEditForm(ListingPhotoUploadForm):
+    class Meta:
+        model = BusinessListing
+        fields = ("description", "link", "link_label", "phone", "photo_upload")
+        widgets = {"description": forms.Textarea(attrs={"rows": 3})}
+
+    @transaction.atomic
+    def save_draft(self):
+        listing = self.save(commit=False)
+        photo_form = self.cleaned_data["photo_upload"]
+        if photo_form:
+            listing.photo = photo_form.save()
+        listing.save_revision()

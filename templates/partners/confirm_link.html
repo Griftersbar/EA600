@@ -1,0 +1,20 @@
+{% extends "partners/page.html" %}
+{% block content %}
+    {% include "siteapp/includes/page_intro.html" with title=title only %}
+    <section class="page-section">
+        <div class="container partner-panel">
+            <div class="card partner-panel__card">
+                {% if error %}<p role="alert">{{ error }}</p>{% endif %}
+                {% if valid %}
+                    <form method="post" class="partner-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn--primary">{{ action }}</button>
+                    </form>
+                {% else %}
+                    {% if not error %}<p>This link has expired or has already been used.</p>{% endif %}
+                    <p><a href="{{ recovery_url }}" class="partner-link">Return to EA600 advertising</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

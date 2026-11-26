@@ -1,12 +1,13 @@
-import hashlib
 import logging
 import secrets
+from contextlib import nullcontext
 from datetime import timedelta
 from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.core.cache import cache
-from django.db import DatabaseError
+from django.core.files.uploadedfile import UploadedFile
+from django.db import DatabaseError, OperationalError, transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -20,10 +21,17 @@ from siteapp.editor_auth import editor_client_ip
 from siteapp.views import homepage_content
 
 from . import billing
+from .access_tokens import digest
 from .activity import record_click, with_recent_activity
-from .forms import AdvertisingEnquiryForm, OwnerEmailForm, PartnerApplicationForm
+from .forms import (
+    AdvertisingEnquiryForm, GuestPartnerApplicationForm, OwnerEmailForm, PartnerApplicationForm, PartnerListingEditForm,
+)
 from .mail import email_ready, send_partner_mail
-from .models import AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication, published_placements
+from .models import (
+    AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication,
+    PendingPartnerApplication, published_placements,
+)
+from .notifications import notify_application_received
 from .sandbox import SANDBOX_SESSION, sandbox_application
 
 
@@ -33,12 +41,8 @@ OWNER_SESSION = "ea600_partner_owner"
 
 def show(request, template, *, status=200, **context):
     response = render(request, f"partners/{template}.html", {"homepage": homepage_content(), **context}, status=status)
-    response["Referrer-Policy"] = "same-origin"
+    response["Referrer-Policy"] = "strict-origin" if template in {"access", "confirm_link"} else "same-origin"
     return response
-
-
-def digest(value):
-    return hashlib.sha256(value.encode()).hexdigest()
 
 
 def owner(request):
@@ -47,6 +51,12 @@ def owner(request):
 
 def applications_enabled():
     return settings.PARTNER_APPLICATIONS_ENABLED and email_ready()
+
+
+def sign_in_owner(request, account_id):
+    request.session.cycle_key()
+    request.session.pop(SANDBOX_SESSION, None)
+    request.session[OWNER_SESSION] = account_id
 
 
 def allow_partner_request(request, purpose, limit):
@@ -89,8 +99,10 @@ def advertise(request):
     form = OwnerEmailForm(request.POST if request.method == "POST" else None)
     if applications_enabled() and request.method == "POST" and form.is_valid():
         email = form.cleaned_data["email"]
-        if allow_partner_request(request, "email", 10) and cache.add(f"partner-email:{digest(email)}", True, timeout=60):
-            account, _ = PartnerAccount.objects.get_or_create(email=email)
+        if not allow_partner_request(request, "email", 10):
+            return show_advertise(request, sent=True)
+        account = PartnerAccount.objects.filter(email=email).first()
+        if account and cache.add(f"partner-email:{digest(email)}", True, timeout=60):
             token = secrets.token_urlsafe(32)
             token_digest = digest(token)
             PartnerAccount.objects.filter(pk=account.pk).update(
@@ -110,6 +122,109 @@ def advertise(request):
                 return show_advertise(request, form=form)
         return show_advertise(request, sent=True)
     return show_advertise(request, form=form)
+
+
+@never_cache
+@require_http_methods(["GET", "POST"])
+def apply(request):
+    if not applications_enabled():
+        return redirect("partners:advertise")
+    if owner(request):
+        return redirect("partners:dashboard")
+
+    form = GuestPartnerApplicationForm(request.POST or None, request.FILES or None)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data["email"]
+        if not allow_partner_request(request, "application", 5) or not cache.add(
+            f"partner-submit:{digest(email)}", True, timeout=60,
+        ):
+            form.add_error(None, "Please wait a moment before sending another application.")
+            return show(request, "apply", form=form, status=429)
+
+        PendingPartnerApplication.objects.filter(expires_at__lte=timezone.now()).delete()
+        token = secrets.token_urlsafe(32)
+        photo_form = form.cleaned_data["photo_upload"]
+        photo = photo_form.cleaned_data["image"] if photo_form else None
+        if photo:
+            photo.seek(0)
+        submission = PendingPartnerApplication.objects.create(
+            email=email, verification_digest=digest(token), expires_at=timezone.now() + timedelta(days=1),
+            details=form.submission_details(), photo=photo or "",
+        )
+        url = request.build_absolute_uri(reverse("partners:confirm_application", args=[token]))
+        try:
+            send_partner_mail(
+                "Confirm your EA600 business email",
+                f"Confirm your email to submit your listing for {form.cleaned_data['name']}. "
+                f"Your link is valid for 24 hours.\n\n{url}",
+                email,
+            )
+        except OSError:
+            submission.delete()
+            cache.delete(f"partner-submit:{digest(email)}")
+            logger.warning("Could not send EA600 listing email verification")
+            form.add_error(None, "Email is temporarily unavailable. Please try again shortly.")
+            return show(request, "apply", form=form, status=503)
+        return show(request, "apply", sent=True)
+    return show(request, "apply", form=form)
+
+
+@never_cache
+@require_http_methods(["GET", "POST"])
+def confirm_application(request, token):
+    if not applications_enabled():
+        return HttpResponseNotFound()
+    pending = PendingPartnerApplication.objects.filter(verification_digest=digest(token), expires_at__gt=timezone.now())
+    context = {
+        "title": "Confirm your business email",
+        "action": "Confirm and submit listing",
+        "recovery_url": reverse("partners:apply"),
+    }
+    if request.method == "GET":
+        return show(request, "confirm_link", valid=pending.exists(), **context)
+
+    try:
+        with transaction.atomic():
+            submission = pending.select_for_update().first()
+            if not submission:
+                return show(request, "confirm_link", **context)
+            with submission.photo.open("rb") if submission.photo else nullcontext() as photo:
+                files = {"photo_upload": UploadedFile(photo, name=photo.name, size=photo.size)} if photo else None
+                form = PartnerApplicationForm(submission.details, files)
+                if not form.is_valid():
+                    return show(request, "confirm_link", error="Your listing details need updating. Please submit a new application.", **context)
+                account, _ = PartnerAccount.objects.get_or_create(email=submission.email)
+                application = form.create_application(account)
+            submission.delete()
+            transaction.on_commit(lambda: notify_application_received(application))
+    except OperationalError as error:
+        if "locked" not in str(error).lower():
+            raise
+        return show(request, "confirm_link", valid=True, error="A submission is in progress. Try again shortly.", status=409, **context)
+    except FileNotFoundError:
+        return show(request, "confirm_link", error="Your application photo is unavailable. Please submit a new application.", **context)
+    sign_in_owner(request, account.pk)
+    return redirect("partners:dashboard")
+
+
+@never_cache
+@require_http_methods(["GET", "POST"])
+def approve_access(request, token):
+    if not applications_enabled():
+        return HttpResponseNotFound()
+    links = PartnerApplication.objects.filter(payment_digest=digest(token), payment_link_expires__gt=timezone.now())
+    application = links.select_related("listing").first()
+    valid = bool(application and application.can_checkout)
+    if valid and request.method == "POST":
+        if links.filter(pk=application.pk).update(payment_digest="", payment_link_expires=None):
+            sign_in_owner(request, application.owner_id)
+            return redirect("partners:checkout", pk=application.pk)
+        valid = False
+    return show(
+        request, "confirm_link", valid=valid, title="Your EA600 listing is approved",
+        action="Continue to payment options",
+        recovery_url=reverse("partners:advertise") + "#business-listing-access",
+    )
 
 
 @never_cache
@@ -141,9 +256,7 @@ def access(request, token):
     account_id = accounts.values_list("pk", flat=True).first()
     if account_id and request.method == "POST":
         if accounts.filter(pk=account_id).update(access_digest="", access_expires=None):
-            request.session.cycle_key()
-            request.session.pop(SANDBOX_SESSION, None)
-            request.session[OWNER_SESSION] = account_id
+            sign_in_owner(request, account_id)
             return redirect("partners:dashboard")
         account_id = None
     return show(request, "access", valid=bool(account_id))
@@ -171,7 +284,8 @@ def dashboard(request):
     enabled = not preview and applications_enabled()
     form = PartnerApplicationForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and enabled and form.is_valid():
-        form.create_application(account)
+        application = form.create_application(account)
+        transaction.on_commit(lambda: notify_application_received(application))
         return redirect("partners:dashboard")
     applications = account.applications.select_related("listing")
     if preview:
@@ -183,6 +297,24 @@ def dashboard(request):
     )
 
 
+@never_cache
+@require_http_methods(["GET", "POST"])
+def edit_listing(request, pk):
+    application = get_object_or_404(
+        PartnerApplication.objects.select_related("listing"), pk=pk, owner_id=request.session.get(OWNER_SESSION),
+    )
+    with transaction.atomic():
+        listing = BusinessListing.objects.select_for_update().get(pk=application.listing_id)
+        draft = listing.get_latest_revision_as_object()
+        form = PartnerListingEditForm(request.POST or None, request.FILES or None, instance=draft)
+        revision = str(listing.latest_revision_id or "")
+        if request.method == "POST" and form.is_valid():
+            if listing.locked or listing.workflow_in_progress or request.POST.get("revision") != revision:
+                form.add_error(None, "This listing changed or is being reviewed. Open your listing again to continue.")
+                return show(request, "edit_listing", form=form, listing=listing, revision=revision, status=409)
+            form.save_draft()
+            return redirect(reverse("partners:dashboard") + "?listing=updated")
+    return show(request, "edit_listing", form=form, listing=listing, revision=revision)
 @never_cache
 @require_safe
 def listing_click(request, pk, action):
