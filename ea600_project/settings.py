@@ -12,7 +12,7 @@ if DEBUG:
 else:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+railway_domain = os.environ.get("EA600_RAILWAY_DOMAIN") or os.environ.get("RAILWAY_PUBLIC_DOMAIN")
 EA600_PUBLIC_DOMAIN = os.environ.get("EA600_PUBLIC_DOMAIN", "").strip()
 public_domains = list(dict.fromkeys(domain for domain in (railway_domain, EA600_PUBLIC_DOMAIN) if domain))
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", *public_domains]

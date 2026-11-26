@@ -69,7 +69,7 @@ Advertisers can sign in with an emailed link to view **My business listings**, s
 
 Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development, email prints to the console when `PARTNER_RESEND_API_KEY` and `EMAIL_HOST` are empty. On the preview, set `PARTNER_RESEND_API_KEY` and a verified `DEFAULT_FROM_EMAIL` to send email over HTTPS. If your Railway plan supports outbound SMTP, you can instead configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`.
 
-Once Railway has verified the custom domain and issued its HTTPS certificate, set `EA600_PUBLIC_DOMAIN` to the hostname, for example `preview.ea600.co.uk`. Django accepts requests on that hostname and uses it in all advertiser emails, including links sent after a visit to the Railway URL.
+When adding a custom domain, set `EA600_RAILWAY_DOMAIN` to the original Railway hostname to keep it available. Once Railway has verified the custom domain and issued its HTTPS certificate, set `EA600_PUBLIC_DOMAIN` to the custom hostname, for example `preview.ea600.co.uk`. Django accepts requests on both hostnames and uses the custom hostname in all advertiser emails.
 
 ### Stripe test checkout
 
