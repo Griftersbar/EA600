@@ -26,7 +26,7 @@ from .activity import record_click, with_recent_activity
 from .forms import (
     AdvertisingEnquiryForm, GuestPartnerApplicationForm, OwnerEmailForm, PartnerApplicationForm, PartnerListingEditForm,
 )
-from .mail import applications_enabled, send_partner_mail
+from .mail import applications_enabled, email_url, send_partner_mail
 from .models import (
     AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication,
     PendingPartnerApplication, published_placements,
@@ -104,7 +104,7 @@ def advertise(request):
             PartnerAccount.objects.filter(pk=account.pk).update(
                 access_digest=token_digest, access_expires=timezone.now() + timedelta(minutes=20),
             )
-            link = request.build_absolute_uri(reverse("partners:access", args=[token]))
+            link = email_url(reverse("partners:access", args=[token]), request=request)
             try:
                 send_partner_mail(
                     "Your EA600 business sign-in link",
@@ -149,7 +149,7 @@ def apply(request):
             email=email, verification_digest=digest(token), expires_at=timezone.now() + timedelta(days=1),
             details=form.submission_details(), photo=photo or "",
         )
-        url = request.build_absolute_uri(reverse("partners:confirm_application", args=[token]))
+        url = email_url(reverse("partners:confirm_application", args=[token]), request=request)
         try:
             send_partner_mail(
                 "Confirm your EA600 business email",

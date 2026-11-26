@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.24.2",
+    "date": "2026-11-26",
+    "title": "Branded links in advertiser emails",
+    "changes": [
+      "Advertiser confirmation, sign-in, approval and listing emails use the configured EA600 domain."
+    ]
+  },
+  {
     "version": "2.24.1",
     "date": "2026-11-26",
     "title": "Apply to advertise from routes and destinations",

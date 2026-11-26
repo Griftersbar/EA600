@@ -134,8 +134,12 @@ class PartnerBillingTests(TestCase):
         return self.client.post(reverse("partners:webhook"), payload, content_type="application/json",
                                 headers={"Stripe-Signature": f"t={timestamp},v1={signature}"})
 
+    @override_settings(EA600_PUBLIC_DOMAIN="preview.example.com")
     def test_verified_application_approval_annual_checkout_and_payment_lifecycle(self):
         application = self.apply_as_owner(placement={"destination": self.stop.destination.slug})
+        origin = "https://preview.example.com"
+        self.assertIn(f"{origin}/advertise/apply/confirm/", mail.outbox[0].body)
+        self.assertIn(f"{origin}/advertise/#business-listing-access", mail.outbox[1].body)
         listing = application.listing
         self.assertEqual(listing.stops.get(), self.stop)
         self.assertTrue(listing.requires_subscription)
@@ -147,7 +151,9 @@ class PartnerBillingTests(TestCase):
         self.assertEqual(Client().post(checkout, {"plan": "annual"}).status_code, 404)
 
         self.approve(application)
-        pay_link = urlsplit(mail.outbox[-1].body.split()[-1]).path
+        payment_url = urlsplit(mail.outbox[-1].body.split()[-1])
+        self.assertEqual((payment_url.scheme, payment_url.netloc), ("https", "preview.example.com"))
+        pay_link = payment_url.path
         fresh_buyer = Client()
         self.assertContains(fresh_buyer.get(pay_link), "Continue to payment options")
         self.assertEqual(fresh_buyer.get(checkout).status_code, 404)
@@ -186,8 +192,8 @@ class PartnerBillingTests(TestCase):
         with self.captureOnCommitCallbacks(execute=True):
             self.assertEqual(self.signed_event("checkout.session.completed", completed).status_code, 204)
         self.assertEqual(mail.outbox[-1].subject, "Your EA600 business listing is live on the test preview")
-        self.assertIn("/tours/ea600/#places-along-the-route", mail.outbox[-1].body)
-        self.assertIn("/destinations/norwich/#destination-businesses", mail.outbox[-1].body)
+        self.assertIn(f"{origin}/tours/ea600/#places-along-the-route", mail.outbox[-1].body)
+        self.assertIn(f"{origin}/destinations/norwich/#destination-businesses", mail.outbox[-1].body)
         sent_count = len(mail.outbox)
         self.assertContains(Client().get(self.tour.get_absolute_url()), listing.name)
         self.assertRedirects(self.client.get(checkout), reverse("partners:dashboard"))
@@ -436,7 +442,10 @@ class PartnerBillingTests(TestCase):
             self.assertFalse(published_placements(self.tour).exists())
             self.assertEqual(self.client.post(portal).status_code, 409)
 
-    @override_settings(PARTNER_RESEND_API_KEY="re_test_fixture", DEFAULT_FROM_EMAIL="EA600 <partners@example.com>")
+    @override_settings(
+        PARTNER_RESEND_API_KEY="re_test_fixture", DEFAULT_FROM_EMAIL="EA600 <partners@example.com>",
+        EA600_PUBLIC_DOMAIN="preview.example.com",
+    )
     @patch("partners.mail.urlopen")
     def test_sign_in_link_can_be_sent_using_https_email(self, urlopen):
         PartnerAccount.objects.create(email="owner@example.com")
@@ -446,7 +455,7 @@ class PartnerBillingTests(TestCase):
         self.assertEqual(request.get_header("Authorization"), "Bearer re_test_fixture")
         message = json.loads(request.data)
         self.assertEqual(message["to"], ["owner@example.com"])
-        self.assertIn("/advertise/access/", message["text"])
+        self.assertIn("https://preview.example.com/advertise/access/", message["text"])
 
     def test_confirmation_reuses_an_account_and_preserves_the_uploaded_photo(self):
         owner = PartnerAccount.objects.create(email="owner@example.com")

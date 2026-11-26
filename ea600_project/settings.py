@@ -12,11 +12,12 @@ if DEBUG:
 else:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 railway_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
-if railway_domain:
-    ALLOWED_HOSTS.append(railway_domain)
-    CSRF_TRUSTED_ORIGINS = [f"https://{railway_domain}"]
+EA600_PUBLIC_DOMAIN = os.environ.get("EA600_PUBLIC_DOMAIN", "").strip()
+public_domains = list(dict.fromkeys(domain for domain in (railway_domain, EA600_PUBLIC_DOMAIN) if domain))
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", *public_domains]
+if public_domains:
+    CSRF_TRUSTED_ORIGINS = [f"https://{domain}" for domain in public_domains]
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

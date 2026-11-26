@@ -11,15 +11,11 @@ from django.utils import timezone
 from wagtail.signals import published
 
 from .access_tokens import digest
-from .mail import email_ready, send_partner_mail
+from .mail import email_ready, email_url, send_partner_mail
 from .models import BusinessListing, PartnerApplication, PendingPartnerApplication, published_placements
 
 
 logger = logging.getLogger(__name__)
-
-
-def public_url(path):
-    return settings.WAGTAILADMIN_BASE_URL.rstrip("/") + path
 
 
 def deliver_notice(subject, body, email):
@@ -35,7 +31,7 @@ def notify_application_received(application):
         "We received your EA600 listing application",
         f"We’ve received your listing for {application.listing.name}. We’ll email you after review "
         "with the next step. You can check its status in My business listings.\n\n"
-        + public_url(reverse("partners:advertise") + "#business-listing-access"),
+        + email_url(reverse("partners:advertise", fragment="business-listing-access")),
         application.owner.email,
     )
 
@@ -51,7 +47,7 @@ def email_payment_link(application):
         "Your EA600 business listing is approved",
         f"Your listing for {application.listing.name} is approved. Open your private link to choose a plan. "
         "The link expires after 48 hours. Your advert will appear once payment is confirmed.\n\n"
-        + public_url(reverse("partners:approve_access", args=[token])),
+        + email_url(reverse("partners:approve_access", args=[token])),
         application.owner.email,
     ):
         return True
@@ -80,16 +76,16 @@ def notify_listing_live(application_id):
     links = {}
     for placement in placements:
         stop = placement.stop
-        links[public_url(stop.tour.get_absolute_url() + "#places-along-the-route")] = stop.tour.title
+        links[email_url(stop.tour.get_absolute_url() + "#places-along-the-route")] = stop.tour.title
         if stop.destination:
-            links[public_url(stop.destination.get_absolute_url() + "#destination-businesses")] = stop.destination.title
+            links[email_url(stop.destination.get_absolute_url() + "#destination-businesses")] = stop.destination.title
     pages = "\n".join(f"{title}\n{url}" for url, title in links.items())
     preview = " on the test preview" if application.billing_mode == PartnerApplication.BillingMode.TEST else ""
     if not deliver_notice(
         f"Your EA600 business listing is live{preview}",
         f"Your listing for {application.listing.name} is live{preview}. View your advert here.\n\n{pages}\n\n"
         "Manage your advert and billing in My business listings.\n"
-        + public_url(reverse("partners:advertise") + "#business-listing-access"),
+        + email_url(reverse("partners:advertise", fragment="business-listing-access")),
         application.owner.email,
     ):
         applications.filter(live_email_mode=application.billing_mode).update(live_email_mode=application.live_email_mode)

@@ -13,6 +13,14 @@ def applications_enabled():
     return settings.PARTNER_APPLICATIONS_ENABLED and email_ready()
 
 
+def email_url(path, *, request=None):
+    if settings.EA600_PUBLIC_DOMAIN:
+        return f"https://{settings.EA600_PUBLIC_DOMAIN}{path}"
+    if request is not None:
+        return request.build_absolute_uri(path)
+    return settings.WAGTAILADMIN_BASE_URL.rstrip("/") + path
+
+
 def send_partner_mail(subject, body, recipient):
     if not settings.PARTNER_RESEND_API_KEY:
         return send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [recipient])

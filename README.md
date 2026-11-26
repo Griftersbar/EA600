@@ -69,6 +69,8 @@ Advertisers can sign in with an emailed link to view **My business listings**, s
 
 Enable email sign-in with `PARTNER_APPLICATIONS_ENABLED=1`. In local development, email prints to the console when `PARTNER_RESEND_API_KEY` and `EMAIL_HOST` are empty. On the preview, set `PARTNER_RESEND_API_KEY` and a verified `DEFAULT_FROM_EMAIL` to send email over HTTPS. If your Railway plan supports outbound SMTP, you can instead configure `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_TLS` and `DEFAULT_FROM_EMAIL`.
 
+Once Railway has verified the custom domain and issued its HTTPS certificate, set `EA600_PUBLIC_DOMAIN` to the hostname, for example `preview.ea600.co.uk`. Django accepts requests on that hostname and uses it in all advertiser emails, including links sent after a visit to the Railway URL.
+
 ### Stripe test checkout
 
 The default `PARTNER_BILLING_MODE=test` uses a Stripe sandbox. Set `STRIPE_TEST_SECRET_KEY` and create one active monthly and one active annual Stripe price in GBP. Set their IDs as `STRIPE_TEST_MONTHLY_PRICE` and `STRIPE_TEST_ANNUAL_PRICE`. Checkout uses these products and intervals with the current prices from Wagtail.
