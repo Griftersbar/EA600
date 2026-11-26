@@ -20,6 +20,7 @@ from .activity import with_recent_activity
 from .enquiry_conversion import convert_enquiry, enquiry_listing_action
 from .models import AdvertisePageSettings, AdvertisingEnquiry, BusinessListing
 from .sandbox import advertiser_payments
+from .visibility import destination_preview, listing_visibility
 
 
 AdvertisePageSettings.edit_handler = TabbedInterface([
@@ -78,8 +79,17 @@ class BusinessListingEditView(EditView):
     def get_header_buttons(self):
         buttons = super().get_header_buttons()
         if self.request.user.has_perm("partners.change_businesslisting"):
-            url = reverse("ea600_business_listings:sandbox_payment", args=[self.object.pk])
-            buttons.insert(0, HeaderButton("Advertiser payments", url=url, icon_name="tag"))
+            listing_id = self.object.pk
+            buttons[:0] = [
+                HeaderButton(
+                    "Site visibility", url=reverse("ea600_business_listings:visibility", args=[listing_id]),
+                    icon_name="site",
+                ),
+                HeaderButton(
+                    "Advertiser payments", url=reverse("ea600_business_listings:sandbox_payment", args=[listing_id]),
+                    icon_name="tag",
+                ),
+            ]
         return buttons
 
 
@@ -118,6 +128,8 @@ class BusinessListingViewSet(SnippetViewSet):
         return [
             *super().get_urlpatterns(),
             path("sandbox-payment/<int:pk>/", advertiser_payments, name="sandbox_payment"),
+            path("visibility/<int:pk>/", listing_visibility, name="visibility"),
+            path("destination-preview/<int:pk>/<int:destination_id>/", destination_preview, name="destination_preview"),
         ]
 
 

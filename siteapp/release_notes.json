@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.23.0",
+    "date": "2026-11-26",
+    "title": "Check where adverts appear",
+    "changes": [
+      "Added Site visibility to business listings in Wagtail. It reports publication, placement and payment requirements and links directly to public destinations.",
+      "Listing editors can preview a saved advert on its destination page before it goes public. Checkout failures now record the Stripe error type and HTTP status in the app logs."
+    ]
+  },
+  {
     "version": "2.22.0",
     "date": "2026-11-25",
     "title": "Destination pages for every published route stop",

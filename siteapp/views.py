@@ -99,11 +99,17 @@ def destination_list(request):
 @require_safe
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination.objects.select_related("photo"), slug=slug)
+    return render_destination(request, destination)
+
+
+def render_destination(request, destination, *, preview_listing=None):
     placements = {}
     for placement in published_placements().filter(stop__destination=destination).order_by(
         "listing__name", "listing_id", "pk",
     ):
         placements.setdefault(placement.listing_id, placement)
+    if preview_listing:
+        placements.pop(preview_listing.pk, None)
     return render(request, "siteapp/destination_detail.html", {
         "homepage": homepage_content(),
         "destination": destination,
@@ -112,6 +118,7 @@ def destination_detail(request, slug):
         "gallery": destination.gallery.select_related("photo").exclude(photo_id=destination.photo_id).order_by("sort_order", "pk"),
         "placements": list(placements.values()),
         "tours": published_tours().filter(stops__destination=destination).distinct(),
+        "preview_listing": preview_listing,
     })
 
 

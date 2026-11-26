@@ -1,0 +1,34 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block titletag %}Site visibility{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title="Site visibility" subtitle=listing.name icon="site" %}
+    <div class="nice-padding">
+        <p><a href="{{ listing_url }}">Return to the listing</a></p>
+        <p role="status">{{ visibility_message }}</p>
+        {% if listing.requires_subscription %}
+            <p><a href="{{ payments_url }}">Advertiser payments</a></p>
+        {% endif %}
+        {% if public_destinations %}
+            <h2>Public destination pages</h2>
+            <ul>
+                {% for destination in public_destinations %}
+                    <li><a href="{{ destination.get_absolute_url }}#destination-businesses">{{ destination.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if missing_destination_links %}
+            <p>Link the affected stops to destinations in Tour Builder and publish the route.</p>
+        {% endif %}
+        {% if preview_links %}
+            <h2>Preview on a destination</h2>
+            <p>Wagtail editors can preview the saved listing before it appears publicly.</p>
+            <ul>
+                {% for destination, url in preview_links %}
+                    <li><a href="{{ url }}#destination-businesses">Preview on {{ destination.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

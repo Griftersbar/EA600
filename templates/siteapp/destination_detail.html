@@ -1,5 +1,8 @@
 {% extends "siteapp/content_page.html" %}
 {% block content %}
+    {% if preview_listing %}
+        <p class="tour-preview-banner">Private advert preview · <a href="{% url 'ea600_business_listings:visibility' preview_listing.pk %}">Return to site visibility</a></p>
+    {% endif %}
     {% url 'destination_list' as destinations_url %}
     {% include "siteapp/includes/page_intro.html" with title=destination.title intro=destination.region back_url=destinations_url back_label="All destinations" only %}
     {% if destination.photo or destination.description or destination.link or gallery %}
@@ -29,11 +32,14 @@
         </div>
     </article>
     {% endif %}
-    {% if placements %}
-        <section class="page-section page-section--muted" aria-labelledby="destination-businesses-title">
+    {% if placements or preview_listing %}
+        <section class="page-section page-section--muted" id="destination-businesses" aria-labelledby="destination-businesses-title">
             <div class="container">
                 <h2 class="heading-section content-page__title" id="destination-businesses-title">Local businesses in {{ destination.title }}</h2>
                 <div class="card-grid">
+                    {% if preview_listing %}
+                        {% include "partners/includes/listing_card.html" with listing=preview_listing destination_page=True private_preview=True only %}
+                    {% endif %}
                     {% for placement in placements %}
                         {% include "partners/includes/listing_card.html" with listing=placement.listing placement=placement destination_page=True only %}
                     {% endfor %}

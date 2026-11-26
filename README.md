@@ -73,6 +73,8 @@ The default `PARTNER_BILLING_MODE=test` uses a Stripe sandbox. Set `STRIPE_TEST_
 
 Select **Advertiser payments** in the header of a saved business listing in Wagtail to see its payment status. With `PARTNER_PILOT_PREVIEW=1` in test mode, a superuser signed in with two-factor authentication can select **Open My business listings** for an approved listing. The sandbox session lasts up to 20 minutes and opens without a sign-in email. Select **Choose a payment plan** to review prices and test checkout when Stripe credentials are configured.
 
+Select **Site visibility** in the listing header to see where a published advert appears or what is blocking it. When the saved listing has a stop on a published route, listing editors can open a private preview of the advert on its destination page.
+
 ### Live Stripe checkout
 
 Set `PARTNER_BILLING_MODE=live` on the service that should accept real payments. Use an activated Stripe account and set `STRIPE_LIVE_SECRET_KEY`, `STRIPE_LIVE_MONTHLY_PRICE`, and `STRIPE_LIVE_ANNUAL_PRICE` using its live key and active GBP recurring prices. Prior test payments cannot unlock listings in live mode. A new live checkout for a test application keeps the listing and owner and starts a fresh Stripe checkout.

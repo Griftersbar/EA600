@@ -1,14 +1,17 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 from wagtail.models import GroupApprovalTask, Workflow
 
 from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
 
-from .models import BusinessListing, RoutePlacement
+from .models import BusinessListing, PartnerAccount, PartnerApplication, RoutePlacement
 
 
 class BusinessListingTests(TestCase):
@@ -97,6 +100,53 @@ class BusinessListingTests(TestCase):
         self.second_tour.save(update_fields=["is_published"])
         self.assertEqual(self.client.get(second_url).status_code, 404)
         self.assertContains(self.client.get(route_url), listing.name)
+
+    @override_settings(PARTNER_BILLING_MODE="test")
+    def test_unpaid_listing_has_private_destination_preview_and_public_payment_status(self):
+        data = self.listing_data(self.norwich)
+        listing = BusinessListing.objects.create(
+            name=data["name"], category=data["category"], description=data["description"],
+            address=data["address"], link=data["link"], live=True, requires_subscription=True,
+        )
+        RoutePlacement.objects.create(listing=listing, stop=self.norwich)
+        owner = PartnerAccount.objects.create(email="visibility-check@example.test")
+        application = PartnerApplication.objects.create(listing=listing, owner=owner)
+        edit_url = reverse("ea600_business_listings:edit", args=[listing.pk])
+        visibility_url = reverse("ea600_business_listings:visibility", args=[listing.pk])
+        norwich_preview = reverse("ea600_business_listings:destination_preview", args=[listing.pk, self.norwich.destination_id])
+        cromer_preview = reverse("ea600_business_listings:destination_preview", args=[listing.pk, self.cromer.destination_id])
+        visitor = Client()
+        public_url = self.norwich.destination.get_absolute_url()
+
+        self.assertEqual(visitor.get(norwich_preview).status_code, 302)
+        self.assertNotContains(visitor.get(public_url), listing.name)
+        sign_in_verified(self.client, self.editor)
+        self.assertContains(self.client.get(edit_url), visibility_url)
+        status = self.client.get(visibility_url)
+        self.assertContains(status, "Stripe needs to confirm an active paid subscription")
+        self.assertContains(status, norwich_preview)
+        self.assertEqual(self.client.get(cromer_preview).status_code, 404)
+
+        preview = self.client.get(norwich_preview)
+        self.assertContains(preview, "Private advert preview")
+        self.assertContains(preview, listing.name)
+        self.assertNotContains(preview, data["link"])
+        self.assertIn("no-store", preview.headers["Cache-Control"])
+        self.assertEqual(preview.headers["X-Robots-Tag"], "noindex, nofollow")
+
+        revised = {**data, "description": "A draft menu for Cromer.", "stops": [self.cromer.pk]}
+        response = self.client.post(edit_url, {**revised, "action-save": "1"})
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(self.client.get(visibility_url), cromer_preview)
+        self.assertContains(self.client.get(cromer_preview), revised["description"])
+        self.assertNotContains(visitor.get(self.cromer.destination.get_absolute_url()), revised["description"])
+
+        application.billing_status = "active"
+        application.paid_until = timezone.now() + timedelta(days=30)
+        application.save(update_fields=["billing_status", "paid_until"])
+        self.assertContains(self.client.get(visibility_url), f'href="{public_url}#destination-businesses"')
+        self.assertContains(visitor.get(public_url), data["description"])
+        self.assertNotContains(visitor.get(public_url), revised["description"])
 
     def test_editor_must_have_publish_permission(self):
         author = get_user_model().objects.create_user(username="listing-author", is_staff=True)

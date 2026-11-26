@@ -249,8 +249,8 @@ def start_checkout(request, pk):
         url = billing.checkout(application, plan, return_url, request.build_absolute_uri(request.path))
     except billing.BillingUnavailable as error:
         return show(request, "billing_error", error=str(error))
-    except StripeError:
-        logger.warning("Stripe checkout request failed")
+    except StripeError as error:
+        logger.warning("Stripe checkout request failed (%s, HTTP %s)", type(error).__name__, error.http_status)
         return show(request, "billing_error", status=503, error="Checkout is temporarily unavailable. Please try again.")
     return redirect(url or "partners:dashboard")
 
