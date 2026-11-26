@@ -91,6 +91,34 @@ class PartnerApplicationForm(ListingPhotoUploadForm):
         fields = ("name", "category", "description", "address", "stop", "link", "link_label", "phone", "photo_upload")
         widgets = {"description": forms.Textarea(attrs={"rows": 3})}
 
+    def __init__(self, *args, placement=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.placement_query = {}
+        if not placement:
+            return
+
+        field = self.fields["stop"]
+        destination_slug = placement.get("destination")
+        route_slug = placement.get("route")
+        if destination_slug:
+            stops = field.queryset.filter(destination__slug=destination_slug).select_related("destination")
+        elif route_slug:
+            stops = field.queryset.filter(tour__slug=route_slug)
+        else:
+            return
+
+        first_stop = stops.first()
+        if first_stop is None:
+            return
+        field.queryset = stops
+        if destination_slug:
+            self.placement_query = {"destination": destination_slug}
+            field.help_text = f"Choose a route that visits {first_stop.destination.title}."
+            self.initial.setdefault("stop", first_stop.pk)
+        else:
+            self.placement_query = {"route": route_slug}
+            field.help_text = f"Choose the stop closest to your business on {first_stop.tour.title}."
+
     @transaction.atomic
     def create_application(self, owner, *, source_enquiry=None, user=None):
         listing = self.save(commit=False)

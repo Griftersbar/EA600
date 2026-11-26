@@ -10,6 +10,9 @@
                     <p role="status">Check your inbox for a link to submit your listing for review. The link is valid for 24 hours.</p>
                 {% else %}
                     <p>Enter the details for your advert. We’ll ask you to confirm your email before the listing goes to review.</p>
+                    {% if form.placement_query %}
+                        <p><a class="partner-link" href="{% url 'partners:apply' %}">Show all route stops</a></p>
+                    {% endif %}
                     <form method="post" enctype="multipart/form-data" class="partner-form">
                         {% csrf_token %}
                         {{ form.as_div }}

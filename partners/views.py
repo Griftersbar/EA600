@@ -26,7 +26,7 @@ from .activity import record_click, with_recent_activity
 from .forms import (
     AdvertisingEnquiryForm, GuestPartnerApplicationForm, OwnerEmailForm, PartnerApplicationForm, PartnerListingEditForm,
 )
-from .mail import email_ready, send_partner_mail
+from .mail import applications_enabled, send_partner_mail
 from .models import (
     AdvertisePageSettings, BusinessListing, ListingClick, PartnerAccount, PartnerApplication,
     PendingPartnerApplication, published_placements,
@@ -47,10 +47,6 @@ def show(request, template, *, status=200, **context):
 
 def owner(request):
     return PartnerAccount.objects.filter(pk=request.session.get(OWNER_SESSION)).first()
-
-
-def applications_enabled():
-    return settings.PARTNER_APPLICATIONS_ENABLED and email_ready()
 
 
 def sign_in_owner(request, account_id):
@@ -129,10 +125,12 @@ def advertise(request):
 def apply(request):
     if not applications_enabled():
         return redirect("partners:advertise")
+    form = GuestPartnerApplicationForm(request.POST or None, request.FILES or None, placement=request.GET)
     if owner(request):
-        return redirect("partners:dashboard")
+        return redirect(reverse(
+            "partners:dashboard", query=form.placement_query, fragment="apply-for-listing",
+        ))
 
-    form = GuestPartnerApplicationForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and form.is_valid():
         email = form.cleaned_data["email"]
         if not allow_partner_request(request, "application", 5) or not cache.add(
@@ -282,7 +280,7 @@ def dashboard(request):
     if not account:
         return redirect("partners:advertise")
     enabled = not preview and applications_enabled()
-    form = PartnerApplicationForm(request.POST or None, request.FILES or None)
+    form = PartnerApplicationForm(request.POST or None, request.FILES or None, placement=request.GET if enabled else None)
     if request.method == "POST" and enabled and form.is_valid():
         application = form.create_application(account)
         transaction.on_commit(lambda: notify_application_received(application))

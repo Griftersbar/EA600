@@ -24,6 +24,7 @@ from siteapp.models import Tour
 from siteapp.test_support import sign_in_verified
 
 from .models import AdvertisePageSettings, BusinessListing, PartnerAccount, PartnerApplication, PendingPartnerApplication, published_placements
+from .views import OWNER_SESSION
 
 
 @override_settings(
@@ -44,8 +45,8 @@ class PartnerBillingTests(TestCase):
         self.stripe = gateway.start().return_value.v1
         self.addCleanup(gateway.stop)
 
-    def apply_as_owner(self, **fields):
-        self.assertContains(self.client.post(reverse("partners:apply"), {
+    def apply_as_owner(self, *, placement=None, **fields):
+        self.assertContains(self.client.post(reverse("partners:apply", query=placement), {
             "email": "Owner@Example.com",
             "name": "Norwich Test Tea Room", "category": "food", "description": "Tea and scones",
             "address": "Norwich, NR1", "stop": self.stop.pk, "link": "https://example.com/tea",
@@ -63,6 +64,44 @@ class PartnerBillingTests(TestCase):
         self.assertContains(Client().post(access_url), "has already been used")
         self.assertFalse(PendingPartnerApplication.objects.exists())
         return PartnerApplication.objects.select_related("listing", "owner").get()
+
+    def test_public_advertising_links_carry_the_route_or_destination(self):
+        tour = Tour.objects.get(slug="ea600-14-day")
+        destination = self.stop.destination
+        route_apply = reverse("partners:apply", query={"route": tour.slug})
+        destination_apply = reverse("partners:apply", query={"destination": destination.slug})
+
+        self.assertContains(self.client.get(tour.get_absolute_url()), f'href="{route_apply}"')
+        self.assertContains(self.client.get(destination.get_absolute_url()), f'href="{destination_apply}"')
+        form = self.client.get(route_apply).context["form"]
+        self.assertEqual(set(form.fields["stop"].queryset), set(tour.stops.all()))
+        self.assertIsNone(form["stop"].value())
+
+        form = self.client.get(destination_apply).context["form"]
+        self.assertEqual(set(form.fields["stop"].queryset), set(destination.route_stops.filter(tour__is_published=True)))
+        self.assertEqual(form["stop"].value(), self.stop.pk)
+
+        response = self.client.post(route_apply, {"stop": self.stop.pk})
+        self.assertTrue(response.context["form"].has_error("stop", "invalid_choice"))
+        self.assertFalse(PendingPartnerApplication.objects.exists())
+
+        tour.is_published = False
+        tour.save(update_fields=["is_published"])
+        form = self.client.get(route_apply).context["form"]
+        self.assertFalse(form.placement_query)
+        self.assertIn(self.stop, form.fields["stop"].queryset)
+        self.assertFalse(form.fields["stop"].queryset.filter(tour=tour).exists())
+
+    def test_signed_in_advertiser_keeps_the_preselected_destination(self):
+        session = self.client.session
+        session[OWNER_SESSION] = PartnerAccount.objects.create(email="owner@example.com").pk
+        session.save()
+        placement = {"destination": self.stop.destination.slug}
+        dashboard = reverse("partners:dashboard", query=placement, fragment="apply-for-listing")
+        self.assertRedirects(self.client.get(reverse("partners:apply", query=placement)), dashboard)
+        response = self.client.get(dashboard)
+        self.assertContains(response, 'id="apply-for-listing"')
+        self.assertEqual(response.context["form"]["stop"].value(), self.stop.pk)
 
     def approve(self, application):
         listing = application.listing
@@ -96,7 +135,7 @@ class PartnerBillingTests(TestCase):
                                 headers={"Stripe-Signature": f"t={timestamp},v1={signature}"})
 
     def test_verified_application_approval_annual_checkout_and_payment_lifecycle(self):
-        application = self.apply_as_owner()
+        application = self.apply_as_owner(placement={"destination": self.stop.destination.slug})
         listing = application.listing
         self.assertEqual(listing.stops.get(), self.stop)
         self.assertTrue(listing.requires_subscription)

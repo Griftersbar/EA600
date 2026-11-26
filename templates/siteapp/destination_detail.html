@@ -56,6 +56,9 @@
                         {% include "siteapp/includes/tour_card.html" with entry=tour only %}
                     {% endfor %}
                 </div>
+                {% if apply_url %}
+                    <p class="listing-application-link"><a class="btn btn--secondary" href="{{ apply_url }}">Advertise in {{ destination.title }}</a></p>
+                {% endif %}
             </div>
         </section>
     {% endif %}

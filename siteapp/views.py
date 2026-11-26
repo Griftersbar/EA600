@@ -5,8 +5,10 @@ from django.core.paginator import Paginator
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
+from django.urls import reverse
 from django.views.decorators.http import require_safe
 
+from partners.mail import applications_enabled
 from partners.models import published_placements
 
 from .models import IMAGE_TYPES, Destination, FAQ, FooterPhoto, Highlight, HomeContent, PlanningTip, Story, Tour
@@ -119,6 +121,8 @@ def render_destination(request, destination, *, preview_listing=None):
         "placements": list(placements.values()),
         "tours": published_tours().filter(stops__destination=destination).distinct(),
         "preview_listing": preview_listing,
+        "apply_url": reverse("partners:apply", query={"destination": destination.slug})
+        if not preview_listing and applications_enabled() else "",
     })
 
 
@@ -129,6 +133,8 @@ def render_tour_detail(request, tour, *, stops=None, days=None, photos=None, bui
         "photos": tour.gallery.all() if photos is None else photos,
         "builder_preview": builder_preview,
         "placements": () if builder_preview else published_placements(tour),
+        "apply_url": reverse("partners:apply", query={"route": tour.slug})
+        if not builder_preview and applications_enabled() else "",
         **route_content(tour, stops=stops, days=days),
     })
     if builder_preview:

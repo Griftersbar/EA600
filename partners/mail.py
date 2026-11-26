@@ -9,6 +9,10 @@ def email_ready():
     return bool(settings.DEBUG or settings.PARTNER_RESEND_API_KEY or settings.EMAIL_HOST)
 
 
+def applications_enabled():
+    return settings.PARTNER_APPLICATIONS_ENABLED and email_ready()
+
+
 def send_partner_mail(subject, body, recipient):
     if not settings.PARTNER_RESEND_API_KEY:
         return send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [recipient])

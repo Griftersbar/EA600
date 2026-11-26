@@ -45,9 +45,12 @@
                 <p>No listings are linked to this email address. Sign in with the email used for your listing or contact EA600 for help.</p>
             {% endfor %}
             {% if enabled %}
-                <div class="card partner-panel__card">
+                <div class="card partner-panel__card" id="apply-for-listing">
                     <h2>Apply for a listing</h2>
                     <p>Use details you’re happy to display on the route page.</p>
+                    {% if form.placement_query %}
+                        <p><a class="partner-link" href="{% url 'partners:dashboard' %}#apply-for-listing">Show all route stops</a></p>
+                    {% endif %}
                     <form method="post" enctype="multipart/form-data" class="partner-form">
                         {% csrf_token %}
                         {{ form.as_div }}

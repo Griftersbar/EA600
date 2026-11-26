@@ -21,6 +21,9 @@
             <div class="container">
                 <h2 class="heading-section content-page__title" id="routes-title">Route and stops</h2>
                 {% include "siteapp/includes/route.html" %}
+                {% if stops and apply_url %}
+                    <p class="listing-application-link"><a class="btn btn--secondary" href="{{ apply_url }}">Advertise on this route</a></p>
+                {% endif %}
             </div>
         </section>
     {% endif %}

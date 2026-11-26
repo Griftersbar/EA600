@@ -1,5 +1,14 @@
 [
   {
+    "version": "2.24.1",
+    "date": "2026-11-26",
+    "title": "Apply to advertise from routes and destinations",
+    "changes": [
+      "Public route pages link to the listing application with stops filtered to that route. Destination pages preselect a stop at that destination.",
+      "Signed-in advertisers can use the same links to start a new listing from My business listings."
+    ]
+  },
+  {
     "version": "2.24.0",
     "date": "2026-11-26",
     "title": "Passwordless advertiser applications and confirmation emails",

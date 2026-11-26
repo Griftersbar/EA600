@@ -171,6 +171,10 @@
   font: var(--font-weight-bold) var(--font-size-xl) / 1.2 var(--font-family-display);
 }
 
+.listing-application-link {
+    margin-top: var(--space-5);
+}
+
 .business-card__category {
   display: flex;
   align-items: center;
